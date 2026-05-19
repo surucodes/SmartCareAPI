@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Spandana Hospital - Home</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:ital,wght@0,700;1,700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "text-muted": "#888888",
+                        "surface-bright": "#faf9f6",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-container-low": "#f4f4f0",
+                        "surface-dim": "#dbdad7",
+                        "on-secondary-fixed-variant": "#584400",
+                        "inverse-on-surface": "#f2f1ed",
+                        "text-primary": "#111111",
+                        "secondary-container": "#fed255",
+                        "on-primary-container": "#A8D5B8",
+                        "on-tertiary-fixed": "#2f131b",
+                        "secondary-fixed": "#ffe08e",
+                        "on-primary": "#ffffff",
+                        "on-background": "#1b1c1a",
+                        "inverse-surface": "#2f312f",
+                        "text-light": "#A0AEC0",
+                        "primary": "#001607",
+                        "primary-container": "#132b1a",
+                        "tertiary-container": "#3b1d25",
+                        "text-secondary": "#555555",
+                        "on-surface-variant": "#424842",
+                        "outline-variant": "#F0F0F0",
+                        "tertiary-fixed-dim": "#ebbac4",
+                        "surface-container-highest": "#e3e2df",
+                        "surface-container": "#efeeea",
+                        "on-tertiary-container": "#ad828b",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#344c39",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#b1ceb4",
+                        "on-tertiary-fixed-variant": "#603d45",
+                        "tertiary-fixed": "#ffd9e0",
+                        "on-primary-fixed": "#082010",
+                        "accent-light": "#F5E9C0",
+                        "on-surface": "#1b1c1a",
+                        "surface": "#faf9f6",
+                        "inverse-primary": "#b1ceb4",
+                        "on-secondary-container": "#735a00",
+                        "surface-container-high": "#e9e8e5",
+                        "background": "#faf9f6",
+                        "surface-variant": "#e3e2df",
+                        "on-secondary-fixed": "#241a00",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-inverse": "#132B1A",
+                        "error": "#ba1a1a",
+                        "surface-tint": "#4b6450",
+                        "secondary-fixed-dim": "#ecc246",
+                        "primary-fixed": "#cdead0",
+                        "secondary": "#755b00",
+                        "error-container": "#ffdad6",
+                        "outline": "#E5E7EB",
+                        "tertiary": "#220910",
+                        "brand-gold": "#C9A227",
+                        "brand-dark": "#132b1a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "margin-desktop": "48px",
+                        "card-padding": "24px",
+                        "section-padding-y": "80px",
+                        "base": "8px",
+                        "gutter": "24px",
+                        "container-max": "1200px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Playfair Display"],
+                        "stat-number": ["Inter"],
+                        "nav-link": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "title-lg": ["Playfair Display"],
+                        "label-sm": ["Inter"],
+                        "display-xl": ["Playfair Display"],
+                        "headline-sm": ["Playfair Display"],
+                        "body-lg": ["Inter"],
+                        "label-section": ["Inter"],
+                        "display-xl-mobile": ["Playfair Display"],
+                        "headline-md": ["Playfair Display"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "headline-lg": ["36px", { "lineHeight": "44px", "fontWeight": "700" }],
+                        "stat-number": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "nav-link": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500" }],
+                        "display-xl": ["48px", { "lineHeight": "58px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-sm": ["22px", { "lineHeight": "30px", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-section": ["11px", { "lineHeight": "16px", "letterSpacing": "0.12em", "fontWeight": "600" }],
+                        "display-xl-mobile": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "headline-md": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface font-body-md text-text-primary antialiased selection:bg-brand-gold selection:text-white">
+<!-- TopAppBar -->
+<header class="bg-surface docked full-width top-0 z-50 transition-shadow duration-300 relative border-b border-outline-variant">
+<div class="flex justify-between items-center h-16 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<!-- Brand -->
+<a class="flex items-center gap-2 group focus:outline-none focus:ring-2 focus:ring-brand-dark rounded" href="#">
+<span aria-hidden="true" class="material-symbols-outlined text-brand-dark text-[28px]" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+<span class="font-headline-sm text-headline-sm font-bold text-primary dark:text-primary-fixed group-hover:opacity-80 transition-opacity">Spandana Hospital</span>
+</a>
+<!-- Desktop Navigation -->
+<nav class="hidden md:flex items-center gap-8 h-full">
+<a class="h-full flex items-center text-brand-gold border-b-2 border-brand-gold font-nav-link text-nav-link" href="#">Home</a>
+<a class="h-full flex items-center text-on-surface-variant hover:text-brand-gold transition-colors font-nav-link text-nav-link" href="#">Find Doctors</a>
+<a class="h-full flex items-center text-on-surface-variant hover:text-brand-gold transition-colors font-nav-link text-nav-link" href="#">Specialties</a>
+<a class="h-full flex items-center text-on-surface-variant hover:text-brand-gold transition-colors font-nav-link text-nav-link" href="#">Services</a>
+<a class="h-full flex items-center text-on-surface-variant hover:text-brand-gold transition-colors font-nav-link text-nav-link" href="#">About Us</a>
+<a class="h-full flex items-center text-on-surface-variant hover:text-brand-gold transition-colors font-nav-link text-nav-link" href="#">Resources</a>
+</nav>
+<!-- Action -->
+<div class="hidden md:block">
+<a class="inline-flex items-center justify-center gap-2 bg-brand-dark text-on-primary font-label-md text-label-md px-5 py-2.5 rounded hover:bg-opacity-90 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-dark shadow-[0_4px_14px_rgba(19,43,26,0.15)] hover:shadow-[0_6px_20px_rgba(19,43,26,0.2)]" href="#">
+<span aria-hidden="true" class="material-symbols-outlined text-[20px]">calendar_month</span>
+                    Book an Appointment
+                </a>
+</div>
+<!-- Mobile Menu Toggle -->
+<button aria-label="Open Menu" class="md:hidden p-2 text-on-surface-variant hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-brand-dark rounded">
+<span aria-hidden="true" class="material-symbols-outlined text-2xl">menu</span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main>
+<!-- Hero Section -->
+<section class="relative pt-8 pb-16 md:pt-16 md:pb-24 overflow-hidden">
+<!-- Subtle Botanical Background Decoration -->
+<div class="absolute inset-0 z-0 pointer-events-none opacity-5 mix-blend-multiply" style="background-image: url('data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M50 0c0 27.614-22.386 50-50 50 27.614 0 50 22.386 50 50 0-27.614 22.386-50 50-50-27.614 0-50-22.386-50-50z\' fill=\'%23132b1a\' fill-rule=\'evenodd\'/%3E%3C/svg%3E'); background-size: 400px; background-position: -100px -100px;">
+</div>
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop relative z-10">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-gutter items-center">
+<!-- Left Content (55%) -->
+<div class="md:col-span-7 flex flex-col items-start gap-6 pt-4 md:pt-0">
+<!-- Badge -->
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-outline-variant shadow-[0_2px_8px_rgba(19,43,26,0.04)]">
+<span aria-hidden="true" class="material-symbols-outlined text-[16px] text-[#4caf50]" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-sm text-label-sm text-text-secondary">State-of-the-art facilities</span>
+</div>
+<!-- Headline -->
+<h1 class="font-display-xl-mobile md:font-display-xl text-display-xl-mobile md:text-display-xl text-primary max-w-2xl leading-tight">
+                            25 Years of Caring for<br/>
+<span class="italic text-brand-gold font-serif">Malnad Families</span>
+</h1>
+<!-- Body Text -->
+<p class="font-body-lg text-body-lg text-text-secondary max-w-lg">
+                            Professional healthcare with a personal touch. Discover premier specialist care in Orthopaedics and Gynaecology in a welcoming environment.
+                        </p>
+<!-- CTA Row -->
+<div class="flex flex-wrap items-center gap-4 mt-2">
+<a class="inline-flex items-center justify-center gap-2 bg-brand-dark text-on-primary font-label-md text-label-md px-6 py-3 rounded hover:bg-opacity-90 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-dark shadow-[0_4px_14px_rgba(19,43,26,0.15)] hover:shadow-[0_6px_20px_rgba(19,43,26,0.2)]" href="#">
+<span aria-hidden="true" class="material-symbols-outlined text-[20px]">search</span>
+                                Find a Doctor
+                            </a>
+<a class="inline-flex items-center justify-center gap-2 bg-transparent text-primary border border-outline-variant font-label-md text-label-md px-6 py-3 rounded hover:bg-surface-container-low transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-outline-variant" href="#">
+                                Our Story
+                                <span aria-hidden="true" class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</a>
+</div>
+<!-- Info Blocks -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8 w-full">
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container/20 flex items-center justify-center shrink-0">
+<span aria-hidden="true" class="material-symbols-outlined text-brand-gold text-[24px]">shield_with_heart</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-primary mb-1">Heritage Care</h3>
+<p class="font-body-sm text-body-sm text-text-secondary">A quarter-century of proven clinical excellence and community trust in the heart of Jayanagar.</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-full bg-primary-container/10 flex items-center justify-center shrink-0">
+<span aria-hidden="true" class="material-symbols-outlined text-brand-dark text-[24px]">monitor_heart</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-primary mb-1">Modern Technology</h3>
+<p class="font-body-sm text-body-sm text-text-secondary">Equipped with advanced diagnostic and surgical facilities for precise treatments.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Content (45%) Image -->
+<div class="md:col-span-5 relative h-[400px] md:h-[600px] w-full rounded-2xl overflow-hidden shadow-lg mt-8 md:mt-0">
+<!-- Image Container with soft gradient overlay for depth -->
+<div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10 pointer-events-none rounded-2xl"></div>
+<img alt="Portrait of the two founders of Spandana Hospital, Dr. Prasanna N.M and Dr. Lakshmi Hegde, standing together in front of the hospital building, smiling warmly." class="absolute inset-0 w-full h-full object-cover object-center rounded-2xl z-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxKxtnkCZiddIOb1VvAWptUh2Mhmnne5NM6h4unnu99bupbKxcXf-4I18uqsXipfmcJXuXpZKJRYT-AGTyGABzfMPCRIRFgHFxpRyHniyXSjDoQRCiOGinV71zC8rgqfcQSWfTqvQF27vEgZgTKjZE-39nGcA9ju-KDq4QktL6uMIWydLK5kmiAgml-VYGyqbknMvJ2HusH1jDm4ZLxttzbVC0DKGt8E4CRPo1Gg-dUP0EzXp9pNKIehbOsAwPeu-PlGucc8dwrg"/>
+<!-- Floating Card -->
+<div class="absolute bottom-6 left-6 md:left-auto md:right-6 bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-[0_8px_30px_rgba(19,43,26,0.12)] border border-white/50 z-20 flex items-center gap-4 max-w-[280px]">
+<div class="flex -space-x-3">
+<img alt="Avatar of Dr. Prasanna" class="w-10 h-10 rounded-full border-2 border-white" data-alt="A small circular avatar placeholder for a male doctor with dark hair." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxvEkHivkJ-DyKgvm-36J_mVF2wX5qdwGuf9uPkE3zu0KZ7JHmUjFKSb4s2sDQfDadE6Q-UR7vZHzHVGlMT6MdAiDIhmwQtEokAM9yY2ndwl849McGmg2Xf2ACYrPILd0LyRqPR1T2eQyY0q7BYTxP6wqZn0ACkmL6xMxXe_KQK60xaiJFOoTH6HjxQ5P-TO0E5Gcoy5xIng_2aTAFwrdYnpoqEmZ2x8Kjm8SDBPGKPsrKsd_WuDGcmZEKmm5ZYATgnYnyamesVA"/>
+<img alt="Avatar of Dr. Lakshmi" class="w-10 h-10 rounded-full border-2 border-white" data-alt="A small circular avatar placeholder for a female doctor." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiArCMP7u9Ooo6XehOSA_uFsqmEREv_lqZBd996bhFv3MUEpNKjp7eTcaV18VQ148NbHOggVa3E5boZnBJsf7PsQqvJd1af7SNlt7j0U1eBgGwsvGZ-6W4kzQAig3QzH2ZTpdQn0E4QJvyCDyWDMo8m3ttRk-5pYGZs7641vBOWnml0m9DTjI8qoDcAotj0Xf8vwHEvjSSQEwjt6vBvUAxHHXCinTdPyhUl9lrojCrMoL5o_DvnbY8wMC_JvJ4Ef-BzxHpgyxg3A"/>
+</div>
+<div>
+<div class="flex items-center gap-1 mb-0.5">
+<span class="font-bold text-brand-gold text-lg leading-none">25+</span>
+</div>
+<p class="font-label-sm text-label-sm text-text-secondary leading-tight">Years of trusted medical expertise</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+</body></html>
