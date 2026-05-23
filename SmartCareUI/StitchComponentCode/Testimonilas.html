@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Spandana Hospital - Testimonials</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-primary": "#b1ceb4",
+                      "surface-variant": "#e3e2df",
+                      "secondary-fixed-dim": "#ecc246",
+                      "primary-container": "#132b1a",
+                      "text-primary": "#111111",
+                      "on-primary-container": "#79947d",
+                      "surface-inverse": "#132B1A",
+                      "on-surface": "#1b1c1a",
+                      "background": "#faf9f6",
+                      "on-secondary": "#ffffff",
+                      "surface-container": "#efeeea",
+                      "surface-container-low": "#f4f4f0",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed-dim": "#ebbac4",
+                      "on-primary-fixed": "#082010",
+                      "on-secondary-fixed": "#241a00",
+                      "inverse-surface": "#2f312f",
+                      "primary": "#001607",
+                      "text-light": "#A0AEC0",
+                      "on-tertiary-fixed": "#2f131b",
+                      "on-background": "#1b1c1a",
+                      "outline-variant": "#F0F0F0",
+                      "inverse-on-surface": "#f2f1ed",
+                      "surface-bright": "#faf9f6",
+                      "on-error": "#ffffff",
+                      "error": "#ba1a1a",
+                      "on-surface-variant": "#424842",
+                      "on-secondary-fixed-variant": "#584400",
+                      "surface-container-high": "#e9e8e5",
+                      "surface-tint": "#4b6450",
+                      "on-primary-fixed-variant": "#344c39",
+                      "surface-container-highest": "#e3e2df",
+                      "on-secondary-container": "#735a00",
+                      "secondary-container": "#fed255",
+                      "secondary": "#755b00",
+                      "surface-dim": "#dbdad7",
+                      "tertiary": "#220910",
+                      "tertiary-container": "#3b1d25",
+                      "text-muted": "#888888",
+                      "primary-fixed": "#cdead0",
+                      "text-secondary": "#555555",
+                      "accent-light": "#F5E9C0",
+                      "on-tertiary-fixed-variant": "#603d45",
+                      "on-error-container": "#93000a",
+                      "surface": "#faf9f6",
+                      "on-tertiary": "#ffffff",
+                      "tertiary-fixed": "#ffd9e0",
+                      "outline": "#E5E7EB",
+                      "on-tertiary-container": "#ad828b",
+                      "primary-fixed-dim": "#b1ceb4",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-fixed": "#ffe08e",
+                      "on-primary": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "48px",
+                      "gutter": "24px",
+                      "section-padding-y": "80px",
+                      "container-max": "1200px",
+                      "margin-mobile": "16px",
+                      "card-padding": "24px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "nav-link": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "label-section": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Playfair Display"
+                      ],
+                      "display-xl-mobile": [
+                              "Playfair Display"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "title-lg": [
+                              "Playfair Display"
+                      ],
+                      "headline-sm": [
+                              "Playfair Display"
+                      ],
+                      "headline-lg": [
+                              "Playfair Display"
+                      ],
+                      "display-xl": [
+                              "Playfair Display"
+                      ],
+                      "stat-number": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "nav-link": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "22px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-section": [
+                              "11px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.12em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-xl-mobile": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "title-lg": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-sm": [
+                              "22px",
+                              {
+                                      "lineHeight": "30px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-xl": [
+                              "48px",
+                              {
+                                      "lineHeight": "58px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "stat-number": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.04em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        .star-glow:hover .material-symbols-outlined {
+            text-shadow: 0 0 8px rgba(201, 162, 39, 0.6);
+            transition: text-shadow 0.3s ease;
+        }
+        
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col">
+<!-- Top Navigation Placeholder (Hidden due to task focus on Testimonials) -->
+<!-- Main Content Canvas -->
+<main class="flex-grow relative overflow-hidden">
+<!-- Decorative Background Element -->
+<div class="absolute right-0 bottom-0 pointer-events-none opacity-20 transform translate-x-1/4 translate-y-1/4 w-[600px] h-[600px]">
+<img alt="Soft botanical leaf illustration used as a decorative background element. The leaves are delicate and painted in muted sage green tones. The lighting is soft and diffused, contributing to a calm, healing, and organic hospital environment aesthetic." class="w-full h-full object-contain mix-blend-multiply filter grayscale opacity-50" data-alt="A delicate, hand-drawn botanical illustration of eucalyptus leaves. The artwork is rendered in soft sage greens and warm grays, sitting on a pure white background. The style is minimalist and elegant, suitable for a premium hospital's visual identity, evoking a sense of natural healing, calm, and heritage. The lighting feels soft and ethereal." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBazt2RVmcc7WrbXjb43nRpNuByaZLKLyqjKhE7Vf6KQMDTODqBV22lShSE2PMVNUATWSLJNYxQX9mtZ23GVyNrCahN9jhXhggQJgr_Wezucn3WCMrTfvWmZcMbzthwKLCO0KP_71wFrvpSm6TOddqO902s0ywHLl_gKRnh48PejsCB7uQmK_H0esTuTKCnDnNrq6KjEHXAJoaKkgHEMUWL0MVuMf4_hyRREJ4FsY0NvOMYwjKnGuAFFjbgMaVBU1Ndgz9yD8S-_Q"/>
+</div>
+<section class="py-section-padding-y px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto relative z-10">
+<!-- Section Header -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12">
+<div>
+<span class="block font-label-section text-label-section text-[#C9A227] uppercase mb-2">PATIENTS SPEAK</span>
+<h2 class="font-headline-lg text-headline-lg text-primary">What Our Patients Say</h2>
+</div>
+<a class="mt-4 md:mt-0 font-label-md text-label-md text-text-secondary hover:text-secondary-container transition-colors flex items-center group" href="#">
+                    View all testimonials
+                    <span aria-hidden="true" class="material-symbols-outlined ml-1 group-hover:translate-x-1 transition-transform">arrow_right_alt</span>
+</a>
+</div>
+<!-- Testimonial Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-card-padding shadow-[0_4px_20px_rgba(19,43,26,0.04)] hover:shadow-[0_12px_30px_rgba(19,43,26,0.08)] hover:-translate-y-2 transition-all duration-300 fade-in-up delay-100 flex flex-col h-full star-glow">
+<div class="flex justify-between items-start mb-4">
+<span aria-hidden="true" class="material-symbols-outlined text-[40px] text-primary-fixed-dim" style="font-variation-settings: 'FILL' 1;">format_quote</span>
+<div class="flex text-[#C9A227] gap-0.5">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-[#333333] mb-8 flex-grow">
+                        Excellent care and attention. The doctors took time to listen and explained everything clearly. I felt completely at ease throughout my recovery process.
+                    </p>
+<div class="flex items-center gap-4 mt-auto">
+<div class="w-10 h-10 rounded-full overflow-hidden shrink-0 border border-outline-variant">
+<img alt="Portrait of a smiling male patient." class="w-full h-full object-cover" data-alt="A professional headshot of a smiling South Asian man in his 30s. He has short dark hair and a neat beard. He is wearing a casual blue collared shirt. The background is a soft, blurred studio grey. The lighting is bright, natural, and flattering, conveying a positive and approachable mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaiU-NJvYeIm9y6dBMVmPNeJJEoTN94kRnuZBn0IF21OqsDCQzaCwHmbd8i6gRxwDuUI4OyrPMarbgE_Nih-PSVgImXKokMHgJffI8ZlGqwAozL-OzJ_egxE4zaBmqukKFn3q0YYWCma_9JyU2__Eq4EFFXOdUDAQqR78-8PJFkXrEp93BP4EZ_RtI3CcF15eg1ZQoMJpNyz0DZdbYZuohwAfWZoBe78rDAqrygVHwjeAuBxYuiPxwe9vejO_4nfu4KNB2_tihAA"/>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-text-primary">Ramesh S.</h4>
+<p class="font-body-sm text-[13px] text-text-muted">Orthopaedic Patient</p>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-card-padding shadow-[0_4px_20px_rgba(19,43,26,0.04)] hover:shadow-[0_12px_30px_rgba(19,43,26,0.08)] hover:-translate-y-2 transition-all duration-300 fade-in-up delay-200 flex flex-col h-full star-glow">
+<div class="flex justify-between items-start mb-4">
+<span aria-hidden="true" class="material-symbols-outlined text-[40px] text-primary-fixed-dim" style="font-variation-settings: 'FILL' 1;">format_quote</span>
+<div class="flex text-[#C9A227] gap-0.5">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-[#333333] mb-8 flex-grow">
+                        Dr. Lakshmi Hegde is truly compassionate and calm. I felt safe and cared for during my entire pregnancy journey. The nursing staff is also wonderful.
+                    </p>
+<div class="flex items-center gap-4 mt-auto">
+<div class="w-10 h-10 rounded-full overflow-hidden shrink-0 border border-outline-variant">
+<img alt="Portrait of a smiling female patient." class="w-full h-full object-cover" data-alt="A professional headshot of a smiling South Asian woman in her late 20s. She has long dark hair and is wearing a modest teal blouse. The background is a soft, out-of-focus outdoor setting with warm sunlight filtering through. The lighting highlights her cheerful expression, evoking warmth and trust." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxhSDRED6l9t1rOiQRuexMk529vW3zF441i3OTbSvvAfNID1vLgfkW3yJVyjftACgHZWVL_soaDfqpZEQevIe2SZw1s1GSx8IvrMDzwSGaTwp7FezJv2W0DT1gxSbzDSZ90E3TdtbdlPp_YqIFHspoldgEp8RFTNDWOYuoyQdBV4xySj_E3YG6Me_JpIWWSKxKs-fZDMspuXyqmtzKxlnOVelUW_u3U80sKLsRvyXgYB1Gw-TW8i91OV7ejB46CkstAlSiwghq6g"/>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-text-primary">Priya M.</h4>
+<p class="font-body-sm text-[13px] text-text-muted">Gynaecology Patient</p>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-card-padding shadow-[0_4px_20px_rgba(19,43,26,0.04)] hover:shadow-[0_12px_30px_rgba(19,43,26,0.08)] hover:-translate-y-2 transition-all duration-300 fade-in-up delay-300 flex flex-col h-full star-glow">
+<div class="flex justify-between items-start mb-4">
+<span aria-hidden="true" class="material-symbols-outlined text-[40px] text-primary-fixed-dim" style="font-variation-settings: 'FILL' 1;">format_quote</span>
+<div class="flex text-[#C9A227] gap-0.5">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-[#333333] mb-8 flex-grow">
+                        Very clean, well-managed hospital with advanced facilities. Highly recommended for anyone seeking top-tier medical attention with a human touch.
+                    </p>
+<div class="flex items-center gap-4 mt-auto">
+<div class="w-10 h-10 rounded-full overflow-hidden shrink-0 border border-outline-variant">
+<img alt="Portrait of a smiling male patient." class="w-full h-full object-cover" data-alt="A professional headshot of a mature South Asian man in his 50s. He is wearing a formal navy blue suit jacket over a light blue shirt. He has a calm, reassuring smile. The background is a clean, bright white wall. The studio lighting is crisp and modern, providing a sense of reliability and professionalism." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6zwfNrLTq2_3iOCN0KkVTfpRw5DC-A2EndoOpPp8gTAyWpPY0UBn0Gc6JQDZ5MmSsxr3SN0pBgtOnrKMfniCw0UNUroMps8vaVLUQufZ7t8QXMxpMMM1RU0npW_PfuStOTz5Lby8oNVBb5727lSEVN1UiWuI8CLQaKlcL6FfEcYqf4aajnMjImmCHzhA1hRc9U5bDpBo5_eeRNH7mzcL3wjin6pHgg8voyqe9tK3CsNDOCY1EmkjHMLyD06mIvxIHfASFjp4sWg"/>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-text-primary">Vikram P.</h4>
+<p class="font-body-sm text-[13px] text-text-muted">General Medicine Patient</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination Dots -->
+<div class="flex justify-center items-center gap-2 mt-8 fade-in-up delay-300">
+<button aria-label="Go to slide 1" class="w-2.5 h-2.5 rounded-full bg-primary transition-all hover:scale-110"></button>
+<button aria-label="Go to slide 2" class="w-2.5 h-2.5 rounded-full bg-outline transition-all hover:bg-surface-variant hover:scale-110"></button>
+<button aria-label="Go to slide 3" class="w-2.5 h-2.5 rounded-full bg-outline transition-all hover:bg-surface-variant hover:scale-110"></button>
+</div>
+</section>
+</main>
+</body></html>

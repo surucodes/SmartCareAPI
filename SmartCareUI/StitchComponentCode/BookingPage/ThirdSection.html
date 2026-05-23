@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Book Appointment - Spandana Hospital</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container": "#efeeea",
+                      "background": "#faf9f6",
+                      "primary-fixed-dim": "#b1ceb4",
+                      "outline-variant": "#F0F0F0",
+                      "on-tertiary-fixed": "#2f131b",
+                      "tertiary-fixed-dim": "#ebbac4",
+                      "secondary-fixed-dim": "#ecc246",
+                      "surface-container-low": "#F8F9FA",
+                      "on-surface": "#1b1c1a",
+                      "on-tertiary-container": "#ad828b",
+                      "text-light": "#A0AEC0",
+                      "text-muted": "#888888",
+                      "on-secondary-container": "#735a00",
+                      "on-primary-container": "#A8D5B8",
+                      "surface-dim": "#dbdad7",
+                      "primary": "#001607",
+                      "tertiary": "#220910",
+                      "on-surface-variant": "#424842",
+                      "on-primary": "#ffffff",
+                      "inverse-surface": "#2f312f",
+                      "tertiary-fixed": "#ffd9e0",
+                      "on-secondary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "on-secondary-fixed-variant": "#584400",
+                      "surface-tint": "#4b6450",
+                      "on-primary-fixed": "#082010",
+                      "inverse-on-surface": "#f2f1ed",
+                      "on-secondary-fixed": "#241a00",
+                      "error-container": "#ffdad6",
+                      "secondary-fixed": "#ffe08e",
+                      "inverse-primary": "#b1ceb4",
+                      "surface-container-highest": "#e3e2df",
+                      "outline": "#E5E7EB",
+                      "surface-bright": "#faf9f6",
+                      "on-error-container": "#93000a",
+                      "on-tertiary": "#ffffff",
+                      "tertiary-container": "#3b1d25",
+                      "surface-container-lowest": "#ffffff",
+                      "on-background": "#1b1c1a",
+                      "surface-inverse": "#132B1A",
+                      "accent-light": "#F5E9C0",
+                      "surface-container-high": "#e9e8e5",
+                      "text-secondary": "#555555",
+                      "error": "#ba1a1a",
+                      "primary-container": "#1A3C2A",
+                      "on-primary-fixed-variant": "#344c39",
+                      "primary-fixed": "#cdead0",
+                      "text-primary": "#111111",
+                      "on-tertiary-fixed-variant": "#603d45",
+                      "surface-variant": "#e3e2df",
+                      "surface": "#faf9f6",
+                      "secondary": "#755b00",
+                      "secondary-container": "#fed255"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "section-padding-y": "80px",
+                      "margin-desktop": "48px",
+                      "base": "8px",
+                      "margin-mobile": "16px",
+                      "container-max": "1200px",
+                      "card-padding": "24px"
+              },
+              "fontFamily": {
+                      "label-md": ["Inter"],
+                      "headline-lg": ["Playfair Display"],
+                      "body-lg": ["Inter"],
+                      "display-xl": ["Playfair Display"],
+                      "body-md": ["Inter"],
+                      "label-section": ["Inter"],
+                      "display-xl-mobile": ["Playfair Display"],
+                      "nav-link": ["Inter"],
+                      "headline-sm": ["Playfair Display"],
+                      "label-sm": ["Inter"],
+                      "title-lg": ["Playfair Display"],
+                      "headline-md": ["Playfair Display"],
+                      "body-sm": ["Inter"],
+                      "stat-number": ["Inter"]
+              },
+              "fontSize": {
+                      "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                      "headline-lg": ["36px", {"lineHeight": "44px", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "display-xl": ["48px", {"lineHeight": "58px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-section": ["11px", {"lineHeight": "16px", "letterSpacing": "0.12em", "fontWeight": "600"}],
+                      "display-xl-mobile": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                      "nav-link": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                      "headline-sm": ["22px", {"lineHeight": "30px", "fontWeight": "700"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                      "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                      "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+                      "stat-number": ["32px", {"lineHeight": "40px", "fontWeight": "700"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        /* Ambient shadow for cards */
+        .ambient-shadow {
+            box-shadow: 0 4px 20px rgba(19, 43, 26, 0.04), 0 1px 3px rgba(19, 43, 26, 0.02);
+        }
+        /* Custom scrollbar for horizontal lists if needed */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface antialiased min-h-screen relative pb-24">
+<!-- TopAppBar (Transactional context, BottomNavBar suppressed) -->
+<header class="bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline-variant fixed top-0 w-full z-50 flex items-center justify-between px-margin-mobile md:px-margin-desktop h-16 w-full max-w-container-max mx-auto">
+<button aria-label="Go back" class="text-primary dark:text-primary-fixed hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors p-2 rounded-full -ml-2">
+<span class="material-symbols-outlined block">arrow_back</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary dark:text-primary-fixed">Spandana Hospital</h1>
+<button aria-label="More options" class="text-primary dark:text-primary-fixed hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors p-2 rounded-full -mr-2">
+<span class="material-symbols-outlined block">more_vert</span>
+</button>
+</header>
+<main class="pt-24 px-margin-mobile md:px-margin-desktop max-w-2xl mx-auto w-full flex flex-col gap-8">
+<!-- Header & Stepper -->
+<section class="flex flex-col gap-6">
+<h2 class="font-headline-md text-headline-md text-primary">Choose Date &amp; Time</h2>
+<!-- Stepper -->
+<div class="flex items-center w-full">
+<!-- Step 1: Completed -->
+<div class="flex flex-col items-center gap-2 relative">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'wght' 600;">check</span>
+</div>
+</div>
+<!-- Line -->
+<div class="flex-1 h-0.5 bg-primary -mt-6"></div>
+<!-- Step 2: Active -->
+<div class="flex flex-col items-center gap-2 relative">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center z-10 font-label-md text-label-md">
+                        2
+                    </div>
+</div>
+<!-- Line -->
+<div class="flex-1 h-0.5 bg-surface-variant -mt-6"></div>
+<!-- Step 3: Inactive -->
+<div class="flex flex-col items-center gap-2 relative">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center z-10 font-label-md text-label-md">
+                        3
+                    </div>
+</div>
+</div>
+</section>
+<!-- Date Picker Card -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding ambient-shadow flex flex-col gap-4">
+<!-- Calendar Header -->
+<div class="flex items-center justify-between">
+<h3 class="font-label-md text-label-md text-primary">September 2024</h3>
+<div class="flex gap-2">
+<button class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-surface-container-low transition-colors text-text-secondary">
+<span class="material-symbols-outlined text-[20px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-surface-container-low transition-colors text-primary">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Calendar Grid -->
+<div class="w-full">
+<!-- Days of week -->
+<div class="grid grid-cols-7 mb-2 text-center">
+<span class="font-label-sm text-label-sm text-text-muted">Su</span>
+<span class="font-label-sm text-label-sm text-text-muted">Mo</span>
+<span class="font-label-sm text-label-sm text-text-muted">Tu</span>
+<span class="font-label-sm text-label-sm text-text-muted">We</span>
+<span class="font-label-sm text-label-sm text-text-muted">Th</span>
+<span class="font-label-sm text-label-sm text-text-muted">Fr</span>
+<span class="font-label-sm text-label-sm text-text-muted">Sa</span>
+</div>
+<!-- Dates -->
+<div class="grid grid-cols-7 gap-y-2 text-center font-body-sm text-body-sm">
+<!-- Previous month muted -->
+<div class="p-2 text-text-muted opacity-50">27</div>
+<div class="p-2 text-text-muted opacity-50">28</div>
+<div class="p-2 text-text-muted opacity-50">29</div>
+<div class="p-2 text-text-muted opacity-50">30</div>
+<div class="p-2 text-text-muted opacity-50">31</div>
+<!-- Current month -->
+<div class="p-2 text-on-surface">1</div>
+<div class="p-2 text-on-surface">2</div>
+<div class="p-2 text-on-surface">3</div>
+<div class="p-2 text-on-surface">4</div>
+<div class="p-2 text-on-surface">5</div>
+<!-- Today (outlined) -->
+<div class="mx-auto w-8 h-8 flex items-center justify-center rounded-full border border-primary text-primary font-medium">6</div>
+<div class="p-2 text-on-surface">7</div>
+<div class="p-2 text-on-surface">8</div>
+<div class="p-2 text-on-surface">9</div>
+<div class="p-2 text-on-surface">10</div>
+<!-- Selected (filled) -->
+<div class="mx-auto w-8 h-8 flex items-center justify-center rounded-full bg-primary text-on-primary font-medium shadow-sm">11</div>
+<div class="p-2 text-on-surface">12</div>
+<div class="p-2 text-on-surface">13</div>
+<div class="p-2 text-on-surface">14</div>
+<div class="p-2 text-on-surface">15</div>
+<div class="p-2 text-on-surface">16</div>
+<div class="p-2 text-on-surface">17</div>
+<div class="p-2 text-on-surface">18</div>
+<div class="p-2 text-on-surface">19</div>
+<div class="p-2 text-on-surface">20</div>
+<div class="p-2 text-on-surface">21</div>
+<div class="p-2 text-on-surface">22</div>
+<div class="p-2 text-on-surface">23</div>
+<div class="p-2 text-on-surface">24</div>
+<div class="p-2 text-on-surface">25</div>
+<div class="p-2 text-on-surface">26</div>
+<div class="p-2 text-on-surface">27</div>
+<div class="p-2 text-on-surface">28</div>
+<div class="p-2 text-on-surface">29</div>
+<div class="p-2 text-on-surface">30</div>
+</div>
+</div>
+</section>
+<!-- Time Slots -->
+<section class="flex flex-col gap-4">
+<h3 class="font-label-md text-label-md text-primary">Available Times</h3>
+<!-- Morning Slots -->
+<div class="flex flex-col gap-2">
+<span class="font-label-sm text-label-sm text-text-secondary uppercase tracking-wider">Morning</span>
+<div class="grid grid-cols-3 gap-3">
+<!-- Unavailable -->
+<div class="py-2.5 px-1 text-center rounded-lg bg-surface-variant text-text-muted font-body-sm text-body-sm border border-transparent opacity-60 pointer-events-none">
+                        09:00 AM
+                    </div>
+<!-- Available -->
+<button class="py-2.5 px-1 text-center rounded-lg bg-surface-container-lowest text-primary font-body-sm text-body-sm border border-primary hover:bg-surface-container transition-colors">
+                        09:30 AM
+                    </button>
+<!-- Available -->
+<button class="py-2.5 px-1 text-center rounded-lg bg-surface-container-lowest text-primary font-body-sm text-body-sm border border-primary hover:bg-surface-container transition-colors">
+                        10:00 AM
+                    </button>
+<!-- Limited -->
+<button class="py-2.5 px-1 text-center rounded-lg bg-surface-container-lowest text-secondary font-body-sm text-body-sm border border-secondary hover:bg-accent-light hover:bg-opacity-20 transition-colors relative">
+                        10:30 AM
+                        <span class="absolute -top-2 -right-1 bg-secondary text-on-secondary font-label-section text-label-section px-1.5 py-0.5 rounded text-[8px] tracking-normal">Filling</span>
+</button>
+<button class="py-2.5 px-1 text-center rounded-lg bg-surface-container-lowest text-primary font-body-sm text-body-sm border border-primary hover:bg-surface-container transition-colors">
+                        11:00 AM
+                    </button>
+</div>
+</div>
+<!-- Afternoon Slots -->
+<div class="flex flex-col gap-2 mt-2">
+<span class="font-label-sm text-label-sm text-text-secondary uppercase tracking-wider">Afternoon</span>
+<div class="grid grid-cols-3 gap-3">
+<button class="py-2.5 px-1 text-center rounded-lg bg-surface-container-lowest text-primary font-body-sm text-body-sm border border-primary hover:bg-surface-container transition-colors">
+                        02:00 PM
+                    </button>
+<!-- Selected State (Simulated active state for 02:30 PM) -->
+<button class="py-2.5 px-1 text-center rounded-lg bg-primary text-on-primary font-body-sm text-body-sm border border-primary shadow-sm">
+                        02:30 PM
+                    </button>
+<button class="py-2.5 px-1 text-center rounded-lg bg-surface-container-lowest text-primary font-body-sm text-body-sm border border-primary hover:bg-surface-container transition-colors">
+                        03:00 PM
+                    </button>
+<!-- Limited -->
+<button class="py-2.5 px-1 text-center rounded-lg bg-surface-container-lowest text-secondary font-body-sm text-body-sm border border-secondary hover:bg-accent-light hover:bg-opacity-20 transition-colors relative">
+                        04:00 PM
+                        <span class="absolute -top-2 -right-1 bg-secondary text-on-secondary font-label-section text-label-section px-1.5 py-0.5 rounded text-[8px] tracking-normal">Filling</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Information Note -->
+<div class="flex items-start gap-3 p-4 bg-surface-container-low rounded-lg mt-2">
+<span class="material-symbols-outlined text-text-muted mt-0.5 text-[20px]">info</span>
+<p class="font-body-sm text-body-sm text-text-secondary italic">
+                You are booking a preferred time window. Our administrative team will contact you to confirm your exact appointment time within 2 hours.
+            </p>
+</div>
+</main>
+<!-- Bottom Action Area (Sticky) -->
+<div class="fixed bottom-0 w-full bg-surface-container-lowest border-t border-outline-variant p-margin-mobile shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-40 md:px-margin-desktop">
+<div class="max-w-2xl mx-auto flex justify-between items-center w-full">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-text-secondary">Selected</span>
+<span class="font-label-md text-label-md text-primary">Sep 11, 02:30 PM</span>
+</div>
+<button class="bg-primary text-on-primary px-6 py-3 rounded-lg font-label-md text-label-md flex items-center gap-2 hover:bg-primary-fixed hover:text-on-primary-fixed-variant transition-colors shadow-sm">
+                Continue
+                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</body></html>

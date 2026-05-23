@@ -240,9 +240,9 @@ namespace SmartCare.API.Controllers
 
             var varun = new Doctor
             {
-                Name = "Dr. Varun Prasanna",
-                Specialty = "Orthopaedics",
-                Bio = "Dr. Varun Prasanna is a senior Orthopaedic Surgeon with over 20 years of experience in joint replacement, trauma, and sports injuries.",
+                Name = "Dr. Prasanna N.M",
+                Specialty = "Orthopaedic Surgeon",
+                Bio = "Dr. Prasanna N.M is a senior Orthopaedic Surgeon with over 25 years of experience in joint replacement, trauma, fracture management, and sports injuries. He is a founding physician at Spandana Hospital and is known for his patient-first approach and precision in complex surgical cases.",
                 SchedulingPolicy = "Flexible",
                 SlotCapacity = 3,
                 IsActive = true,
@@ -271,9 +271,9 @@ namespace SmartCare.API.Controllers
 
             var vinaya = new Doctor
             {
-                Name = "Dr. Vinaya Prasanna",
-                Specialty = "Gynaecology",
-                Bio = "Dr. Vinaya Prasanna is a specialist in Gynaecology and Women's Health with over 20 years of clinical experience.",
+                Name = "Dr. Lakshmi Hegde",
+                Specialty = "Gynaecologist",
+                Bio = "Dr. Lakshmi Hegde is a specialist in Gynaecology and Women's Health with over 25 years of clinical experience. A founding physician at Spandana Hospital, she is deeply committed to personalised women's healthcare and has guided thousands of families through every stage of women's health.",
                 SchedulingPolicy = "Strict",
                 SlotCapacity = 1,
                 IsActive = true,
@@ -310,8 +310,8 @@ namespace SmartCare.API.Controllers
             }
 
             var doctors = await _repo.GetAllAsync();
-            var varun = doctors.FirstOrDefault(d => d.Name == "Dr. Varun Prasanna");
-            var vinaya = doctors.FirstOrDefault(d => d.Name == "Dr. Vinaya Prasanna");
+            var varun = doctors.FirstOrDefault(d => d.Name == "Dr. Prasanna N.M");
+            var vinaya = doctors.FirstOrDefault(d => d.Name == "Dr. Lakshmi Hegde");
 
             if (varun is null || vinaya is null)
                 return BadRequest(new { error = "Doctors must be seeded before consultation types" });

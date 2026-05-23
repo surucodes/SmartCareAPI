@@ -1,0 +1,1445 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# SmartCare API — REST Client Test Suite
+# Extension required: humao.rest-client (VS Code REST Client)
+# Run order: top to bottom. Never skip a group that a later group depends on.
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ── STATIC VARIABLES ──────────────────────────────────────────────────────────
+# NOTE: baseUrl is port 5027 (from Properties/launchSettings.json), not 5000
+@baseUrl = http://localhost:5027
+@adminEmail = admin@smartcare.com
+@adminPassword = Admin@1234
+@doctorEmail = doctor@smartcare.com-+
+/ 
+@doctorPassword = Doctor@1234
+@patientEmail = suraj2005jan@gmail.com
+@patientPhone = 9876543210
+
+# ── UPDATE THESE DATES BEFORE RUNNING ─────────────────────────────────────────
+# tomorrowDate  = any future date (used as appointment booking date)
+# futureDatePlus2 = a different future date (used for reschedule target & completion)
+# pastDate      = any date in the past (used to test date validation)
+@tomorrowDate = 2026-12-18
+@futureDatePlus2 = 2026-12-20
+@pastDate = 2020-01-01
+
+# ── PASTE THESE AFTER RUNNING THE RELEVANT REQUESTS ───────────────────────────
+# Do not fill these in now — they come from API responses at runtime
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTAzM2Y1NzA5NTU1MTA5YWI2ZWRjMTkiLCJlbWFpbCI6ImFkbWluQHNtYXJ0Y2FyZS5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImp0aSI6IjNmZTA5MDE3LTUyNjUtNDY5Zi1hNzUwLThjNmY5NmZlNDU0OSIsImV4cCI6MTc3ODYyNjYxNSwiaXNzIjoiU21hcnRDYXJlLkFQSSIsImF1ZCI6IlNtYXJ0Q2FyZS5DbGllbnQifQ.xtf9dIMSBdEDVClZDgQabHhgDR83W0XYtT2VO-S9V6Y
+@doctorToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTAzNDA5YzA5NTU1MTA5YWI2ZWRjMWQiLCJlbWFpbCI6ImRvY3RvckBzbWFydGNhcmUuY29tLSsiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJEb2N0b3IiLCJqdGkiOiI3MWE1NmFmNC02M2MwLTQ0MTQtYjAzZS0wYjJmZDY4MWM0NzYiLCJleHAiOjE3Nzg2MjY4OTEsImlzcyI6IlNtYXJ0Q2FyZS5BUEkiLCJhdWQiOiJTbWFydENhcmUuQ2xpZW50In0.qzldskqbQb6YsYwSDDwf1k_OPqKFA92zH7zmsGOHHBU
+@doctorId = 6a033fee09555109ab6edc1a
+@drVinayaId = PASTE_AFTER_STEP_2.3
+@appointmentId = PASTE_AFTER_STEP_3.1
+@appointmentIdConfirm = PASTE_FRESH_FOR_GROUP_5
+@appointmentIdCancel = PASTE_FRESH_FOR_GROUP_6
+@appointmentIdReschedule = PASTE_FRESH_FOR_GROUP_7
+@testimonialId = PASTE_AFTER_STEP_9.1
+@newAppointmentId = PASTE_FROM_RESCHEDULE_RESPONSE
+
+
+### ══════════════════════════════════════════════════════════════
+### GROUP 1 — AUTHENTICATION (Part 1: Admin Setup)
+### ══════════════════════════════════════════════════════════════
+### Run steps 1.1–1.3 first, then run all of GROUP 2,
+### then return here for steps 1.4–1.8 (Doctor user setup).
+
+### Step 1.1 — Register Admin account — Expect: 201
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}",
+  "password": "{{adminPassword}}",
+  "role": "Admin"
+}
+
+# ✅ Expect: 201 — body: { id, email, role: "Admin" }
+# ❌ If you see 409: admin@smartcare.com already registered — delete from MongoDB users collection and re-run
+# ⚠️  IDEMPOTENT: Will fail with 409 on re-run
+# To re-run: manually delete the admin user from MongoDB Atlas (users collection)
+
+###
+
+### Step 1.2 — Duplicate registration (same email) — Expect: 409
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}",
+  "password": "{{adminPassword}}",
+  "role": "Admin"
+}
+
+# CHANGE from happy path: same email as step 1.1 — should be rejected
+# ✅ Expect: 409 — body: { "error": "An account with this email already exists" }
+# ❌ If you see 201: duplicate check in AuthController is not running
+
+###
+
+### Step 1.3 — Login Admin — Expect: 200
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}",
+  "password": "{{adminPassword}}"
+}
+
+# ✅ Expect: 200 — body: { token, email, role: "Admin", expiresIn }
+# ❌ If you see 401: wrong credentials or admin not registered — run step 1.1 first
+
+# ── CAPTURE REQUIRED ──────────────────────────────────────────────────────
+# Copy "token" from the response above
+# Paste it into @adminToken at the top of this file
+# ──────────────────────────────────────────────────────────────────────────
+
+### ── PAUSE HERE — Run all of GROUP 2 before continuing to step 1.4 ──────────
+
+
+### ══════════════════════════════════════════════════════════════
+### GROUP 2 — DOCTORS
+### ══════════════════════════════════════════════════════════════
+### Prerequisite: @adminToken must be set from step 1.3
+
+### Step 2.1 — Seed doctors (Admin) — Expect: 200
+# ⚠️  IDEMPOTENT: Returns "Database already seeded" if doctors already exist
+# To re-seed: drop the doctors collection in MongoDB Atlas
+POST {{baseUrl}}/api/doctors/seed
+Authorization: Bearer {{adminToken}}
+
+# ✅ Expect: 200 — body: { "message": "Seeded 2 doctors successfully" }
+#             OR:  { "message": "Database already seeded" } on re-run
+# ❌ If you see 401: @adminToken not set — complete step 1.3 first
+
+###
+
+### Step 2.2 — Seed again (idempotency check) — Expect: 200
+POST {{baseUrl}}/api/doctors/seed
+Authorization: Bearer {{adminToken}}
+
+# ✅ Expect: 200 — body: { "message": "Database already seeded" }
+# ❌ If you see "Seeded 2 doctors": seed is not checking count before inserting
+# AUTH LEVEL: Admin token — Expect: 200
+
+###
+
+### Step 2.3 — Get all doctors — Expect: 200
+GET {{baseUrl}}/api/doctors
+
+# ✅ Expect: 200 — array of 2+ doctors:
+#   [0] Dr. Varun Prasanna, Orthopaedics, slots: 09:00–11:30
+#   [1] Dr. Vinaya Prasanna, Gynaecology, slots: 14:00–16:30
+# ❌ If you see []: seed was not run — complete step 2.1 first
+
+# ── CAPTURE REQUIRED ──────────────────────────────────────────────────────
+# From the response array:
+#   Copy "id" of Dr. Varun Prasanna  → paste into @doctorId at the top
+#   Copy "id" of Dr. Vinaya Prasanna → paste into @drVinayaId at the top
+# ──────────────────────────────────────────────────────────────────────────
+
+###
+
+### Step 2.4 — Get doctor by ID — Expect: 200
+GET {{baseUrl}}/api/doctors/{{doctorId}}
+
+# ✅ Expect: 200 — Dr. Varun Prasanna, Orthopaedics, availableSlots: ["09:00","09:30","10:00","10:30","11:00","11:30"]
+# ❌ If you see 404: @doctorId not set — re-run step 2.3 and paste the ID
+
+###
+
+### Step 2.5 — Get doctor by non-existent ID — Expect: 404
+GET {{baseUrl}}/api/doctors/000000000000000000000000
+
+# ✅ Expect: 404 — body: { "error": "Doctor not found" }
+# ❌ If you see 200: ObjectId collision (extremely unlikely) — use a different fake ID
+
+###
+
+### Step 2.6 — Create custom doctor (Admin) — Expect: 201
+POST {{baseUrl}}/api/doctors
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Dr. Arjun Mehta",
+  "specialty": "Cardiology",
+  "availableSlots": ["10:00", "11:00", "12:00"]
+}
+
+# ✅ Expect: 201 — body contains new doctor with generated id, name, specialty, availableSlots
+# ❌ If you see 401: @adminToken not set — complete step 1.3 first
+
+###
+
+### Step 2.7 — Create doctor without auth — Expect: 401
+# AUTH LEVEL: None — Expect: 401
+POST {{baseUrl}}/api/doctors
+Content-Type: application/json
+
+{
+  "name": "Dr. Unauthorized",
+  "specialty": "None",
+  "availableSlots": ["09:00"]
+}
+
+# ✅ Expect: 401 — no token provided; [Authorize(Roles="Admin")] blocks the request
+# ❌ If you see 201: Authorization middleware is not active — check Program.cs
+
+###
+
+### Step 2.8 — Create doctor with Doctor token (wrong role) — Expect: 403
+# AUTH LEVEL: Doctor token — Expect: 403
+# ⚠️  Run steps 1.4–1.6 before this step to obtain @doctorToken
+POST {{baseUrl}}/api/doctors
+Authorization: Bearer {{doctorToken}}
+Content-Type: application/json
+
+{
+  "name": "Dr. Forbidden",
+  "specialty": "None",
+  "availableSlots": ["09:00"]
+}
+
+# ✅ Expect: 403 — Doctor role cannot create doctors; only Admin can
+# ❌ If you see 201: Role-based authorization is misconfigured
+
+###
+
+### Step 2.9 — Create doctor with missing required fields — Expect: 400
+POST {{baseUrl}}/api/doctors
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "",
+  "specialty": "",
+  "availableSlots": []
+}
+
+# CHANGE from happy path: name and specialty are empty strings
+# ✅ Expect: 400 — body: { "error": "Doctor Name and Specialty are required" }
+# ❌ If you see 201: controller validation guard is not running
+
+
+### ══════════════════════════════════════════════════════════════
+### GROUP 1 — AUTHENTICATION (Part 2: Doctor User Setup)
+### ══════════════════════════════════════════════════════════════
+### Prerequisite: @doctorId must be set from step 2.3
+
+### Step 1.4 — Register Doctor user account — Expect: 201
+# ⚠️  IDEMPOTENT: Will fail with 409 if doctor@smartcare.com already registered
+# To re-run: manually delete the doctor user from MongoDB Atlas (users collection)
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{doctorEmail}}",
+  "password": "{{doctorPassword}}",
+  "role": "Doctor",
+  "doctorId": "{{doctorId}}"
+}
+
+# ✅ Expect: 201 — body: { id, email, role: "Doctor" }
+# ❌ If you see 400 (validation failed): @doctorId not set — complete step 2.3 first
+# ❌ If you see 409: doctor@smartcare.com already registered — delete from users collection
+
+###
+
+### Step 1.5 — Validation: short password — Expect: 400
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "shortpass@test.com",
+  "password": "abc",
+  "role": "Admin"
+}
+
+# CHANGE from happy path: password is "abc" (3 chars) — MinLength(8) should reject
+# ✅ Expect: 400 — body: { "error": "Validation failed", "fields": { "Password": ["Password must be at least 8 characters"] } }
+# ❌ If you see 201: [MinLength(8)] on RegisterDto.Password is not active
+
+###
+
+### Step 1.6 — Login Doctor — Expect: 200
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{doctorEmail}}",
+  "password": "{{doctorPassword}}"
+}
+
+# ✅ Expect: 200 — body: { token, email, role: "Doctor", expiresIn }
+# ❌ If you see 401: doctor user not registered — run step 1.4 first
+
+# ── CAPTURE REQUIRED ──────────────────────────────────────────────────────
+# Copy "token" from the response above
+# Paste it into @doctorToken at the top of this file
+# ──────────────────────────────────────────────────────────────────────────
+
+###
+
+### Step 1.7 — Validation: invalid role value — Expect: 400
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "patient@test.com",
+  "password": "Secure@123",
+  "role": "Patient"
+}
+
+# CHANGE from happy path: role is "Patient" — [AllowedValues("Admin","Doctor")] should reject
+# ✅ Expect: 400 — body: { "error": "Validation failed", "fields": { "Role": ["Role must be Admin or Doctor"] } }
+# ❌ If you see 201: [AllowedValues] constraint on RegisterDto.Role is not active
+
+###
+
+### Step 1.8 — Login with wrong password — Expect: 401
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}",
+  "password": "WrongPassword!"
+}
+
+# CHANGE from happy path: password is incorrect
+# ✅ Expect: 401 — body: { "error": "Invalid email or password" }
+# ❌ If you see 200: BCrypt.Verify is not being called in AuthController.Login
+
+
+### ══════════════════════════════════════════════════════════════
+### GROUP 3 — BOOK APPOINTMENTS
+### ══════════════════════════════════════════════════════════════
+### Prerequisite: @doctorId set (step 2.3). No auth required — public endpoint.
+### @patientEmail must be a real inbox you can check for booking confirmation.
+
+### Step 3.1 — Book appointment (happy path) — Expect: 201
+POST {{baseUrl}}/api/appointments
+Content-Type: application/json
+
+{
+  "doctorId": "{{doctorId}}",
+  "patientName": "Ravi Kumar",
+  "patientPhone": "{{patientPhone}}",
+  "patientEmail": "{{patientEmail}}",
+  "date": "{{tomorrowDate}}",
+  "slot": "09:00",
+  "notes": "First visit, knee pain since 3 months",
+  "patientType": "New",
+  "referralSource": "Self",
+  "appointmentType": "OPD"
+}
+
+# ✅ Expect: 201 — appointment object, status: "Pending", id populated
+# ❌ If you see 400 "date must be today or in the future": update @tomorrowDate to a future date
+# ❌ If you see 409: slot 09:00 on @tomorrowDate already booked — use a different slot
+
+# ── CAPTURE REQUIRED ──────────────────────────────────────────────────────
+# Copy "id" from the response above
+# Paste it into @appointmentId at the top of this file
+# ──────────────────────────────────────────────────────────────────────────
+
+# ── EMAIL CHECK ──────────────────────────────────────────────────────────
+# Sender: appointmentnotif.spandana@gmail.com
+# Subject: "Your SmartCare Appointment — We'll See You Soon"
+# Body must contain: "Appointment Request Received"
+# Tone: booking
+# Check inbox within 30 seconds of sending this request
+# ─────────────────────────────────────────────────────────────────────────
+
+###
+
+### Step 3.2 — Book with past date — Expect: 400
+POST {{baseUrl}}/api/appointments
+Content-Type: application/json
+
+{
+  "doctorId": "{{doctorId}}",
+  "patientName": "Ravi Kumar",
+  "patientPhone": "{{patientPhone}}",
+  "patientEmail": "{{patientEmail}}",
+  "date": "{{pastDate}}",
+  "slot": "09:00",
+  "notes": "",
+  "patientType": "New",
+  "referralSource": "Self",
+  "appointmentType": "OPD"
+}
+
+# CHANGE from happy path: date is "{{pastDate}}" (2020-01-01) — past date
+# ✅ Expect: 400 — body: { "error": "Appointment date must be today or in the future" }
+# ❌ If you see 201: past-date guard in AppointmentsController.Create is not running
+
+###
+
+### Step 3.3 — Book with invalid slot format — Expect: 400
+POST {{baseUrl}}/api/appointments
+Content-Type: application/json
+
+{
+  "doctorId": "{{doctorId}}",
+  "patientName": "Ravi Kumar",
+  "patientPhone": "{{patientPhone}}",
+  "patientEmail": "{{patientEmail}}",
+  "date": "{{tomorrowDate}}",
+  "slot": "9:00 AM",
+  "notes": "",
+  "patientType": "New",
+  "referralSource": "Self",
+  "appointmentType": "OPD"
+}
+
+# CHANGE from happy path: slot is "9:00 AM" instead of "09:00" (24-hr HH:MM required)
+# ✅ Expect: 400 — body: { "error": "Slot must be in HH:MM 24-hour format (e.g. 09:00)" }
+# ❌ If you see 201: SlotFormatRegex in the controller is not matching
+
+###
+
+### Step 3.4 — Book with slot not in doctor's schedule — Expect: 400
+POST {{baseUrl}}/api/appointments
+Content-Type: application/json
+
+{
+  "doctorId": "{{doctorId}}",
+  "patientName": "Ravi Kumar",
+  "patientPhone": "{{patientPhone}}",
+  "patientEmail": "{{patientEmail}}",
+  "date": "{{tomorrowDate}}",
+  "slot": "08:00",
+  "notes": "",
+  "patientType": "New",
+  "referralSource": "Self",
+  "appointmentType": "OPD"
+}
+
+# CHANGE from happy path: slot "08:00" is not in Dr. Varun's schedule (09:00–11:30 only)
+# ✅ Expect: 400 — body: { "error": "The slot 08:00 is not in this doctor's available hours" }
+# ❌ If you see 201: availableSlots.Contains check is not running
+
+###
+
+### Step 3.5 — Duplicate slot conflict (same doctor + date + slot) — Expect: 409
+POST {{baseUrl}}/api/appointments
+Content-Type: application/json
+
+{
+  "doctorId": "{{doctorId}}",
+  "patientName": "Different Patient",
+  "patientPhone": "9000000001",
+  "patientEmail": "{{patientEmail}}",
+  "date": "{{tomorrowDate}}",
+  "slot": "09:00",
+  "notes": "Trying to book same slot as step 3.1",
+  "patientType": "Returning",
+  "referralSource": "DoctorReferral",
+  "appointmentType": "OPD"
+}
+
+# CHANGE from happy path: same doctorId + date + slot as step 3.1 — should conflict
+# ✅ Expect: 409 — body: { "error": "This slot is already booked. Please choose a different time." }
+# ❌ If you see 201: SlotTakenAsync check in the repository is not working
+
+###
+
+### Step 3.6 — Book with invalid doctorId — Expect: 404
+POST {{baseUrl}}/api/appointments
+Content-Type: application/json
+
+{
+  "doctorId": "000000000000000000000000",
+  "patientName": "Ravi Kumar",
+  "patientPhone": "{{patientPhone}}",
+  "patientEmail": "{{patientEmail}}",
+  "date": "{{tomorrowDate}}",
+  "slot": "09:00",
+  "notes": "",
+  "patientType": "New",
+  "referralSource": "Self",
+  "appointmentType": "OPD"
+}
+
+# CHANGE from happy path: doctorId is a fake ObjectId that does not exist
+# ✅ Expect: 404 — body: { "error": "Doctor not found. Please select a valid doctor." }
+# ❌ If you see 201: GetByIdAsync is not being called to validate the doctor
+
+###
+
+### Step 3.7 — Book with missing required fields — Expect: 400
+POST {{baseUrl}}/api/appointments
+Content-Type: application/json
+
+{
+  "doctorId": "",
+  "patientName": "",
+  "patientPhone": "",
+  "patientEmail": "not-an-email",
+  "date": "",
+  "slot": "",
+  "patientType": "New",
+  "referralSource": "Self",
+  "appointmentType": "OPD"
+}
+
+# CHANGE from happy path: doctorId, patientName, patientPhone, date, slot are all empty; patientEmail is invalid
+# ✅ Expect: 400 — body: { "error": "Validation failed", "fields": { "DoctorId": [...], "PatientName": [...], ... } }
+# ❌ If you see 201: [Required] annotations on CreateAppointmentDto are not active
+
+
+### ══════════════════════════════════════════════════════════════
+### GROUP 4 — ADMIN: VIEW APPOINTMENTS
+### ══════════════════════════════════════════════════════════════
+### Prerequisite: @adminToken, @doctorToken, @appointmentId, @doctorId all set.
+
+### Step 4.1 — Get all upcoming appointments (Admin) — Expect: 200
+GET {{baseUrl}}/api/appointments
+Authorization: Bearer {{adminToken}}
+
+# ✅ Expect: 200 — array containing at least the appointment from step 3.1 (status: "Pending")
+# ❌ If you see 401: @adminToken not set or expired — re-run step 1.3
+# ❌ If you see empty []: step 3.1 not yet run
+
+###
+
+### Step 4.2 — Get all appointments including past (Admin) — Expect: 200
+GET {{baseUrl}}/api/appointments?includePast=true
+Authorization: Bearer {{adminToken}}
+
+# ✅ Expect: 200 — array including appointments from all dates (past + future)
+# ❌ If you see 401: @adminToken expired — re-run step 1.3
+
+###
+
+### Step 4.3 — Get appointment by ID (Admin) — Expect: 200
+GET {{baseUrl}}/api/appointments/{{appointmentId}}
+Authorization: Bearer {{adminToken}}
+
+# ✅ Expect: 200 — full appointment object, status: "Pending", patientName: "Ravi Kumar"
+# ❌ If you see 404: @appointmentId not set — complete step 3.1 and paste the id
+
+###
+
+### Step 4.4 — Get appointment by ID (Doctor token) — Expect: 200
+# AUTH LEVEL: Doctor token — Expect: 200
+GET {{baseUrl}}/api/appointments/{{appointmentId}}
+Authorization: Bearer {{doctorToken}}
+
+# ✅ Expect: 200 — same appointment object; Doctor role has read access on GET /{id}
+# ❌ If you see 403: Doctor role is incorrectly excluded from this endpoint
+
+###
+
+### Step 4.5 — Get appointments by doctor (Admin) — Expect: 200
+GET {{baseUrl}}/api/appointments/doctor/{{doctorId}}
+Authorization: Bearer {{adminToken}}
+
+# ✅ Expect: 200 — array of appointments for Dr. Varun Prasanna; includes step 3.1 booking
+# ❌ If you see 401: @adminToken expired — re-run step 1.3
+
+###
+
+### Step 4.6 — Get appointments by doctor including past (Doctor token) — Expect: 200
+# AUTH LEVEL: Doctor token — Expect: 200
+GET {{baseUrl}}/api/appointments/doctor/{{doctorId}}?includePast=true
+Authorization: Bearer {{doctorToken}}
+
+# ✅ Expect: 200 — Doctor can view their own schedule including past appointments
+# ❌ If you see 403: Doctor role incorrectly excluded from GET /doctor/{doctorId}
+
+###
+
+### Step 4.7 — Get all appointments without auth — Expect: 401
+# AUTH LEVEL: None — Expect: 401
+GET {{baseUrl}}/api/appointments
+
+# ✅ Expect: 401 — [Authorize(Roles="Admin")] blocks unauthenticated requests
+# ❌ If you see 200: Authorization is not wired up in Program.cs
+
+###
+
+### Step 4.8 — Get appointment by ID without auth — Expect: 401
+# AUTH LEVEL: None — Expect: 401
+GET {{baseUrl}}/api/appointments/{{appointmentId}}
+
+# ✅ Expect: 401 — [Authorize(Roles="Admin,Doctor")] blocks unauthenticated requests
+# ❌ If you see 200: [Authorize] attribute is missing on GetById
+
+
+### ══════════════════════════════════════════════════════════════
+### GROUP 5 — CONFIRM APPOINTMENT
+### ══════════════════════════════════════════════════════════════
+
+# ── REQUIRES FRESH APPOINTMENT ──────────────────────────────────────────
+# Book a new appointment before running this group (step 5.1 does this for you)
+# Update @appointmentIdConfirm at the top with the id from step 5.1
+# ─────────────────────────────────────────────────────────────────────────
+
+### Step 5.1 — Book fresh appointment for confirmation (slot 09:30) — Expect: 201
+POST {{baseUrl}}/api/appointments
+Content-Type: application/json
+
+{
+  "doctorId": "{{doctorId}}",
+  "patientName": "Priya Sharma",
+  "patientPhone": "{{patientPhone}}",
+  "patientEmail": "{{patientEmail}}",
+  "date": "{{tomorrowDate}}",
+  "slot": "09:30",
+  "notes": "Follow-up physiotherapy check",
+  "patientType": "Returning",
+  "referralSource": "HospitalReferral",
+  "appointmentType": "OPD"
+}
+
+# ✅ Expect: 201 — new appointment with status: "Pending"
+# ❌ If you see 409: slot 09:30 on @tomorrowDate is taken — change the slot in the body
+
+# ── CAPTURE REQUIRED ──────────────────────────────────────────────────────
+# Copy "id" from the response above
+# Paste it into @appointmentIdConfirm at the top of this file
+# ──────────────────────────────────────────────────────────────────────────
+
+# ── EMAIL CHECK ──────────────────────────────────────────────────────────
+# Sender: appointmentnotif.spandana@gmail.com
+# Subject: "Your SmartCare Appointment — We'll See You Soon"
+# Body must contain: "Appointment Request Received"
+# Tone: booking
+# Check inbox within 30 seconds of sending this request
+# ─────────────────────────────────────────────────────────────────────────
+
+###
+
+### Step 5.2 — Update status to Confirmed (Admin) — Expect: 204
+PATCH {{baseUrl}}/api/appointments/{{appointmentIdConfirm}}/status
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "status": "Confirmed"
+}
+
+# ✅ Expect: 204 No Content — status updated; confirmation email sent to patient
+# ❌ If you see 404: @appointmentIdConfirm not set — complete step 5.1 first
+# ❌ If you see 401: @adminToken expired — re-run step 1.3
+
+# ── EMAIL CHECK ──────────────────────────────────────────────────────────
+# Sender: appointmentnotif.spandana@gmail.com
+# Subject: "Appointment Confirmed — See You on {{tomorrowDate}}"
+# Body must contain: "your appointment has been confirmed"
+# Tone: confirmed
+# Check inbox within 30 seconds of sending this request
+# ─────────────────────────────────────────────────────────────────────────
+
+###
+
+### Step 5.3 — Verify appointment is now Confirmed — Expect: 200
+GET {{baseUrl}}/api/appointments/{{appointmentIdConfirm}}
+Authorization: Bearer {{adminToken}}
+
+# ✅ Expect: 200 — appointment with status: "Confirmed"
+# ❌ If you see status "Pending": PATCH in step 5.2 did not persist to MongoDB
+
+###
+
+### Step 5.4 — Confirm appointment using Doctor token — Expect: 204
+# AUTH LEVEL: Doctor token — Expect: 204
+PATCH {{baseUrl}}/api/appointments/{{appointmentId}}/status
+Authorization: Bearer {{doctorToken}}
+Content-Type: application/json
+
+{
+  "status": "Confirmed"
+}
+
+# ✅ Expect: 204 — Doctor role is allowed to update status per [Authorize(Roles="Admin,Doctor")]
+# ❌ If you see 403: Doctor role is incorrectly excluded from PATCH /{id}/status
+
+
+### ══════════════════════════════════════════════════════════════
+### GROUP 6 — ADMIN CANCEL APPOINTMENT
+### ══════════════════════════════════════════════════════════════
+
+# ── REQUIRES FRESH APPOINTMENT ──────────────────────────────────────────
+# Book a new appointment before running this group (step 6.1 does this for you)
+# Update @appointmentIdCancel at the top with the id from step 6.1
+# ─────────────────────────────────────────────────────────────────────────
+
+### Step 6.1 — Book fresh appointment for admin cancel (slot 10:00) — Expect: 201
+POST {{baseUrl}}/api/appointments
+Content-Type: application/json
+
+{
+  "doctorId": "{{doctorId}}",
+  "patientName": "Anand Naik",
+  "patientPhone": "{{patientPhone}}",
+  "patientEmail": "{{patientEmail}}",
+  "date": "{{tomorrowDate}}",
+  "slot": "10:00",
+  "notes": "Annual orthopaedic check-up",
+  "patientType": "New",
+  "referralSource": "Other",
+  "appointmentType": "OPD"
+}
+
+# ✅ Expect: 201 — new appointment with status: "Pending"
+# ❌ If you see 409: slot 10:00 is already taken — change to an unused slot
+
+# ── CAPTURE REQUIRED ──────────────────────────────────────────────────────
+# Copy "id" from the response above
+# Paste it into @appointmentIdCancel at the top of this file
+# ──────────────────────────────────────────────────────────────────────────
+
+# ── EMAIL CHECK ──────────────────────────────────────────────────────────
+# Sender: appointmentnotif.spandana@gmail.com
+# Subject: "Your SmartCare Appointment — We'll See You Soon"
+# Body must contain: "Appointment Request Received"
+# Tone: booking
+# Check inbox within 30 seconds of sending this request
+# ─────────────────────────────────────────────────────────────────────────
+
+###
+
+### Step 6.2 — Admin cancels appointment with reason — Expect: 204
+PATCH {{baseUrl}}/api/appointments/{{appointmentIdCancel}}/status
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "status": "Cancelled",
+  "cancelledBy": "Admin",
+  "cancellationReason": "Doctor unavailable due to a medical emergency — sincere apologies for the inconvenience"
+}
+
+# ✅ Expect: 204 No Content — appointment cancelled; admin-cancellation email sent to patient
+# ❌ If you see 404: @appointmentIdCancel not set — complete step 6.1 first
+# ❌ If you see 401: @adminToken expired — re-run step 1.3
+
+# ── EMAIL CHECK ──────────────────────────────────────────────────────────
+# Sender: appointmentnotif.spandana@gmail.com
+# Subject: "Your SmartCare Appointment Has Been Cancelled"
+# Body must contain: "cancelled by the hospital due to unforeseen circumstances"
+# Tone: cancelled-admin
+# Check inbox within 30 seconds of sending this request
+# ─────────────────────────────────────────────────────────────────────────
+
+###
+
+### Step 6.3 — Verify appointment is Cancelled — Expect: 200
+GET {{baseUrl}}/api/appointments/{{appointmentIdCancel}}
+Authorization: Bearer {{adminToken}}
+
+# ✅ Expect: 200 — status: "Cancelled", cancelledBy: "Admin", cancellationReason populated
+# ❌ If you see status "Pending": PATCH in step 6.2 did not persist
+
+###
+
+### Step 6.4 — Try to patient-cancel an already-admin-cancelled appointment — Expect: 409
+POST {{baseUrl}}/api/appointments/patient-cancel
+Content-Type: application/json
+
+{
+  "appointmentId": "{{appointmentIdCancel}}",
+  "patientPhone": "{{patientPhone}}",
+  "reason": "I also want to cancel this appointment"
+}
+
+# CHANGE from happy path: appointment is already Cancelled (from step 6.2)
+# ✅ Expect: 409 — body: { "error": "This appointment is already cancelled" }
+# ❌ If you see 200: already-cancelled guard in PatientCancel is not running
+
+###
+
+### Step 6.5 — Cancel without auth — Expect: 401
+# AUTH LEVEL: None — Expect: 401
+PATCH {{baseUrl}}/api/appointments/{{appointmentIdCancel}}/status
+Content-Type: application/json
+
+{
+  "status": "Cancelled",
+  "cancelledBy": "Admin",
+  "cancellationReason": "Unauthorized attempt"
+}
+
+# ✅ Expect: 401 — PATCH /{id}/status requires Admin or Doctor token
+# ❌ If you see 204: [Authorize] is missing on UpdateStatus
+
+
+### ══════════════════════════════════════════════════════════════
+### GROUP 7 — RESCHEDULE APPOINTMENT
+### ══════════════════════════════════════════════════════════════
+
+# ── REQUIRES FRESH APPOINTMENT ──────────────────────────────────────────
+# Book a new appointment before running this group (step 7.1 does this for you)
+# Update @appointmentIdReschedule at the top with the id from step 7.1
+# ─────────────────────────────────────────────────────────────────────────
+
+### Step 7.1 — Book fresh appointment for reschedule (slot 11:00) — Expect: 201
+POST {{baseUrl}}/api/appointments
+Content-Type: application/json
+
+{
+  "doctorId": "{{doctorId}}",
+  "patientName": "Kavya Reddy",
+  "patientPhone": "{{patientPhone}}",
+  "patientEmail": "{{patientEmail}}",
+  "date": "{{tomorrowDate}}",
+  "slot": "11:00",
+  "notes": "Joint pain assessment",
+  "patientType": "New",
+  "referralSource": "DoctorReferral",
+  "appointmentType": "OPD"
+}
+
+# ✅ Expect: 201 — new appointment with status: "Pending"
+# ❌ If you see 409: slot 11:00 on @tomorrowDate is taken — use slot 11:30
+
+# ── CAPTURE REQUIRED ──────────────────────────────────────────────────────
+# Copy "id" from the response above
+# Paste it into @appointmentIdReschedule at the top of this file
+# ──────────────────────────────────────────────────────────────────────────
+
+# ── EMAIL CHECK ──────────────────────────────────────────────────────────
+# Sender: appointmentnotif.spandana@gmail.com
+# Subject: "Your SmartCare Appointment — We'll See You Soon"
+# Body must contain: "Appointment Request Received"
+# Tone: booking
+# Check inbox within 30 seconds of sending this request
+# ─────────────────────────────────────────────────────────────────────────
+
+###
+
+### Step 7.2 — Reschedule appointment (Admin) — Expect: 201
+POST {{baseUrl}}/api/appointments/{{appointmentIdReschedule}}/reschedule
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "appointmentId": "{{appointmentIdReschedule}}",
+  "newDate": "{{futureDatePlus2}}",
+  "newSlot": "09:00",
+  "reason": "Doctor requested a slot change to accommodate an emergency case"
+}
+
+# ✅ Expect: 201 — body: { message, originalAppointmentId, newAppointment { id, ... } }
+#             Two emails sent: admin-cancellation for old appointment + booking for new
+# ❌ If you see 404: @appointmentIdReschedule not set — complete step 7.1 first
+# ❌ If you see 409: slot 09:00 on @futureDatePlus2 is taken — use a different newSlot
+
+# ── CAPTURE REQUIRED ──────────────────────────────────────────────────────
+# Copy "newAppointment.id" from the response above
+# Paste it into @newAppointmentId at the top of this file
+# ──────────────────────────────────────────────────────────────────────────
+
+# ── EMAIL CHECK ──────────────────────────────────────────────────────────
+# Sender: appointmentnotif.spandana@gmail.com
+# Email 1 Subject: "Your SmartCare Appointment Has Been Cancelled"
+# Email 1 Body must contain: "cancelled by the hospital due to unforeseen circumstances"
+# Tone: cancelled-admin (for the original appointment)
+# Email 2 Subject: "Your SmartCare Appointment — We'll See You Soon"
+# Email 2 Body must contain: "Appointment Request Received"
+# Tone: booking (for the new rescheduled appointment)
+# Check inbox within 30 seconds — expect 2 emails
+# ─────────────────────────────────────────────────────────────────────────
+
+###
+
+### Step 7.3 — Try to reschedule a cancelled appointment — Expect: 409
+POST {{baseUrl}}/api/appointments/{{appointmentIdCancel}}/reschedule
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "appointmentId": "{{appointmentIdCancel}}",
+  "newDate": "{{futureDatePlus2}}",
+  "newSlot": "09:30",
+  "reason": "Trying to reschedule a cancelled appointment"
+}
+
+# CHANGE from happy path: @appointmentIdCancel was cancelled in step 6.2
+# ✅ Expect: 409 — body: { "error": "Cannot reschedule a cancelled appointment" }
+# ❌ If you see 201: cancelled-appointment guard in Reschedule is not running
+
+###
+
+### Step 7.4 — Reschedule to a past date — Expect: 400
+POST {{baseUrl}}/api/appointments/{{newAppointmentId}}/reschedule
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "appointmentId": "{{newAppointmentId}}",
+  "newDate": "{{pastDate}}",
+  "newSlot": "09:00",
+  "reason": "Trying to reschedule to past date"
+}
+
+# CHANGE from happy path: newDate is "{{pastDate}}" (2020-01-01) — in the past
+# ✅ Expect: 400 — body: { "error": "New appointment date must be today or in the future" }
+# ❌ If you see 201: past-date guard in Reschedule is not running
+
+###
+
+### Step 7.5 — Reschedule with invalid slot format — Expect: 400
+POST {{baseUrl}}/api/appointments/{{newAppointmentId}}/reschedule
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "appointmentId": "{{newAppointmentId}}",
+  "newDate": "{{futureDatePlus2}}",
+  "newSlot": "9AM",
+  "reason": "Slot format test"
+}
+
+# CHANGE from happy path: newSlot is "9AM" instead of HH:MM 24-hour format
+# ✅ Expect: 400 — body: { "error": "NewSlot must be in HH:MM 24-hour format (e.g. 09:00)" }
+# ❌ If you see 201: SlotFormatRegex is not being applied in Reschedule
+
+###
+
+### Step 7.6 — Reschedule to an already-taken slot — Expect: 409
+POST {{baseUrl}}/api/appointments/{{newAppointmentId}}/reschedule
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "appointmentId": "{{newAppointmentId}}",
+  "newDate": "{{tomorrowDate}}",
+  "newSlot": "09:00",
+  "reason": "Trying to take a slot already booked in step 3.1"
+}
+
+# CHANGE from happy path: slot 09:00 on @tomorrowDate is already taken by step 3.1
+# ✅ Expect: 409 — body: { "error": "Slot 09:00 on ... is already booked. Please choose a different time." }
+# ❌ If you see 201: SlotTakenAsync is not being checked in Reschedule
+
+###
+
+### Step 7.7 — Reschedule using Doctor token — Expect: 201
+# AUTH LEVEL: Doctor token — Expect: 201
+POST {{baseUrl}}/api/appointments/{{newAppointmentId}}/reschedule
+Authorization: Bearer {{doctorToken}}
+Content-Type: application/json
+
+{
+  "appointmentId": "{{newAppointmentId}}",
+  "newDate": "{{futureDatePlus2}}",
+  "newSlot": "09:30",
+  "reason": "Doctor rescheduling to a preferred time slot"
+}
+
+# ✅ Expect: 201 — Doctor role can reschedule; two emails sent
+# ❌ If you see 403: Doctor role incorrectly excluded from POST /{id}/reschedule
+
+# ── EMAIL CHECK ──────────────────────────────────────────────────────────
+# Sender: appointmentnotif.spandana@gmail.com
+# Email 1 Subject: "Your SmartCare Appointment Has Been Cancelled"
+# Tone: cancelled-admin (for the appointment being replaced)
+# Email 2 Subject: "Your SmartCare Appointment — We'll See You Soon"
+# Tone: booking (for the newly created appointment)
+# Check inbox within 30 seconds — expect 2 emails
+# ─────────────────────────────────────────────────────────────────────────
+
+
+### ══════════════════════════════════════════════════════════════
+### GROUP 8 — PATIENT CANCEL (Public endpoint)
+### ══════════════════════════════════════════════════════════════
+### No auth token required. Ownership verified by appointmentId + phone.
+
+### Step 8.1 — Book fresh appointment for patient cancel (slot 10:30) — Expect: 201
+POST {{baseUrl}}/api/appointments
+Content-Type: application/json
+
+{
+  "doctorId": "{{doctorId}}",
+  "patientName": "Suresh Babu",
+  "patientPhone": "{{patientPhone}}",
+  "patientEmail": "{{patientEmail}}",
+  "date": "{{tomorrowDate}}",
+  "slot": "10:30",
+  "notes": "Spine consultation",
+  "patientType": "New",
+  "referralSource": "Self",
+  "appointmentType": "OPD"
+}
+
+# ✅ Expect: 201 — new appointment with status: "Pending"
+# ❌ If you see 409: slot 10:30 on @tomorrowDate is taken — use slot 11:30
+
+# ── CAPTURE REQUIRED ──────────────────────────────────────────────────────
+# Copy "id" from the response above
+# Overwrite @appointmentId at the top of this file with this new value
+# (This reuses the variable; groups 3–7 are already complete at this point)
+# ──────────────────────────────────────────────────────────────────────────
+
+# ── EMAIL CHECK ──────────────────────────────────────────────────────────
+# Sender: appointmentnotif.spandana@gmail.com
+# Subject: "Your SmartCare Appointment — We'll See You Soon"
+# Body must contain: "Appointment Request Received"
+# Tone: booking
+# Check inbox within 30 seconds of sending this request
+# ─────────────────────────────────────────────────────────────────────────
+
+###
+
+### Step 8.2 — Public lookup by appointment ID + phone — Expect: 200
+GET {{baseUrl}}/api/appointments/lookup?id={{appointmentId}}&phone={{patientPhone}}
+
+# ✅ Expect: 200 — full appointment object for Suresh Babu, status: "Pending"
+# ❌ If you see 404: id or phone does not match — re-check @appointmentId and @patientPhone
+
+###
+
+### Step 8.3 — Patient cancels appointment — Expect: 200
+POST {{baseUrl}}/api/appointments/patient-cancel
+Content-Type: application/json
+
+{
+  "appointmentId": "{{appointmentId}}",
+  "patientPhone": "{{patientPhone}}",
+  "reason": "Personal emergency — cannot attend the appointment"
+}
+
+# ✅ Expect: 200 — body: { message: "Your appointment has been successfully cancelled.", appointmentId, cancelledAt }
+# ❌ If you see 409 "within 24 hours": @tomorrowDate is too close — use a date further in the future
+# ❌ If you see 404: wrong appointmentId or phone — check @appointmentId and @patientPhone
+
+# ── EMAIL CHECK ──────────────────────────────────────────────────────────
+# Sender: appointmentnotif.spandana@gmail.com
+# Subject: "Your SmartCare Appointment Has Been Cancelled"
+# Body must contain: "successfully cancelled as requested"
+# Tone: cancelled-patient
+# Check inbox within 30 seconds of sending this request
+# ─────────────────────────────────────────────────────────────────────────
+
+###
+
+### Step 8.4 — Try to patient-cancel an already-cancelled appointment — Expect: 409
+POST {{baseUrl}}/api/appointments/patient-cancel
+Content-Type: application/json
+
+{
+  "appointmentId": "{{appointmentId}}",
+  "patientPhone": "{{patientPhone}}",
+  "reason": "Trying to cancel an already cancelled appointment"
+}
+
+# CHANGE from happy path: appointment was cancelled in step 8.3
+# ✅ Expect: 409 — body: { "error": "This appointment is already cancelled" }
+# ❌ If you see 200: already-cancelled guard is not running
+
+###
+
+### Step 8.5 — Patient cancel with wrong phone number — Expect: 404
+POST {{baseUrl}}/api/appointments/patient-cancel
+Content-Type: application/json
+
+{
+  "appointmentId": "{{appointmentId}}",
+  "patientPhone": "0000000000",
+  "reason": "Testing ownership check"
+}
+
+# CHANGE from happy path: patientPhone is wrong — does not match the appointment
+# ✅ Expect: 404 — body: { "error": "No appointment found with this ID and phone number" }
+# ❌ If you see 200: GetByIdAndPhoneAsync ownership check is not working
+
+###
+
+### Step 8.6 — Patient cancel with reason too short — Expect: 400
+POST {{baseUrl}}/api/appointments/patient-cancel
+Content-Type: application/json
+
+{
+  "appointmentId": "{{appointmentId}}",
+  "patientPhone": "{{patientPhone}}",
+  "reason": "No"
+}
+
+# CHANGE from happy path: reason is "No" (2 chars) — MinLength(5) should reject
+# ✅ Expect: 400 — body: { "error": "Validation failed", "fields": { "Reason": ["Please provide a reason for cancellation"] } }
+# ❌ If you see 200: [MinLength(5)] on PatientCancelDto.Reason is not active
+
+###
+
+### Step 8.7 — Lookup with missing appointment ID param — Expect: 400
+GET {{baseUrl}}/api/appointments/lookup?phone={{patientPhone}}
+
+# CHANGE from happy path: id query param is absent
+# ✅ Expect: 400 — body: { "error": "Appointment ID is required" }
+# ❌ If you see 404: id-required guard in Lookup is not running
+
+###
+
+### Step 8.8 — Lookup with missing phone param — Expect: 400
+GET {{baseUrl}}/api/appointments/lookup?id={{appointmentId}}
+
+# CHANGE from happy path: phone query param is absent
+# ✅ Expect: 400 — body: { "error": "Phone number is required" }
+# ❌ If you see 404: phone-required guard in Lookup is not running
+
+###
+
+### Step 8.9 — Lookup with wrong ID + phone combination — Expect: 404
+GET {{baseUrl}}/api/appointments/lookup?id=000000000000000000000000&phone={{patientPhone}}
+
+# CHANGE from happy path: id does not match any appointment for this phone
+# ✅ Expect: 404 — body: { "error": "No appointment found with this ID and phone number" }
+# ❌ If you see 200: GetByIdAndPhoneAsync is not filtering by both fields
+
+###
+
+### Step 8.10 — Patient cancel within 24 hours — Expect: 409
+# ⚠️  MANUAL SETUP REQUIRED: This test requires a near-future appointment.
+# To test: create an appointment for today's date at a time within the next 24 hours.
+# Then run patient-cancel against it. The test below uses a placeholder id.
+# This cannot be reliably hardcoded — run it manually when needed.
+#
+# POST {{baseUrl}}/api/appointments/patient-cancel
+# Content-Type: application/json
+#
+# {
+#   "appointmentId": "REPLACE_WITH_NEAR_FUTURE_APPOINTMENT_ID",
+#   "patientPhone": "{{patientPhone}}",
+#   "reason": "Need to cancel urgently"
+# }
+#
+# ✅ Expect: 409 — body: { "error": "Cancellations must be made at least 24 hours before the appointment..." }
+
+
+### ══════════════════════════════════════════════════════════════
+### GROUP 9 — TESTIMONIALS
+### ══════════════════════════════════════════════════════════════
+### Public submission; approval requires Admin token.
+
+### Step 9.1 — Submit testimonial (public) — Expect: 201
+POST {{baseUrl}}/api/testimonials
+Content-Type: application/json
+
+{
+  "patientName": "Ravi Kumar",
+  "text": "Excellent experience at SmartCare. Dr. Varun Prasanna was thorough and very professional. The staff was courteous and the appointment was on time.",
+  "rating": 5
+}
+
+# ✅ Expect: 201 — testimonial object with isApproved: false, id populated
+# ❌ If you see 400: missing required fields or rating out of range
+
+# ── CAPTURE REQUIRED ──────────────────────────────────────────────────────
+# Copy "id" from the response above
+# Paste it into @testimonialId at the top of this file
+# ──────────────────────────────────────────────────────────────────────────
+
+###
+
+### Step 9.2 — Get approved testimonials (none approved yet) — Expect: 200
+GET {{baseUrl}}/api/testimonials
+
+# ✅ Expect: 200 — empty array [] (the testimonial from step 9.1 is not yet approved)
+# ❌ If you see the step 9.1 testimonial: isApproved defaults to true — check Testimonial model
+
+###
+
+### Step 9.3 — Submit with rating out of range — Expect: 400
+POST {{baseUrl}}/api/testimonials
+Content-Type: application/json
+
+{
+  "patientName": "Test Patient",
+  "text": "Testing rating validation",
+  "rating": 6
+}
+
+# CHANGE from happy path: rating is 6 — [Range(1, 5)] should reject
+# ✅ Expect: 400 — body: { "error": "Validation failed", "fields": { "Rating": ["Rating must be between 1 and 5"] } }
+# ❌ If you see 201: [Range(1,5)] on CreateTestimonialDto.Rating is not active
+
+###
+
+### Step 9.4 — Submit with missing required fields — Expect: 400
+POST {{baseUrl}}/api/testimonials
+Content-Type: application/json
+
+{
+  "patientName": "",
+  "text": "",
+  "rating": 0
+}
+
+# CHANGE from happy path: all fields empty or zero — [Required] and [Range] should reject
+# ✅ Expect: 400 — body: { "error": "Validation failed", "fields": { ... } }
+# ❌ If you see 201: [Required] annotations on CreateTestimonialDto are not active
+
+###
+
+### Step 9.5 — Approve testimonial (Admin) — Expect: 204
+PATCH {{baseUrl}}/api/testimonials/{{testimonialId}}/approve
+Authorization: Bearer {{adminToken}}
+
+# ✅ Expect: 204 No Content — testimonial approved; isApproved set to true
+# ❌ If you see 404: @testimonialId not set — complete step 9.1 and paste the id
+# ❌ If you see 401: @adminToken expired — re-run step 1.3
+
+###
+
+### Step 9.6 — Get approved testimonials (now has one) — Expect: 200
+GET {{baseUrl}}/api/testimonials
+
+# ✅ Expect: 200 — array containing the testimonial from step 9.1 (isApproved: true)
+# ❌ If you see []: PATCH in step 9.5 did not persist to MongoDB
+
+###
+
+### Step 9.7 — Approve non-existent testimonial — Expect: 404
+PATCH {{baseUrl}}/api/testimonials/000000000000000000000000/approve
+Authorization: Bearer {{adminToken}}
+
+# ✅ Expect: 404 — body: { "error": "Testimonial not found" }
+# ❌ If you see 204: GetByIdAsync is not being called before ApproveAsync
+
+###
+
+### Step 9.8 — Approve testimonial without auth — Expect: 401
+# AUTH LEVEL: None — Expect: 401
+PATCH {{baseUrl}}/api/testimonials/{{testimonialId}}/approve
+
+# ✅ Expect: 401 — [Authorize(Roles="Admin")] blocks unauthenticated requests
+# ❌ If you see 204: [Authorize] is missing on the Approve action
+
+###
+
+### Step 9.9 — Approve testimonial with Doctor token (wrong role) — Expect: 403
+# AUTH LEVEL: Doctor token — Expect: 403
+PATCH {{baseUrl}}/api/testimonials/{{testimonialId}}/approve
+Authorization: Bearer {{doctorToken}}
+
+# ✅ Expect: 403 — Doctor role cannot approve testimonials
+# ❌ If you see 204: Role check on Approve is not restricting to Admin-only
+
+
+### ══════════════════════════════════════════════════════════════
+### GROUP 10 — MARK COMPLETED / POST-VISIT EMAIL
+### ══════════════════════════════════════════════════════════════
+
+### Step 10.1 — Book fresh appointment for completion (Dr. Vinaya, slot 14:00) — Expect: 201
+POST {{baseUrl}}/api/appointments
+Content-Type: application/json
+
+{
+  "doctorId": "{{drVinayaId}}",
+  "patientName": "Meena Iyer",
+  "patientPhone": "{{patientPhone}}",
+  "patientEmail": "{{patientEmail}}",
+  "date": "{{futureDatePlus2}}",
+  "slot": "14:00",
+  "notes": "Gynaecology annual check-up",
+  "patientType": "New",
+  "referralSource": "Self",
+  "appointmentType": "OPD"
+}
+
+# ✅ Expect: 201 — new appointment with status: "Pending"
+# ❌ If you see 404: @drVinayaId not set — complete step 2.3 and paste Dr. Vinaya's id
+# ❌ If you see 409: slot 14:00 on @futureDatePlus2 is taken — use 14:30
+
+# ── CAPTURE REQUIRED ──────────────────────────────────────────────────────
+# Copy "id" from the response above
+# Overwrite @appointmentId at the top of this file with this new value
+# ──────────────────────────────────────────────────────────────────────────
+
+# ── EMAIL CHECK ──────────────────────────────────────────────────────────
+# Sender: appointmentnotif.spandana@gmail.com
+# Subject: "Your SmartCare Appointment — We'll See You Soon"
+# Body must contain: "Appointment Request Received"
+# Tone: booking
+# Check inbox within 30 seconds of sending this request
+# ─────────────────────────────────────────────────────────────────────────
+
+###
+
+### Step 10.2 — Confirm the appointment first (Admin) — Expect: 204
+PATCH {{baseUrl}}/api/appointments/{{appointmentId}}/status
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "status": "Confirmed"
+}
+
+# ✅ Expect: 204 — status set to Confirmed; confirmation email sent
+
+# ── EMAIL CHECK ──────────────────────────────────────────────────────────
+# Sender: appointmentnotif.spandana@gmail.com
+# Subject: "Appointment Confirmed — See You on {{futureDatePlus2}}"
+# Body must contain: "your appointment has been confirmed"
+# Tone: confirmed
+# Check inbox within 30 seconds of sending this request
+# ─────────────────────────────────────────────────────────────────────────
+
+###
+
+### Step 10.3 — Mark appointment as Completed (Admin) — Expect: 204
+PATCH {{baseUrl}}/api/appointments/{{appointmentId}}/status
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "status": "Completed"
+}
+
+# ✅ Expect: 204 No Content — status set to Completed; post-visit email sent
+# ❌ If you see 404: @appointmentId not set — complete step 10.1 and paste the id
+
+# ── EMAIL CHECK ──────────────────────────────────────────────────────────
+# Sender: appointmentnotif.spandana@gmail.com
+# Subject: "Thank You for Visiting SmartCare Hospital"
+# Body must contain: "we hope your visit with"
+# Tone: post-visit
+# Check inbox within 30 seconds of sending this request
+# ─────────────────────────────────────────────────────────────────────────
+
+###
+
+### Step 10.4 — Verify appointment is Completed — Expect: 200
+GET {{baseUrl}}/api/appointments/{{appointmentId}}
+Authorization: Bearer {{adminToken}}
+
+# ✅ Expect: 200 — status: "Completed"
+# ❌ If you see "Confirmed": PATCH in step 10.3 did not persist
+
+###
+
+### Step 10.5 — Try to reschedule a completed appointment — Expect: 409
+POST {{baseUrl}}/api/appointments/{{appointmentId}}/reschedule
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "appointmentId": "{{appointmentId}}",
+  "newDate": "{{futureDatePlus2}}",
+  "newSlot": "15:00",
+  "reason": "Attempting to reschedule a completed appointment"
+}
+
+# CHANGE from happy path: appointment is Completed from step 10.3
+# ✅ Expect: 409 — body: { "error": "Cannot reschedule a completed appointment" }
+# ❌ If you see 201: completed-appointment guard in Reschedule is not running
+
+###
+
+### Step 10.6 — Try to patient-cancel a completed appointment — Expect: 409
+POST {{baseUrl}}/api/appointments/patient-cancel
+Content-Type: application/json
+
+{
+  "appointmentId": "{{appointmentId}}",
+  "patientPhone": "{{patientPhone}}",
+  "reason": "Trying to cancel a completed appointment"
+}
+
+# CHANGE from happy path: appointment is Completed from step 10.3
+# ✅ Expect: 409 — body: { "error": "This appointment has already been completed and cannot be cancelled" }
+# ❌ If you see 200: completed-appointment guard in PatientCancel is not running
+
+
+### ══════════════════════════════════════════════════════════════
+### GROUP 11 — PROCESS EXPIRED / NO-SHOW
+### ══════════════════════════════════════════════════════════════
+
+### Step 11.1 — Process expired appointments (Admin) — Expect: 200
+POST {{baseUrl}}/api/appointments/process-expired
+Authorization: Bearer {{adminToken}}
+
+# ✅ Expect: 200 — body: { processed: N, message: "N appointments marked as NoShow" }
+#             OR:  { processed: 0, message: "No expired appointments found" } in a clean DB
+# ❌ If you see 401: @adminToken not set or expired — re-run step 1.3
+
+###
+
+### Step 11.2 — Process expired without auth — Expect: 401
+# AUTH LEVEL: None — Expect: 401
+POST {{baseUrl}}/api/appointments/process-expired
+
+# ✅ Expect: 401 — [Authorize(Roles="Admin")] blocks unauthenticated requests
+# ❌ If you see 200: [Authorize] is missing on ProcessExpired
+
+###
+
+### Step 11.3 — Process expired with Doctor token (wrong role) — Expect: 403
+# AUTH LEVEL: Doctor token — Expect: 403
+POST {{baseUrl}}/api/appointments/process-expired
+Authorization: Bearer {{doctorToken}}
+
+# ✅ Expect: 403 — Doctor role cannot trigger NoShow processing
+# ❌ If you see 200: Role check on ProcessExpired is not restricting to Admin-only
+
+
+### ── NOTES AND SETUP ────────────────────────────────────────────────────────
+
+# PREREQUISITES
+# ─────────────────────────────────────────────────────────────────────────────
+# • Install the VS Code REST Client extension: humao.rest-client
+# • Start the API: dotnet run (from the SmartCare.API directory)
+# • API runs on http://localhost:5027 (see Properties/launchSettings.json)
+# • MongoDB Atlas must be running and credentials set in appsettings.json
+#
+# BEFORE EACH TEST RUN
+# ─────────────────────────────────────────────────────────────────────────────
+# • Set @patientEmail to a real inbox you can check for email notifications
+# • Update @tomorrowDate to any future date (e.g., next month)
+# • Update @futureDatePlus2 to a different future date after @tomorrowDate
+# • All @...Token and @...Id variables start as placeholders — paste after running
+#
+# RUN ORDER
+# ─────────────────────────────────────────────────────────────────────────────
+# Run strictly top to bottom. Never skip a group that a later group depends on.
+# Dependency chain:
+#   1.1–1.3 (admin) → 2.1–2.3 (doctors + capture IDs) → 1.4–1.8 (doctor user)
+#   → 3.1 (book, capture appointmentId) → 4.x (view)
+#   → 5.1 (book fresh, capture appointmentIdConfirm) → 5.x (confirm)
+#   → 6.1 (book fresh, capture appointmentIdCancel) → 6.x (admin cancel)
+#   → 7.1 (book fresh, capture appointmentIdReschedule) → 7.x (reschedule)
+#   → 8.x (patient cancel) → 9.x (testimonials) → 10.x (complete) → 11.x (noshow)
+#
+# STEPS THAT REQUIRE MANUAL DATABASE CLEANUP BEFORE RE-RUNNING
+# ─────────────────────────────────────────────────────────────────────────────
+# • Step 1.1: delete admin user (admin@smartcare.com) from users collection
+# • Step 1.4: delete doctor user (doctor@smartcare.com) from users collection
+# • Step 2.1: drop the doctors collection to re-seed from scratch
+# • Steps 3.1, 5.1, 6.1, 7.1, 8.1, 10.1: these create new appointments each run
+#   (no cleanup needed unless you want a clean DB between runs)
+#
+# EMAIL CHECKS (manual — check inbox after each starred step)
+# ─────────────────────────────────────────────────────────────────────────────
+# • Step 3.1  → booking confirmation email
+# • Step 5.1  → booking confirmation email
+# • Step 5.2  → appointment confirmed email
+# • Step 6.1  → booking confirmation email
+# • Step 6.2  → admin cancellation email
+# • Step 7.1  → booking confirmation email
+# • Step 7.2  → admin cancellation email + new booking email (2 emails)
+# • Step 7.7  → admin cancellation email + new booking email (2 emails)
+# • Step 8.1  → booking confirmation email
+# • Step 8.3  → patient cancellation email
+# • Step 10.1 → booking confirmation email
+# • Step 10.2 → appointment confirmed email
+# • Step 10.3 → post-visit thank-you email
+#
+# ENUM VALUES (JsonStringEnumConverter is active — use strings, not numbers)
+# ─────────────────────────────────────────────────────────────────────────────
+# AppointmentStatus : "Pending" | "Confirmed" | "Cancelled" | "Completed" | "NoShow"
+# PatientType       : "New" | "Returning"
+# ReferralSource    : "Self" | "DoctorReferral" | "HospitalReferral" | "Other"
+# AppointmentType   : "OPD"
+#
+# SLOT ALLOCATION USED IN THIS FILE (Dr. Varun Prasanna, @tomorrowDate)
+# ─────────────────────────────────────────────────────────────────────────────
+# 09:00 → step 3.1 main appointment
+# 09:30 → step 5.1 confirm group
+# 10:00 → step 6.1 admin cancel group
+# 10:30 → step 8.1 patient cancel group
+# 11:00 → step 7.1 reschedule group
+# (Dr. Vinaya Prasanna, @futureDatePlus2): 14:00 → step 10.1 complete group
+# (@futureDatePlus2 09:00) → reschedule target in step 7.2

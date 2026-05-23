@@ -11,6 +11,8 @@ obj/
 .vscode/
 *.code-workspace
 launchSettings.json
+appsettings.Development.json
+appsettings.Production.json
 
 # Node.js / npm
 node_modules/
