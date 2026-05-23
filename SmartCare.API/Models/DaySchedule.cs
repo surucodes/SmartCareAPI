@@ -1,5 +1,8 @@
+using MongoDB.Bson.Serialization.Attributes;
+
 namespace SmartCare.API.Models
 {
+    [BsonIgnoreExtraElements]
     public class DaySchedule
     {
         public string Start { get; set; } = string.Empty;

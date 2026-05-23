@@ -1,4 +1,5 @@
 using System.Text.Json;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace SmartCare.API.Middleware;
@@ -13,7 +14,9 @@ public class GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExcep
         }
         catch (Exception ex)
         {
-            if (ex is FormatException)
+            if (ex is BsonSerializationException)
+                logger.LogError(ex, "BSON deserialization failed on {Method} {Path} — possible schema mismatch", context.Request.Method, context.Request.Path);
+            else if (ex is FormatException)
                 logger.LogWarning(ex, "Bad request on {Method} {Path}", context.Request.Method, context.Request.Path);
             else if (ex is MongoException)
                 logger.LogError(ex, "Database error on {Method} {Path}", context.Request.Method, context.Request.Path);
@@ -28,6 +31,7 @@ public class GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExcep
     {
         var (statusCode, errorMessage) = ex switch
         {
+            BsonSerializationException => (StatusCodes.Status500InternalServerError, "Data format error — please contact support"),
             FormatException => (StatusCodes.Status400BadRequest, "Invalid ID format"),
             MongoException => (StatusCodes.Status503ServiceUnavailable, "Database temporarily unavailable. Please try again."),
             _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred")
