@@ -67,7 +67,7 @@ function ChevronDown() {
 }
 
 interface ErrorState {
-  type: 'conflict' | 'validation' | 'network' | 'unknown'
+  type: 'conflict' | 'duplicate' | 'validation' | 'network' | 'unknown'
   message: string
 }
 
@@ -77,8 +77,14 @@ function parseAxiosError(err: unknown): ErrorState {
       return { type: 'network', message: 'Connection failed. Please check your internet and try again.' }
     }
     const status = err.response.status
-    const data = err.response.data as { error?: string } | undefined
+    const data = err.response.data as { error?: string; code?: string } | undefined
     if (status === 409) {
+      if (data?.code === 'DUPLICATE_BOOKING') {
+        return {
+          type: 'duplicate',
+          message: data.error ?? 'You already have an appointment booked for this slot.',
+        }
+      }
       return {
         type: 'conflict',
         message: 'This slot is no longer available. Please go back and choose a different time.',
@@ -362,7 +368,7 @@ export function Step3PatientDetails({ flow }: Step3Props) {
               role="alert"
               className={cn(
                 'rounded-lg border p-4 flex flex-col gap-3',
-                serverError.type === 'conflict'
+                serverError.type === 'conflict' || serverError.type === 'duplicate'
                   ? 'bg-amber-50 border-amber-200 text-amber-900'
                   : 'bg-red-50 border-red-200 text-red-800',
               )}
@@ -375,6 +381,15 @@ export function Step3PatientDetails({ flow }: Step3Props) {
                   className="self-start min-h-[40px] px-4 rounded-lg bg-amber-700 text-white text-[13px] font-semibold hover:bg-amber-800 transition-colors"
                 >
                   Choose Different Time
+                </button>
+              )}
+              {serverError.type === 'duplicate' && (
+                <button
+                  type="button"
+                  onClick={() => flow.goBack()}
+                  className="self-start min-h-[40px] px-4 rounded-lg bg-amber-700 text-white text-[13px] font-semibold hover:bg-amber-800 transition-colors"
+                >
+                  Choose a Different Slot
                 </button>
               )}
             </div>

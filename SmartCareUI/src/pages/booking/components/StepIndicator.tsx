@@ -3,6 +3,7 @@ import type { BookingStep } from '@/hooks/useBookingFlow'
 
 interface StepIndicatorProps {
   currentStep: BookingStep
+  onStepClick?: (step: 1 | 2 | 3) => void
 }
 
 const STEPS: { num: 1 | 2 | 3; label: string }[] = [
@@ -32,7 +33,7 @@ function CheckIcon() {
   )
 }
 
-export function StepIndicator({ currentStep }: StepIndicatorProps) {
+export function StepIndicator({ currentStep, onStepClick }: StepIndicatorProps) {
   const activeNum =
     currentStep === 'confirmation' ? 3 : (currentStep as 1 | 2 | 3)
   const activeLabel =
@@ -45,6 +46,7 @@ export function StepIndicator({ currentStep }: StepIndicatorProps) {
         {STEPS.map((step, idx) => {
           const status = statusOf(step.num, currentStep)
           const isLast = idx === STEPS.length - 1
+          const isClickable = status === 'completed' && onStepClick
 
           // The connector colors based on completion of the current step
           const connectorActive = status === 'completed'
@@ -53,9 +55,14 @@ export function StepIndicator({ currentStep }: StepIndicatorProps) {
             <div key={step.num} className="flex items-center flex-1 last:flex-none">
               {/* Bubble */}
               <div className="flex flex-col items-center relative z-10">
-                <div
+                <button
+                  type="button"
+                  onClick={() => isClickable && onStepClick(step.num)}
+                  disabled={!isClickable}
                   className={cn(
                     'w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-[14px] font-semibold transition-all duration-300',
+                    isClickable && 'cursor-pointer hover:scale-110 hover:shadow-lg',
+                    !isClickable && 'cursor-default',
                     status === 'completed' && 'bg-teal-600 text-white shadow-md',
                     status === 'active' && 'bg-teal-600 text-white shadow-md ring-4 ring-teal-100',
                     status === 'inactive' && 'bg-white text-gray-400 border-2 border-gray-200',
@@ -64,7 +71,7 @@ export function StepIndicator({ currentStep }: StepIndicatorProps) {
                   aria-label={`Step ${step.num}: ${step.label}${status === 'completed' ? ' completed' : ''}`}
                 >
                   {status === 'completed' ? <CheckIcon /> : step.num}
-                </div>
+                </button>
               </div>
 
               {/* Connector */}

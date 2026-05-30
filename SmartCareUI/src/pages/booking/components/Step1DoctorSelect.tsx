@@ -22,7 +22,7 @@ function ArrowRight() {
 function CheckIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path d="M3.5 8.5l3 3 6-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M3.5 8.5l3 3 6-7" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
@@ -96,8 +96,14 @@ interface DoctorCardProps {
   doctor: Doctor
   consultationTypes: ConsultationType[]
   consultationsLoading: boolean
-  isSelectedDoctor: boolean
-  selectedTypeIdForThisDoctor: string | null
+  /** This doctor has been committed to the booking flow via "Select this Doctor". */
+  isCommitted: boolean
+  /** Another doctor is committed — this card is visually and functionally disabled. */
+  isDisabled: boolean
+  /** The consultationTypeId committed to the flow (only relevant when isCommitted). */
+  committedTypeId: string | null
+  /** The pill the user has highlighted locally, before committing (only when !isCommitted). */
+  localTypeId: string | null
   onSelectType: (doctor: Doctor, type: ConsultationType) => void
   onSelectCard: (doctor: Doctor) => void
 }
@@ -106,38 +112,59 @@ function DoctorCard({
   doctor,
   consultationTypes,
   consultationsLoading,
-  isSelectedDoctor,
-  selectedTypeIdForThisDoctor,
+  isCommitted,
+  isDisabled,
+  committedTypeId,
+  localTypeId,
   onSelectType,
   onSelectCard,
 }: DoctorCardProps) {
   const activeTypes = consultationTypes.filter((t) => t.isActive)
 
+  // Committed card shows the flow-committed type; uncommitted shows local highlight.
+  const highlightedTypeId = isCommitted ? committedTypeId : localTypeId
+
+  const hasLocalPill = Boolean(localTypeId)
+  // Button is enabled when committed (acts as deselect) or a local pill is highlighted.
+  const buttonEnabled = isCommitted || hasLocalPill
+
   return (
     <div
       className={cn(
-        'bg-white rounded-2xl border-2 p-5 md:p-6 flex flex-col transition-all duration-200',
-        isSelectedDoctor
-          ? 'border-teal-600 shadow-[0_10px_30px_rgba(15,110,86,0.15)]'
-          : 'border-gray-200 shadow-[0_4px_20px_rgba(19,43,26,0.04)] hover:shadow-[0_8px_28px_rgba(19,43,26,0.08)] hover:-translate-y-0.5',
+        'relative bg-white rounded-2xl border-2 p-5 md:p-6 flex flex-col transition-all duration-200',
+        // Disabled card: 40% opacity, pointer-events none — no border change
+        isDisabled && 'opacity-40 pointer-events-none border-gray-200',
+        // Committed card: teal border + shadow
+        !isDisabled && isCommitted && 'border-[#0F6E56] shadow-[0_10px_30px_rgba(15,110,86,0.15)]',
+        // Default card: gray border + hover lift
+        !isDisabled && !isCommitted && 'border-gray-200 shadow-[0_4px_20px_rgba(19,43,26,0.04)] hover:shadow-[0_8px_28px_rgba(19,43,26,0.08)] hover:-translate-y-0.5',
       )}
     >
+      {/* Committed checkmark — absolute top-right, 28px, only when committed */}
+      {isCommitted && (
+        <div
+          className="absolute top-4 right-4 w-7 h-7 rounded-full bg-[#0F6E56] flex items-center justify-center shadow-sm"
+          aria-label="Doctor selected"
+        >
+          <CheckIcon />
+        </div>
+      )}
+
       {/* Header: avatar + name + specialty */}
       <div className="flex items-center gap-4 mb-5">
         <DoctorAvatar doctor={doctor} />
-        <div className="min-w-0">
-          <h3 className="text-[18px] md:text-[20px] font-bold text-[#111] mb-0.5 truncate" style={{ fontFamily: '"Playfair Display", Georgia, serif' }}>
+        {/* pr-10 ensures text never overlaps the absolute checkmark (28px + 16px gap) */}
+        <div className={cn('min-w-0', isCommitted && 'pr-10')}>
+          <h3
+            className="text-[18px] md:text-[20px] font-bold text-[#111] mb-0.5 truncate"
+            style={{ fontFamily: '"Playfair Display", Georgia, serif' }}
+          >
             {doctor.name}
           </h3>
           <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#C9A227]">
             {doctor.specialty}
           </span>
         </div>
-        {isSelectedDoctor && (
-          <div className="ml-auto shrink-0 w-7 h-7 rounded-full bg-teal-600 text-white flex items-center justify-center" aria-label="Selected">
-            <CheckIcon />
-          </div>
-        )}
       </div>
 
       {/* Visit types */}
@@ -154,17 +181,19 @@ function DoctorCard({
         ) : (
           <div className="flex flex-wrap gap-2">
             {activeTypes.map((type) => {
-              const isPicked = isSelectedDoctor && selectedTypeIdForThisDoctor === type.id
+              const isPicked = highlightedTypeId === type.id
               return (
                 <button
                   key={type.id}
                   type="button"
+                  // Prevent keyboard focus on disabled card's children
+                  tabIndex={isDisabled ? -1 : undefined}
                   onClick={() => onSelectType(doctor, type)}
                   className={cn(
                     'min-h-[44px] inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[14px] font-medium transition-all duration-200',
                     isPicked
-                      ? 'bg-teal-600 text-white border-2 border-teal-600 shadow-md'
-                      : 'bg-white text-[#111] border-2 border-gray-200 hover:border-teal-600 hover:text-teal-700',
+                      ? 'bg-[#0F6E56] text-white border-2 border-[#0F6E56] shadow-md'
+                      : 'bg-white text-[#111] border-2 border-[#D1D5DB] hover:bg-gray-50',
                   )}
                   aria-pressed={isPicked}
                 >
@@ -177,24 +206,34 @@ function DoctorCard({
         )}
       </div>
 
-      {/* Select this Doctor */}
+      {/* "Select this Doctor" button — three visual states */}
       <button
         type="button"
+        tabIndex={isDisabled ? -1 : undefined}
+        disabled={!buttonEnabled}
+        aria-disabled={!buttonEnabled}
         onClick={() => onSelectCard(doctor)}
         className={cn(
-          'w-full mt-auto min-h-[48px] rounded-lg text-[15px] font-semibold transition-all duration-200',
-          isSelectedDoctor
-            ? 'bg-teal-600 text-white shadow-md hover:bg-teal-700'
-            : 'bg-[#132b1a] text-white hover:bg-teal-700',
+          'w-full mt-auto min-h-[48px] rounded-lg text-[15px] font-semibold',
+          // COMMITTED: teal, no hover change (this is now a deselect trigger)
+          isCommitted && 'bg-[#0F6E56] text-white cursor-pointer',
+          // ENABLED (pill selected, not committed): teal + hover darker
+          !isCommitted && hasLocalPill && 'bg-[#0F6E56] text-white hover:bg-[#085041] cursor-pointer transition-colors',
+          // DISABLED (no pill selected): gray, not clickable
+          !isCommitted && !hasLocalPill && 'bg-[#9CA3AF] text-white cursor-not-allowed',
         )}
       >
-        {isSelectedDoctor ? 'Doctor Selected' : 'Select this Doctor'}
+        {isCommitted ? 'Doctor Selected' : 'Select this Doctor'}
       </button>
     </div>
   )
 }
 
 export function Step1DoctorSelect({ flow }: Step1Props) {
+  // Local pill highlight state — purely visual, not committed to the booking flow.
+  // Key: doctorId, Value: highlighted consultationTypeId on that card.
+  const [highlightedPills, setHighlightedPills] = useState<Record<string, string>>({})
+
   const doctorsQuery = useQuery<Doctor[]>({
     queryKey: ['doctors'],
     queryFn: () => doctorsService.getAll(),
@@ -212,29 +251,63 @@ export function Step1DoctorSelect({ flow }: Step1Props) {
   })
 
   const handleSelectType = (doctor: Doctor, type: ConsultationType) => {
-    flow.setDoctor(doctor, type.id, type.name)
-  }
-
-  const handleSelectCard = (doctor: Doctor) => {
-    if (flow.selectedDoctorId === doctor.id) return
-    flow.clearDoctor()
-    const idx = doctors.findIndex((d) => d.id === doctor.id)
-    const types = consultationQueries[idx]?.data ?? []
-    const firstActive = types.find((t) => t.isActive)
-    if (firstActive) {
-      flow.setDoctor(doctor, firstActive.id, firstActive.name)
+    if (flow.selectedDoctorId === doctor.id) {
+      // STEP C: doctor already committed — update visit type directly in flow, no button click needed.
+      flow.setDoctor(doctor, type.id, type.name)
+    } else {
+      // STEP A: not committed — update local highlight only (radio within card, toggle off if same pill).
+      setHighlightedPills((prev) => {
+        if (prev[doctor.id] === type.id) {
+          // Clicking the active pill again clears the selection for this card.
+          const next = { ...prev }
+          delete next[doctor.id]
+          return next
+        }
+        return { ...prev, [doctor.id]: type.id }
+      })
     }
   }
 
-  const canContinue = Boolean(
-    flow.selectedDoctorId && flow.selectedConsultationTypeId,
-  )
+  const handleSelectCard = (doctor: Doctor) => {
+    if (flow.selectedDoctorId === doctor.id) {
+      // STEP D: "Doctor Selected" clicked — deselect, clear flow and local highlight.
+      flow.clearDoctor()
+      setHighlightedPills((prev) => {
+        const next = { ...prev }
+        delete next[doctor.id]
+        return next
+      })
+      return
+    }
 
-  // Loading
+    // STEP B: "Select this Doctor" clicked — commit if a local pill is highlighted.
+    const localTypeId = highlightedPills[doctor.id]
+    if (!localTypeId) return
+
+    const idx = doctors.findIndex((d) => d.id === doctor.id)
+    const types = consultationQueries[idx]?.data ?? []
+    const selectedType = types.find((t) => t.id === localTypeId && t.isActive)
+    if (!selectedType) return
+
+    flow.setDoctor(doctor, selectedType.id, selectedType.name)
+    // Clear local state — committed card now reads from flow.selectedConsultationTypeId.
+    setHighlightedPills((prev) => {
+      const next = { ...prev }
+      delete next[doctor.id]
+      return next
+    })
+  }
+
+  const canContinue = Boolean(flow.selectedDoctorId && flow.selectedConsultationTypeId)
+
+  // ── Loading ──────────────────────────────────────────────────────────────────
   if (doctorsQuery.isLoading) {
     return (
       <section className="flex flex-col gap-6">
-        <h1 className="text-[28px] md:text-[36px] font-bold text-center text-[#111]" style={{ fontFamily: '"Playfair Display", Georgia, serif' }}>
+        <h1
+          className="text-[28px] md:text-[36px] font-bold text-center text-[#111]"
+          style={{ fontFamily: '"Playfair Display", Georgia, serif' }}
+        >
           Choose Your Doctor
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -245,7 +318,7 @@ export function Step1DoctorSelect({ flow }: Step1Props) {
     )
   }
 
-  // Error
+  // ── Error ────────────────────────────────────────────────────────────────────
   if (doctorsQuery.isError) {
     return (
       <section className="flex flex-col items-center justify-center gap-4 py-12">
@@ -267,28 +340,38 @@ export function Step1DoctorSelect({ flow }: Step1Props) {
     )
   }
 
+  // ── Main render ──────────────────────────────────────────────────────────────
   return (
     <section className="flex flex-col gap-6">
       <div className="text-center">
-        <h1 className="text-[28px] md:text-[36px] font-bold text-[#111]" style={{ fontFamily: '"Playfair Display", Georgia, serif' }}>
+        <h1
+          className="text-[28px] md:text-[36px] font-bold text-[#111]"
+          style={{ fontFamily: '"Playfair Display", Georgia, serif' }}
+        >
           Choose Your Doctor
         </h1>
-        <p className="text-[14px] text-gray-600 mt-1">Select a doctor and your preferred visit type to continue.</p>
+        <p className="text-[14px] text-gray-600 mt-1">
+          Select a doctor and your preferred visit type to continue.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {doctors.map((doctor, idx) => {
           const types = consultationQueries[idx]?.data ?? []
           const loading = consultationQueries[idx]?.isLoading ?? false
-          const isSelected = flow.selectedDoctorId === doctor.id
+          const isCommitted = flow.selectedDoctorId === doctor.id
+          // Disabled when any other doctor is committed in the flow.
+          const isDisabled = flow.selectedDoctorId !== null && !isCommitted
           return (
             <DoctorCard
               key={doctor.id}
               doctor={doctor}
               consultationTypes={types}
               consultationsLoading={loading}
-              isSelectedDoctor={isSelected}
-              selectedTypeIdForThisDoctor={isSelected ? flow.selectedConsultationTypeId : null}
+              isCommitted={isCommitted}
+              isDisabled={isDisabled}
+              committedTypeId={isCommitted ? flow.selectedConsultationTypeId : null}
+              localTypeId={isCommitted ? null : (highlightedPills[doctor.id] ?? null)}
               onSelectType={handleSelectType}
               onSelectCard={handleSelectCard}
             />
@@ -305,7 +388,7 @@ export function Step1DoctorSelect({ flow }: Step1Props) {
           className={cn(
             'inline-flex items-center gap-2 min-h-[48px] px-7 rounded-lg text-[15px] font-semibold transition-all duration-200 w-full md:w-auto justify-center',
             canContinue
-              ? 'bg-teal-600 text-white shadow-md hover:bg-teal-700 hover:shadow-lg'
+              ? 'bg-[#0F6E56] text-white shadow-md hover:bg-[#085041] hover:shadow-lg'
               : 'bg-gray-200 text-gray-400 cursor-not-allowed',
           )}
           aria-disabled={!canContinue}

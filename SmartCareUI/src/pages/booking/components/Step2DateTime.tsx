@@ -362,45 +362,53 @@ export function Step2DateTime({ flow }: Step2Props) {
         </div>
       </div>
 
-      {/* Info note */}
-      <div className="flex items-start gap-3 p-4 rounded-lg bg-gray-50 border border-gray-200">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" className="text-gray-500 shrink-0 mt-0.5">
-          <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.6" />
-          <path d="M10 6v5M10 14v.1" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-        </svg>
-        <p className="text-[13px] text-gray-600 italic leading-relaxed">
-          You're booking a preferred time window. Our administrative team will contact you to confirm
-          your exact appointment time within 2 hours.
-        </p>
-      </div>
-
       {/* Bottom sticky bar */}
       <div className="fixed md:relative bottom-0 left-0 right-0 md:left-auto md:right-auto bg-white md:bg-transparent border-t border-gray-200 md:border-0 shadow-[0_-4px_20px_rgba(0,0,0,0.04)] md:shadow-none px-4 py-3 md:p-0 md:mt-4 z-30">
-        <div className="flex items-center justify-between gap-4 max-w-4xl mx-auto">
-          <div className="min-w-0">
-            <p className="text-[11px] font-medium uppercase tracking-wider text-gray-500">Selected</p>
-            <p className="text-[14px] font-semibold text-[#111] truncate">
-              {flow.selectedDate && flow.selectedSlot
-                ? `${getDayName(flow.selectedDate).slice(0, 3)}, ${formatDisplayDate(flow.selectedDate)} · ${formatDisplayTime(flow.selectedSlot)}`
-                : flow.selectedDate
-                  ? `${formatDisplayDate(flow.selectedDate)} · Pick a slot`
-                  : 'Pick a date and slot'}
+        <div className="max-w-4xl mx-auto space-y-3">
+          {/* Selected and Continue */}
+          <div className="flex items-center justify-between gap-4">
+            <div className="min-w-0">
+              <p className="text-[11px] font-medium uppercase tracking-wider text-gray-500">Selected</p>
+              {flow.selectedDoctor && flow.selectedConsultationTypeName && (
+                <p className="text-[13px] text-gray-700 mb-1">
+                  {flow.selectedDoctor.name} • {flow.selectedConsultationTypeName}
+                </p>
+              )}
+              <p className="text-[14px] font-semibold text-[#111] truncate">
+                {flow.selectedDate && flow.selectedSlot
+                  ? `${getDayName(flow.selectedDate).slice(0, 3)}, ${formatDisplayDate(flow.selectedDate)} · ${formatDisplayTime(flow.selectedSlot)}`
+                  : flow.selectedDate
+                    ? `${formatDisplayDate(flow.selectedDate)} · Pick a slot`
+                    : 'Pick a date and slot'}
+              </p>
+            </div>
+            <button
+              type="button"
+              disabled={!canContinue}
+              onClick={() => flow.goToStep(3)}
+              className={cn(
+                'inline-flex items-center gap-2 min-h-[48px] px-6 rounded-lg text-[15px] font-semibold transition-all duration-200 shrink-0',
+                canContinue
+                  ? 'bg-teal-600 text-white shadow-md hover:bg-teal-700 hover:shadow-lg'
+                  : 'bg-gray-200 text-gray-400 cursor-not-allowed',
+              )}
+            >
+              Continue
+              <ArrowRight />
+            </button>
+          </div>
+
+          {/* Info note */}
+          <div className="flex items-start gap-3 p-4 rounded-lg bg-gray-50 border border-gray-200">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" className="text-gray-500 shrink-0 mt-0.5">
+              <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.6" />
+              <path d="M10 6v5M10 14v.1" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+            </svg>
+            <p className="text-[13px] text-gray-600 italic leading-relaxed">
+              You're booking a preferred time window. Our administrative team will contact you to confirm
+              your exact appointment time within 2 hours.
             </p>
           </div>
-          <button
-            type="button"
-            disabled={!canContinue}
-            onClick={() => flow.goToStep(3)}
-            className={cn(
-              'inline-flex items-center gap-2 min-h-[48px] px-6 rounded-lg text-[15px] font-semibold transition-all duration-200 shrink-0',
-              canContinue
-                ? 'bg-teal-600 text-white shadow-md hover:bg-teal-700 hover:shadow-lg'
-                : 'bg-gray-200 text-gray-400 cursor-not-allowed',
-            )}
-          >
-            Continue
-            <ArrowRight />
-          </button>
         </div>
       </div>
     </section>

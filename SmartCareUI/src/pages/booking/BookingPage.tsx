@@ -26,11 +26,18 @@ export default function BookingPage() {
     else flow.goBack()
   }
 
+  const handleStepClick = (step: 1 | 2 | 3) => {
+    const currentStepNum = flow.currentStep === 'confirmation' ? 3 : flow.currentStep
+    if (step < currentStepNum) {
+      flow.goToStep(step)
+    }
+  }
+
   return (
     <>
       <Header />
 
-      <main className="min-h-screen bg-warm-50 pt-20 md:pt-24 pb-12 md:pb-20">
+      <main className="min-h-screen bg-warm-50 pt-20 md:pt-18 pb-12 md:pb-20">
         <div className="max-w-4xl mx-auto px-4">
 
           {/* Sub-toolbar: back button */}
@@ -52,8 +59,8 @@ export default function BookingPage() {
           )}
 
           {/* Step indicator */}
-          <div className="mb-8 md:mb-10">
-            <StepIndicator currentStep={flow.currentStep} />
+          <div className="mb-8 md:mb-5">
+            <StepIndicator currentStep={flow.currentStep} onStepClick={handleStepClick} />
           </div>
 
           {/* Active step */}
