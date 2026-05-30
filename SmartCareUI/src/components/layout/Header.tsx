@@ -4,12 +4,12 @@ import { cn } from '@/utils/cn'
 import logoImg from '@/assets/images/Logo.png'
 
 const NAV_LINKS = [
-  { label: 'Home',          href: '/'           },
-  { label: 'Find Doctors',  href: '/book'        },
-  { label: 'Specialties',   href: '#specialties' },
-  { label: 'Services',      href: '#services'    },
-  { label: 'About Us',      href: '#about'       },
-  { label: 'Resources',     href: '#resources'   },
+  { label: 'Home',           href: '/'              },
+  { label: 'Find Doctors',   href: '/book'          },
+  { label: 'My Appointment', href: '/my-appointment' },
+  { label: 'Specialties',    href: '#specialties'   },
+  { label: 'Services',       href: '#services'      },
+  { label: 'About Us',       href: '#about'         },
 ] as const
 
 export function Header() {
@@ -65,35 +65,44 @@ export function Header() {
         >
           {NAV_LINKS.map(({ label, href }) => {
             const isActive = href === '/' ? pathname === '/' : pathname === href
-            return (
-              <a
-                key={label}
-                href={href}
-                className="flex items-center h-full text-[15px] font-medium transition-colors"
+            const isInternalRoute = href.startsWith('/')
+            const linkClass = 'flex items-center h-full text-[15px] font-medium transition-colors'
+            // Underline sits directly under the text via border-b on the
+            // <span>. pb-1 creates 4 px of gap between baseline and line.
+            // This keeps the indicator close to the text, not at the very
+            // bottom of the 64 px header bar.
+            const labelSpan = (
+              <span
+                className={cn(
+                  'pb-1 transition-colors',
+                  isActive
+                    ? 'text-[#C9A227] border-b-2 border-[#C9A227]'
+                    : 'text-[#333333] hover:text-[#0F6E56]',
+                )}
               >
-                {/*
-                  Underline sits directly under the text via border-b on the
-                  <span>. pb-1 creates 4 px of gap between baseline and line.
-                  This keeps the indicator close to the text, not at the very
-                  bottom of the 64 px header bar.
-                */}
-                <span
-                  className={cn(
-                    'pb-1 transition-colors',
-                    isActive
-                      ? 'text-[#C9A227] border-b-2 border-[#C9A227]'
-                      : 'text-[#333333] hover:text-[#0F6E56]',
-                  )}
-                >
-                  {label}
-                </span>
+                {label}
+              </span>
+            )
+            return isInternalRoute ? (
+              <Link key={label} to={href} className={linkClass}>
+                {labelSpan}
+              </Link>
+            ) : (
+              <a key={label} href={href} className={linkClass}>
+                {labelSpan}
               </a>
             )
           })}
         </nav>
 
         {/* ── Slot 3: CTA (hard right) ────────────────────────── */}
-        <div className="hidden md:flex items-center shrink-0">
+        <div className="hidden md:flex items-center gap-4 shrink-0">
+          <Link
+            to="/login"
+            className="text-sm text-gray-500 hover:text-[#0F6E56] transition-colors min-h-[44px] flex items-center"
+          >
+            Staff Login
+          </Link>
           <Link
             to="/book"
             className="inline-flex items-center gap-1.5 bg-brand-dark text-white text-[15px] font-semibold px-6 py-2.5 rounded-full min-h-[44px] hover:bg-teal-600 transition-colors shadow-sm"
@@ -141,16 +150,29 @@ export function Header() {
             aria-label="Mobile navigation"
             className="px-4 py-2"
           >
-            {NAV_LINKS.map(({ label, href }) => (
-              <a
-                key={label}
-                href={href}
-                className="flex items-center min-h-[44px] text-[15px] font-medium text-[#333333] hover:text-[#0F6E56] border-b border-gray-50 last:border-0"
-                onClick={() => setMobileOpen(false)}
-              >
-                {label}
-              </a>
-            ))}
+            {NAV_LINKS.map(({ label, href }) => {
+              const isInternalRoute = href.startsWith('/')
+              const drawerLinkClass =
+                'flex items-center min-h-[44px] text-[15px] font-medium text-[#333333] hover:text-[#0F6E56] border-b border-gray-50 last:border-0'
+              const closeDrawer = () => setMobileOpen(false)
+              return isInternalRoute ? (
+                <Link key={label} to={href} className={drawerLinkClass} onClick={closeDrawer}>
+                  {label}
+                </Link>
+              ) : (
+                <a key={label} href={href} className={drawerLinkClass} onClick={closeDrawer}>
+                  {label}
+                </a>
+              )
+            })}
+            <div className="border-t border-gray-100 my-2" />
+            <Link
+              to="/login"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center min-h-[44px] text-[15px] font-medium text-gray-500 hover:text-[#0F6E56]"
+            >
+              Staff Login
+            </Link>
             <Link
               to="/book"
               className="flex items-center justify-center gap-1.5 bg-brand-dark text-white text-[15px] font-semibold px-5 rounded-full my-3 min-h-[44px] hover:bg-teal-600 transition-colors"

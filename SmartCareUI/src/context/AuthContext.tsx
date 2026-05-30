@@ -41,6 +41,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(() => {
     window.__smartcare_token = undefined
     setUser(null)
+    // Clean up per-session doctor selections so the next sign-in is unambiguous.
+    try {
+      for (let i = sessionStorage.length - 1; i >= 0; i--) {
+        const key = sessionStorage.key(i)
+        if (key && key.startsWith('smartcare:doctorId:')) {
+          sessionStorage.removeItem(key)
+        }
+      }
+    } catch {
+      /* sessionStorage may be unavailable (e.g. SSR or restricted iframe) */
+    }
   }, [])
 
   useEffect(() => {

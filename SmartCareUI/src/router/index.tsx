@@ -14,6 +14,7 @@ const AdminDashboardPage = lazy(() =>
 const DoctorSchedulePage = lazy(() =>
   import('@/pages/doctor/DoctorSchedulePage')
 )
+const SetupPage = lazy(() => import('@/pages/setup/SetupPage'))
 const NotFoundPage = lazy(() => import('@/pages/not-found/NotFoundPage'))
 
 const Loader = () => (
@@ -73,6 +74,14 @@ export const router = createBrowserRouter([
           <DoctorSchedulePage />
         </Suspense>
       </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/setup',
+    element: (
+      <Suspense fallback={<Loader />}>
+        <SetupPage />
+      </Suspense>
     ),
   },
   {

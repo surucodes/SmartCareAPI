@@ -8,6 +8,11 @@ export const testimonialsService = {
   getApproved: () =>
     api.get<Testimonial[]>('/api/testimonials').then((r) => r.data),
 
+  getAll: (includePending: boolean) =>
+    api
+      .get<Testimonial[]>('/api/testimonials', { params: { includePending } })
+      .then((r) => r.data),
+
   create: (dto: CreateTestimonialDto) =>
     api.post<Testimonial>('/api/testimonials', dto).then((r) => r.data),
 
