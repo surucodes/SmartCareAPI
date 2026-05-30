@@ -1,12 +1,14 @@
-import { useRef } from 'react'
+import { useState } from 'react'
 import { cn } from '@/utils/cn'
 import { formatDisplayDate, getDayName, getTodayIST } from '@/utils/date.utils'
+import { BrandedCalendar } from '@/components/BrandedCalendar'
 import type { Appointment } from '@/types/appointment.types'
 import type { Doctor } from '@/types/doctor.types'
 
 interface MobileTabBarProps {
   doctors: Doctor[]
   appointmentsByDoctorId: Record<string, Appointment[]>
+  daysWithAppointments: Set<string>
   activeTabDoctorId: string
   onTabChange: (doctorId: string) => void
   onHamburgerClick: () => void
@@ -60,6 +62,7 @@ function lastName(fullName: string): string {
 export function MobileTabBar({
   doctors,
   appointmentsByDoctorId,
+  daysWithAppointments,
   activeTabDoctorId,
   onTabChange,
   onHamburgerClick,
@@ -71,20 +74,12 @@ export function MobileTabBar({
   onSelectDate,
 }: MobileTabBarProps) {
   // Reserved for future inline reset affordance; date label currently opens
-  // the native picker instead.
+  // the calendar bottom sheet instead.
   void onResetToToday
 
   const isToday = selectedDate === getTodayIST()
   const shortLabel = `${getDayName(selectedDate).slice(0, 3)}, ${formatDisplayDate(selectedDate)}`
-  const dateInputRef = useRef<HTMLInputElement>(null)
-
-  const handleDateLabelClick = () => {
-    try {
-      dateInputRef.current?.showPicker()
-    } catch {
-      dateInputRef.current?.click()
-    }
-  }
+  const [showCalendar, setShowCalendar] = useState(false)
 
   return (
     <div className="md:hidden bg-white sticky top-0 z-40 border-b border-gray-100">
@@ -112,30 +107,17 @@ export function MobileTabBar({
           </button>
 
           {/* Fixed-width so arrows never shift with day-name length */}
-          <div className="relative">
-            <button
-              type="button"
-              onClick={handleDateLabelClick}
-              title="Click to pick a date"
-              aria-label={`Current date: ${shortLabel}. Click to open date picker.`}
-              className={cn(
-                'w-[138px] text-center px-1 py-1 rounded-lg text-xs font-semibold hover:bg-gray-50 transition-colors min-h-[44px]',
-                isToday ? 'text-brand-dark' : 'text-teal-700',
-              )}
-            >
-              {shortLabel}
-            </button>
-            {/* Hidden native date input — opened programmatically on button click */}
-            <input
-              ref={dateInputRef}
-              type="date"
-              value={selectedDate}
-              onChange={(e) => e.target.value && onSelectDate(e.target.value)}
-              className="opacity-0 pointer-events-none absolute inset-0 w-full h-full"
-              tabIndex={-1}
-              aria-hidden="true"
-            />
-          </div>
+          <button
+            type="button"
+            onClick={() => setShowCalendar(true)}
+            aria-label={`Current date: ${shortLabel}. Tap to open date picker.`}
+            className={cn(
+              'w-[138px] text-center px-1 py-1 rounded-lg text-xs font-semibold hover:bg-gray-50 transition-colors min-h-[44px]',
+              isToday ? 'text-brand-dark' : 'text-teal-700',
+            )}
+          >
+            {shortLabel}
+          </button>
 
           <button
             type="button"
@@ -179,6 +161,32 @@ export function MobileTabBar({
           )
         })}
       </div>
+
+      {/* Calendar bottom sheet */}
+      {showCalendar && (
+        <div className="fixed inset-0 z-50 flex items-end">
+          <div
+            role="presentation"
+            onClick={() => setShowCalendar(false)}
+            className="absolute inset-0 bg-black/40"
+          />
+          <div
+            className="relative w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <BrandedCalendar
+              selectedDate={selectedDate}
+              daysWithAppointments={daysWithAppointments}
+              onSelect={(d) => {
+                onSelectDate(d)
+                setShowCalendar(false)
+              }}
+              onClose={() => setShowCalendar(false)}
+              mobile
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }

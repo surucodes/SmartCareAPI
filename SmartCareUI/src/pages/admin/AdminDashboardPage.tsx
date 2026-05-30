@@ -256,7 +256,7 @@ function MobileNavSheet({
 export default function AdminDashboardPage() {
   const [selectedDate, setSelectedDate] = useState<string>(() => getTodayIST())
 
-  const { doctors, appointmentsByDoctorId, isLoading, isError, refetch } =
+  const { doctors, appointmentsByDoctorId, daysWithAppointments, isLoading, isError, refetch } =
     useAdminAppointments(selectedDate)
   const actions = useAppointmentActions(refetch)
   const { pendingCount } = useTestimonialsAdmin()
@@ -450,6 +450,7 @@ export default function AdminDashboardPage() {
           <MobileTabBar
             doctors={doctors}
             appointmentsByDoctorId={appointmentsByDoctorId}
+            daysWithAppointments={daysWithAppointments}
             activeTabDoctorId={activeTabDoctorId}
             onTabChange={setActiveTabDoctorId}
             onHamburgerClick={() => setShowMobileNav(true)}
@@ -485,6 +486,7 @@ export default function AdminDashboardPage() {
         {/* Desktop top bar — fixed, does NOT scroll */}
         <AdminTopBar
           selectedDate={selectedDate}
+          daysWithAppointments={daysWithAppointments}
           onPrevDay={goPrev}
           onNextDay={goNext}
           onResetToToday={resetToday}

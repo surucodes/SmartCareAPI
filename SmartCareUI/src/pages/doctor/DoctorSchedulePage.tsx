@@ -19,7 +19,7 @@ import { WeekStrip } from './components/WeekStrip'
 import { StatusFilterPills } from './components/StatusFilterPills'
 import { DoctorAppointmentCard } from './components/DoctorAppointmentCard'
 import { DoctorDetailPanel } from './components/DoctorDetailPanel'
-import { DoctorCalendar } from './components/DoctorCalendar'
+import { BrandedCalendar } from '@/components/BrandedCalendar'
 import logoImg from '@/assets/images/Logo.png'
 
 /* ── Local SVGs (page-only) ────────────────────────────────────────── */
@@ -547,7 +547,7 @@ function ScheduleView({ doctor }: ScheduleViewProps): ReactElement {
             className="relative w-full"
             onClick={(e) => e.stopPropagation()}
           >
-            <DoctorCalendar
+            <BrandedCalendar
               selectedDate={schedule.selectedDate}
               daysWithAppointments={schedule.daysWithAppointments}
               onSelect={(d) => {

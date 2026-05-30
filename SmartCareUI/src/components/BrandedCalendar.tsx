@@ -3,7 +3,7 @@ import { addDays, format, isSameMonth, parseISO, startOfMonth, startOfWeek } fro
 import { cn } from '@/utils/cn'
 import { getTodayIST } from '@/utils/date.utils'
 
-export interface DoctorCalendarProps {
+export interface BrandedCalendarProps {
   selectedDate: string
   daysWithAppointments: Set<string>
   onSelect: (date: string) => void
@@ -30,13 +30,13 @@ function ChevronRight() {
   )
 }
 
-export function DoctorCalendar({
+export function BrandedCalendar({
   selectedDate,
   daysWithAppointments,
   onSelect,
   onClose,
   mobile = false,
-}: DoctorCalendarProps) {
+}: BrandedCalendarProps) {
   const todayStr = getTodayIST()
   const [viewDate, setViewDate] = useState(() => startOfMonth(parseISO(selectedDate)))
 

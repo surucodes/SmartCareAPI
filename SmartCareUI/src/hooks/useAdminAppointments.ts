@@ -9,6 +9,8 @@ import type { Doctor } from '@/types/doctor.types'
 export interface UseAdminAppointments {
   doctors: Doctor[]
   appointmentsByDoctorId: Record<string, Appointment[]>
+  /** yyyy-MM-dd dates with at least one Pending or Confirmed appointment — for calendar dots. */
+  daysWithAppointments: Set<string>
   isLoading: boolean
   isError: boolean
   refetch: () => void
@@ -65,9 +67,20 @@ export function useAdminAppointments(selectedDate: string): UseAdminAppointments
     return grouped
   }, [doctors, allAppointments, selectedDate])
 
+  const daysWithAppointments = useMemo(() => {
+    const set = new Set<string>()
+    for (const a of allAppointments) {
+      if (a.status === 'Pending' || a.status === 'Confirmed') {
+        set.add(a.date)
+      }
+    }
+    return set
+  }, [allAppointments])
+
   return {
     doctors,
     appointmentsByDoctorId,
+    daysWithAppointments,
     isLoading: doctorsQuery.isLoading || appointmentsQuery.isLoading,
     isError: doctorsQuery.isError || appointmentsQuery.isError,
     refetch: () => {

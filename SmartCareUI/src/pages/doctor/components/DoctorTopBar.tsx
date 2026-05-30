@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { addDays, format } from 'date-fns'
 import { getTodayIST } from '@/utils/date.utils'
 import { WeekStrip } from './WeekStrip'
-import { DoctorCalendar } from './DoctorCalendar'
+import { BrandedCalendar } from '@/components/BrandedCalendar'
 
 interface DoctorTopBarProps {
   currentWeekStart: Date
@@ -120,7 +120,7 @@ export function DoctorTopBar({
         {/* Calendar dropdown — absolute below the left cell */}
         {showCalendar && (
           <div className="absolute top-full left-0 z-50 mt-1">
-            <DoctorCalendar
+            <BrandedCalendar
               selectedDate={selectedDate}
               daysWithAppointments={daysWithAppointments}
               onSelect={(d) => {

@@ -1,9 +1,11 @@
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/utils/cn'
 import { formatDisplayDate, getDayName, getTodayIST } from '@/utils/date.utils'
+import { BrandedCalendar } from '@/components/BrandedCalendar'
 
 interface AdminTopBarProps {
   selectedDate: string
+  daysWithAppointments: Set<string>
   onPrevDay: () => void
   onNextDay: () => void
   onResetToToday: () => void
@@ -59,6 +61,7 @@ function XIcon() {
 
 export function AdminTopBar({
   selectedDate,
+  daysWithAppointments,
   onPrevDay,
   onNextDay,
   onResetToToday,
@@ -71,16 +74,20 @@ export function AdminTopBar({
 }: AdminTopBarProps) {
   const dateLabel = `${getDayName(selectedDate)}, ${formatDisplayDate(selectedDate)}`
   const isToday = selectedDate === getTodayIST()
-  const dateInputRef = useRef<HTMLInputElement>(null)
+  const [showCalendar, setShowCalendar] = useState(false)
+  const dateCellRef = useRef<HTMLDivElement>(null)
 
-  const handleDateLabelClick = () => {
-    // showPicker() is supported in modern browsers; click() is the fallback
-    try {
-      dateInputRef.current?.showPicker()
-    } catch {
-      dateInputRef.current?.click()
+  // Close on click outside (any element outside the date cell, including arrows)
+  useEffect(() => {
+    if (!showCalendar) return
+    const onMouseDown = (e: MouseEvent) => {
+      if (!dateCellRef.current?.contains(e.target as Node)) {
+        setShowCalendar(false)
+      }
     }
-  }
+    document.addEventListener('mousedown', onMouseDown)
+    return () => document.removeEventListener('mousedown', onMouseDown)
+  }, [showCalendar])
 
   return (
     <>
@@ -99,10 +106,11 @@ export function AdminTopBar({
           </button>
 
           {/* Fixed-width container keeps arrows stable regardless of day-name length */}
-          <div className="relative">
+          <div ref={dateCellRef} className="relative">
             <button
               type="button"
-              onClick={handleDateLabelClick}
+              onClick={() => setShowCalendar((v) => !v)}
+              aria-expanded={showCalendar}
               title="Click to pick a date"
               aria-label={`Current date: ${dateLabel}. Click to open date picker.`}
               className={cn(
@@ -112,16 +120,19 @@ export function AdminTopBar({
             >
               {dateLabel}
             </button>
-            {/* Hidden native date input — opened programmatically on button click */}
-            <input
-              ref={dateInputRef}
-              type="date"
-              value={selectedDate}
-              onChange={(e) => e.target.value && onSelectDate(e.target.value)}
-              className="opacity-0 pointer-events-none absolute inset-0 w-full h-full"
-              tabIndex={-1}
-              aria-hidden="true"
-            />
+            {showCalendar && (
+              <div className="absolute top-full left-0 z-50 mt-1">
+                <BrandedCalendar
+                  selectedDate={selectedDate}
+                  daysWithAppointments={daysWithAppointments}
+                  onSelect={(d) => {
+                    onSelectDate(d)
+                    setShowCalendar(false)
+                  }}
+                  onClose={() => setShowCalendar(false)}
+                />
+              </div>
+            )}
           </div>
 
           <button
