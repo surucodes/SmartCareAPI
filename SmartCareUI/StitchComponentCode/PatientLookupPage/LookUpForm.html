@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Spandana Hospital - Lookup &amp; Appointment Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "text-light": "#A0AEC0",
+                    "on-secondary-container": "#735a00",
+                    "inverse-on-surface": "#f2f1ed",
+                    "tertiary-fixed-dim": "#ebbac4",
+                    "on-tertiary-container": "#ad828b",
+                    "on-tertiary-fixed-variant": "#603d45",
+                    "on-primary-container": "#A8D5B8",
+                    "error-container": "#ffdad6",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-container": "#3b1d25",
+                    "on-tertiary": "#ffffff",
+                    "outline-variant": "#F0F0F0",
+                    "surface-dim": "#D9DCE0",
+                    "outline": "#E5E7EB",
+                    "primary-fixed": "#cdead0",
+                    "on-secondary-fixed-variant": "#584400",
+                    "tertiary": "#220910",
+                    "text-secondary": "#555555",
+                    "surface": "#faf9f6",
+                    "inverse-surface": "#2f312f",
+                    "surface-container-low": "#f4f4f0",
+                    "on-surface-variant": "#424842",
+                    "text-muted": "#888888",
+                    "on-background": "#1b1c1a",
+                    "surface-bright": "#faf9f6",
+                    "on-primary": "#ffffff",
+                    "on-surface": "#1b1c1a",
+                    "surface-tint": "#4b6450",
+                    "on-error-container": "#93000a",
+                    "error": "#ba1a1a",
+                    "secondary-container": "#fed255",
+                    "primary": "#001607",
+                    "primary-container": "#1A3C2A",
+                    "tertiary-fixed": "#ffd9e0",
+                    "text-primary": "#111111",
+                    "on-error": "#ffffff",
+                    "background": "#faf9f6",
+                    "surface-container": "#efeeea",
+                    "surface-container-highest": "#e3e2df",
+                    "surface-inverse": "#132B1A",
+                    "on-secondary": "#ffffff",
+                    "inverse-primary": "#b1ceb4",
+                    "on-tertiary-fixed": "#2f131b",
+                    "secondary": "#755b00",
+                    "on-primary-fixed": "#082010",
+                    "accent-light": "#F5E9C0",
+                    "on-secondary-fixed": "#241a00",
+                    "secondary-fixed": "#ffe08e",
+                    "surface-variant": "#e3e2df",
+                    "surface-container-high": "#e9e8e5",
+                    "on-primary-fixed-variant": "#344c39",
+                    "secondary-fixed-dim": "#ecc246",
+                    "primary-fixed-dim": "#b1ceb4"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "48px",
+                    "container-max": "1200px",
+                    "base": "8px",
+                    "section-padding-y": "80px",
+                    "card-padding": "24px"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "headline-md": ["Playfair Display"],
+                    "stat-number": ["Inter"],
+                    "headline-sm": ["Playfair Display"],
+                    "nav-link": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-section": ["Inter"],
+                    "headline-lg": ["Playfair Display"],
+                    "title-lg": ["Playfair Display"],
+                    "display-xl-mobile": ["Playfair Display"],
+                    "body-md": ["Inter"],
+                    "display-xl": ["Playfair Display"],
+                    "label-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "stat-number": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "headline-sm": ["22px", {"lineHeight": "30px", "fontWeight": "700"}],
+                    "nav-link": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+                    "label-section": ["11px", {"lineHeight": "16px", "letterSpacing": "0.12em", "fontWeight": "600"}],
+                    "headline-lg": ["36px", {"lineHeight": "44px", "fontWeight": "700"}],
+                    "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                    "display-xl-mobile": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-xl": ["48px", {"lineHeight": "58px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}]
+            }
+          },
+        }
+      }
+    </script>
+<style>
+        body { background-color: #faf9f6; }
+        .shadow-ambient { box-shadow: 0 4px 20px rgba(19, 43, 26, 0.08); }
+        .shadow-ambient-high { box-shadow: 0 8px 30px rgba(19, 43, 26, 0.12); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col pt-16 pb-20 md:pb-0">
+<!-- TopAppBar from JSON -->
+<header class="fixed top-0 w-full z-50 border-b border-outline-variant dark:border-outline-variant bg-surface dark:bg-surface">
+<div class="flex items-center justify-between px-margin-mobile md:px-margin-desktop h-16 w-full max-w-container-max mx-auto">
+<button aria-label="Go back" class="text-primary dark:text-primary-fixed hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors p-2 rounded-full">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary dark:text-primary-fixed">Spandana Hospital</h1>
+<button aria-label="More options" class="text-primary dark:text-primary-fixed hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors p-2 rounded-full">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">more_vert</span>
+</button>
+</div>
+</header>
+<main class="flex-grow px-margin-mobile md:px-margin-desktop w-full max-w-container-max mx-auto py-8">
+<!-- Toggle for dev purposes to switch states -->
+<div class="mb-6 flex gap-4 hidden md:flex">
+<button class="text-sm underline text-primary" onclick="document.getElementById('lookup-state').classList.remove('hidden'); document.getElementById('details-state').classList.add('hidden');">View State 1 (Lookup)</button>
+<button class="text-sm underline text-primary" onclick="document.getElementById('lookup-state').classList.add('hidden'); document.getElementById('details-state').classList.remove('hidden');">View State 2 (Details)</button>
+</div>
+<!-- STATE 1: LOOKUP FORM -->
+<section class="w-full max-w-md mx-auto" id="lookup-state">
+<div class="bg-surface-container-lowest rounded-lg shadow-ambient p-card-padding border border-outline-variant relative overflow-hidden">
+<!-- Subtle organic decoration -->
+<div class="absolute -top-10 -right-10 opacity-5 pointer-events-none">
+<svg fill="currentColor" height="150" viewbox="0 0 24 24" width="150"><path d="M17,8C8,10,5.9,16.17,3.82,21.34L5.71,22l1-2.3A4.49,4.49,0,0,0,8,20C19,20,22,3,22,3,21,5,14,5.25,9,6.25C13.5,6.5,17,8,17,8Z"></path></svg>
+</div>
+<div class="flex flex-col items-center text-center mb-8">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 0;">search</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-primary mb-2">Find Your Appointment</h2>
+<p class="font-body-sm text-body-sm text-text-secondary">Enter your appointment ID and phone number</p>
+</div>
+<form class="space-y-5">
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-1" for="appt-id">Appointment ID</label>
+<input aria-describedby="appt-id-help" class="w-full rounded-lg border-outline-variant bg-surface focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md py-3 px-4 shadow-sm transition-colors" id="appt-id" placeholder="e.g. SH-D96913C4" type="text"/>
+<p class="font-body-sm text-body-sm text-text-muted mt-1 text-xs" id="appt-id-help">You can find this in your confirmation SMS</p>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-1" for="phone">Phone Number</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 flex items-center pl-4 font-body-md text-body-md text-text-secondary">+91</span>
+<input class="w-full rounded-lg border-outline-variant bg-surface focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md py-3 pl-12 pr-4 shadow-sm transition-colors" id="phone" placeholder="98765 43210" type="tel"/>
+</div>
+</div>
+<button class="w-full min-h-[52px] bg-primary text-on-primary rounded-full font-label-md text-label-md hover:bg-primary-container transition-colors shadow-sm flex items-center justify-center gap-2 mt-8" onclick="document.getElementById('lookup-state').classList.add('hidden'); document.getElementById('details-state').classList.remove('hidden');" type="button">
+                        Find Appointment
+                        <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 0;">arrow_forward</span>
+</button>
+</form>
+</div>
+</section>
+<!-- STATE 2: APPOINTMENT DETAILS (Initially hidden for demo flow) -->
+<section class="w-full max-w-lg mx-auto hidden" id="details-state">
+<button class="flex items-center gap-1 text-primary font-nav-link text-nav-link mb-6 hover:underline" onclick="document.getElementById('lookup-state').classList.remove('hidden'); document.getElementById('details-state').classList.add('hidden');">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 0;">chevron_left</span>
+                Search Again
+            </button>
+<div class="bg-surface-container-lowest rounded-lg shadow-ambient border border-outline-variant relative overflow-hidden mb-8">
+<!-- Status Bar -->
+<div class="bg-surface-container px-card-padding py-3 flex justify-between items-center border-b border-outline-variant">
+<span class="font-label-sm text-label-sm text-text-secondary">Booking ID: SH-82931</span>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                        Pending Confirmation
+                    </span>
+</div>
+<div class="p-card-padding space-y-6">
+<!-- Doctor Info -->
+<div class="flex items-center gap-4">
+<div class="w-16 h-16 rounded-full overflow-hidden border-2 border-outline-variant bg-surface-container-highest shrink-0">
+<img alt="Doctor profile placeholder" class="w-full h-full object-cover" data-alt="A professional headshot of a mature male doctor in a white lab coat with a stethoscope around his neck, looking confident and approachable. The background is a softly blurred, modern clinic setting with warm, inviting lighting reflecting a premium healthcare environment. The image aligns with the Corporate Modern with Warm Heritage aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfc6I0pYr-juVXuhjCN8aYC9u99_sVLr2CnUWU5YC1KO0S5c4xBKPXqlV0CoNxt6m9GwTT9wR4nMGeBnS6n7eDz0oJwaBWTIgzFe0MoK0kFvkRmiVdkbnNrlBFL5jHyiQISteQBJjo92CbawgxJk5-m0rKId9FuGjccNIjGAMlDysU2NQjzVBHyPema24QXFchNZee95cCU9yMyanG9kh8up1DJuH2mtom_IIooHPSdjiQ_PTZPBxGz43n6pTHgwzJx9mMzB9ZVA"/>
+</div>
+<div>
+<h3 class="font-title-lg text-title-lg text-primary">Dr. Aravind Menon</h3>
+<p class="font-label-section text-label-section text-secondary uppercase mt-1">Cardiology</p>
+</div>
+</div>
+<hr class="border-outline-variant"/>
+<!-- Info Grid -->
+<div class="grid grid-cols-2 gap-y-6 gap-x-4">
+<div>
+<p class="font-label-sm text-label-sm text-text-secondary mb-1">Date</p>
+<p class="font-body-md text-body-md text-on-surface font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-lg text-primary" style="font-variation-settings: 'FILL' 0;">calendar_today</span>
+                                30 May 2026
+                            </p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-text-secondary mb-1">Time</p>
+<p class="font-body-md text-body-md text-on-surface font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-lg text-primary" style="font-variation-settings: 'FILL' 0;">schedule</span>
+                                6:45 PM
+                            </p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-text-secondary mb-1">Type</p>
+<p class="font-body-md text-body-md text-on-surface font-medium">In-Person Consultation</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-text-secondary mb-1">Queue Position</p>
+<span class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-md text-label-md">
+                                #2
+                            </span>
+</div>
+<div class="col-span-2">
+<p class="font-label-sm text-label-sm text-text-secondary mb-1">Patient Name</p>
+<p class="font-body-md text-body-md text-on-surface font-medium">Vikram Sharma</p>
+</div>
+</div>
+<!-- Cancellation Section -->
+<div class="mt-8">
+<div class="bg-surface-container-high rounded-lg p-4 flex gap-3 items-start border border-outline-variant mb-4">
+<span class="material-symbols-outlined text-secondary mt-0.5" style="font-variation-settings: 'FILL' 1;">error</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface mb-1">Need to reschedule?</p>
+<p class="font-body-sm text-body-sm text-text-secondary mb-3">Please cancel this appointment to book a new slot.</p>
+<button class="px-4 py-2 rounded border border-error text-error font-label-md text-label-md hover:bg-error-container transition-colors" onclick="document.getElementById('cancel-form').classList.toggle('hidden');">
+                                    Cancel Appointment
+                                </button>
+</div>
+</div>
+<!-- Hidden Cancel Confirmation Form -->
+<div class="hidden mt-4 p-4 border border-error rounded-lg bg-surface" id="cancel-form">
+<label class="block font-label-md text-label-md text-on-surface mb-2" for="cancel-reason">Reason for cancellation (optional)</label>
+<textarea class="w-full rounded-lg border-outline-variant bg-surface-container-lowest focus:border-error focus:ring-1 focus:ring-error font-body-sm text-body-sm p-3 mb-4" id="cancel-reason" rows="3"></textarea>
+<div class="flex gap-3 justify-end">
+<button class="px-4 py-2 rounded font-label-md text-label-md text-text-secondary hover:bg-surface-container-low transition-colors" onclick="document.getElementById('cancel-form').classList.add('hidden');">
+                                    Keep Appointment
+                                </button>
+<button class="px-4 py-2 rounded bg-error text-on-error font-label-md text-label-md hover:bg-red-800 transition-colors">
+                                    Confirm Cancellation
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Action -->
+<div class="text-center mt-12 pb-8">
+<button class="px-6 py-3 rounded-full border border-primary text-primary font-label-md text-label-md hover:bg-surface-container-low transition-colors inline-flex items-center gap-2">
+                    Book a New Appointment
+                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 0;">arrow_forward</span>
+</button>
+</div>
+</section>
+</main>
+<!-- BottomNavBar from JSON (Visible on Mobile) -->
+<nav class="fixed bottom-0 w-full z-50 border-t border-outline-variant dark:border-outline-variant bg-surface dark:bg-surface flex justify-around items-center h-16 px-4 md:hidden">
+<!-- Home (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant w-1/4 h-full hover:bg-surface-container-lowest dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">home</span>
+<span class="font-label-sm text-[10px] leading-tight">Home</span>
+</a>
+<!-- Appointments (Active for this context) -->
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed font-semibold w-1/4 h-full hover:bg-surface-container-lowest dark:hover:bg-surface-container-highest transition-colors opacity-80 scale-95 duration-150 relative" href="#">
+<!-- Active indicator subtle dot -->
+<span class="absolute top-1 right-1/4 w-1.5 h-1.5 bg-secondary rounded-full"></span>
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
+<span class="font-label-sm text-[10px] leading-tight text-primary">Appointments</span>
+</a>
+<!-- Health Hub (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant w-1/4 h-full hover:bg-surface-container-lowest dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">monitor_heart</span>
+<span class="font-label-sm text-[10px] leading-tight">Health Hub</span>
+</a>
+<!-- Profile (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant w-1/4 h-full hover:bg-surface-container-lowest dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">person</span>
+<span class="font-label-sm text-[10px] leading-tight">Profile</span>
+</a>
+</nav>
+</body></html>

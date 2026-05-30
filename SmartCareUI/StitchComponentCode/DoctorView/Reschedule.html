@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Doctor Dashboard - Reschedule Form</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "tertiary-fixed": "#ffd9e0",
+                            "tertiary-container": "#3b1d25",
+                            "surface-container-lowest": "#ffffff",
+                            "inverse-surface": "#2f312f",
+                            "on-primary-container": "#A8D5B8",
+                            "text-primary": "#111111",
+                            "on-primary": "#ffffff",
+                            "surface": "#faf9f6",
+                            "on-error": "#ffffff",
+                            "on-error-container": "#93000a",
+                            "inverse-primary": "#b1ceb4",
+                            "surface-bright": "#faf9f6",
+                            "surface-tint": "#4b6450",
+                            "surface-container-low": "#F8F9FA",
+                            "primary-container": "#132b1a",
+                            "surface-variant": "#e3e2df",
+                            "on-tertiary-container": "#ad828b",
+                            "on-surface": "#1b1c1a",
+                            "secondary-fixed": "#ffe08e",
+                            "on-surface-variant": "#424842",
+                            "error": "#ba1a1a",
+                            "primary": "#001607",
+                            "secondary-container": "#fed255",
+                            "surface-container-highest": "#e3e2df",
+                            "error-container": "#ffdad6",
+                            "surface-dim": "#dbdad7",
+                            "text-light": "#A0AEC0",
+                            "surface-container-high": "#e9e8e5",
+                            "secondary-fixed-dim": "#ecc246",
+                            "text-muted": "#888888",
+                            "tertiary": "#220910",
+                            "outline": "#E5E7EB",
+                            "outline-variant": "#c2c8c0",
+                            "secondary": "#755b00",
+                            "background": "#faf9f6",
+                            "on-primary-fixed": "#082010",
+                            "on-secondary-fixed": "#241a00",
+                            "primary-fixed": "#cdead0",
+                            "text-secondary": "#555555",
+                            "on-primary-fixed-variant": "#344c39",
+                            "primary-fixed-dim": "#b1ceb4",
+                            "accent-light": "#F5E9C0",
+                            "surface-inverse": "#132B1A",
+                            "on-secondary-fixed-variant": "#584400",
+                            "on-secondary-container": "#735a00",
+                            "surface-container": "#efeeea",
+                            "on-secondary": "#ffffff",
+                            "tertiary-fixed-dim": "#ebbac4",
+                            "on-background": "#1b1c1a",
+                            "on-tertiary-fixed-variant": "#603d45",
+                            "on-tertiary-fixed": "#2f131b",
+                            "on-tertiary": "#ffffff",
+                            "inverse-on-surface": "#f2f1ed"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                    },
+                    "spacing": {
+                            "section-padding-y": "80px",
+                            "card-padding": "24px",
+                            "base": "8px",
+                            "margin-desktop": "48px",
+                            "gutter": "24px",
+                            "margin-mobile": "16px",
+                            "container-max": "1200px"
+                    },
+                    "fontFamily": {
+                            "title-lg": ["Playfair Display"],
+                            "display-xl": ["Playfair Display"],
+                            "body-lg": ["Inter"],
+                            "label-section": ["Inter"],
+                            "headline-lg": ["Playfair Display"],
+                            "display-xl-mobile": ["Playfair Display"],
+                            "body-sm": ["Inter"],
+                            "nav-link": ["Inter"],
+                            "headline-sm": ["Playfair Display"],
+                            "body-md": ["Inter"],
+                            "label-md": ["Inter"],
+                            "label-sm": ["Inter"],
+                            "headline-md": ["Playfair Display"],
+                            "stat-number": ["Inter"]
+                    },
+                    "fontSize": {
+                            "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "700" }],
+                            "display-xl": ["48px", { "lineHeight": "58px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                            "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                            "label-section": ["11px", { "lineHeight": "16px", "letterSpacing": "0.12em", "fontWeight": "600" }],
+                            "headline-lg": ["36px", { "lineHeight": "44px", "fontWeight": "700" }],
+                            "display-xl-mobile": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                            "body-sm": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                            "nav-link": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                            "headline-sm": ["22px", { "lineHeight": "30px", "fontWeight": "700" }],
+                            "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                            "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                            "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500" }],
+                            "headline-md": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                            "stat-number": ["32px", { "lineHeight": "40px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Subtle scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e3e2df;
+            border-radius: 4px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased flex justify-center w-full min-h-screen">
+<!-- Mobile Container (375px restriction for demonstration) -->
+<div class="w-full max-w-[375px] bg-background min-h-screen relative flex flex-col shadow-2xl overflow-hidden pb-20">
+<!-- TopAppBar (From JSON) -->
+<header class="fixed top-0 w-full max-w-[375px] z-50 bg-surface border-b border-outline-variant transition-colors flex items-center justify-between px-margin-mobile h-16">
+<button aria-label="Go back" class="flex items-center justify-center p-2 text-primary hover:bg-surface-container-low transition-colors rounded-full">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary truncate px-2">Spandana Hospital</h1>
+<button aria-label="More options" class="flex items-center justify-center p-2 text-primary hover:bg-surface-container-low transition-colors rounded-full">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-[80px] px-margin-mobile flex flex-col gap-4 relative z-10">
+<!-- Context Header (Intent: Sub-page / Task) -->
+<div class="flex items-center justify-between mb-2">
+<h2 class="font-title-lg text-title-lg text-primary">Today's Schedule</h2>
+<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-3 py-1 rounded-full border border-outline-variant">May 24</span>
+</div>
+<!-- Patient Card (Rajesh Kumar - EXPANDED STATE) -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline shadow-sm overflow-hidden flex flex-col transition-all duration-300">
+<!-- Patient Info Header -->
+<div class="p-4 flex items-start gap-4">
+<img alt="Patient Avatar" class="w-12 h-12 rounded-full object-cover border border-outline-variant shrink-0" data-alt="A small, circular profile portrait of an Indian man in his late 40s. The lighting is soft and flattering, creating a professional yet warm appearance. The background is a clean, neutral tone to match a corporate or medical dashboard aesthetic. The image conveys trust and calm." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4wejb6vLN8jD2hSQNm0BEdIfM-WS3x1i89wRU9j4wGvzSd5Hp25jxqGJno8F6uCOHzcXeNtoD_tcY3KZ4K8qDK3TUU5DRxTHFX1I4jcncpK5d8Bd0raq9b3fD7Nb3NnSbbp7Iahd95aVsMfwGe-u5vfmhLmq-uBCCVd1i6-D1jWEVRpumnu0smjwKJCV0rlnp0LM8CjhkO6O7sU-Sc0lyO8wD4WhnJjnUlkM4cl7R0CWTeL7LP1EYHpqUTvMic9dZdFkKDEbUqg"/>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h3 class="font-body-md text-body-md font-semibold text-primary">Rajesh Kumar</h3>
+<span class="font-label-sm text-label-sm text-secondary-container bg-secondary-fixed/20 px-2 py-0.5 rounded-full whitespace-nowrap">10:30 AM</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted mt-0.5">Follow-up: Hypertension</p>
+<div class="flex items-center gap-1 mt-2 text-text-muted">
+<span class="material-symbols-outlined text-[14px]">call</span>
+<span class="font-label-sm text-label-sm">+91 98765 43210</span>
+</div>
+</div>
+</div>
+<!-- Expanded Reschedule Section (Inline) -->
+<div class="bg-surface-container-low border-t border-outline-variant p-4 flex flex-col gap-4 animate-[fadeIn_0.2s_ease-out]">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-[18px]">event_repeat</span>
+<h4 class="font-label-md text-label-md font-semibold">Reschedule Appointment</h4>
+</div>
+<!-- Form Fields -->
+<div class="grid grid-cols-2 gap-3">
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant">New Date</label>
+<div class="relative">
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-[6px] font-body-sm text-body-sm text-primary px-3 py-2 focus:outline-none focus:border-surface-tint focus:ring-1 focus:ring-surface-tint appearance-none" type="date" value="2026-05-25"/>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none text-[18px]">calendar_month</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant">New Time</label>
+<div class="relative">
+<select class="w-full bg-surface-container-lowest border border-outline-variant rounded-[6px] font-body-sm text-body-sm text-primary px-3 py-2 focus:outline-none focus:border-surface-tint focus:ring-1 focus:ring-surface-tint appearance-none">
+<option>10:00 AM</option>
+<option>10:30 AM</option>
+<option selected="">11:00 AM</option>
+<option>11:30 AM</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none text-[18px]">schedule</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Reason for Rescheduling</label>
+<textarea class="w-full bg-surface-container-lowest border border-outline-variant rounded-[6px] font-body-sm text-body-sm text-primary px-3 py-2 focus:outline-none focus:border-surface-tint focus:ring-1 focus:ring-surface-tint resize-none" rows="2">Patient requested later slot</textarea>
+</div>
+<!-- Note Text -->
+<div class="bg-surface-container border border-outline-variant rounded-[6px] p-3 flex items-start gap-2">
+<span class="material-symbols-outlined text-[16px] text-text-muted mt-0.5">info</span>
+<p class="font-body-sm text-body-sm text-text-secondary leading-tight text-[13px]">
+                            You can only reschedule within your own slots. The patient will receive an email notification.
+                        </p>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-3 mt-2">
+<button class="flex-1 bg-surface-container-highest text-on-surface-variant font-label-md text-label-md py-2.5 rounded-[6px] border border-outline hover:bg-surface-variant transition-colors flex justify-center items-center">
+                            Cancel
+                        </button>
+<button class="flex-1 bg-primary text-on-primary font-label-md text-label-md py-2.5 rounded-[6px] hover:bg-primary-container transition-colors flex justify-center items-center shadow-[0_2px_4px_rgba(19,43,26,0.12)]">
+                            Confirm
+                        </button>
+</div>
+</div>
+</div>
+<!-- Other Patient Card (Collapsed state for context) -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline shadow-sm p-4 flex items-center justify-between opacity-75">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-text-muted border border-outline-variant">
+<span class="font-label-md text-label-md">AM</span>
+</div>
+<div>
+<h3 class="font-body-md text-body-md font-medium text-primary">Anjali Menon</h3>
+<p class="font-body-sm text-body-sm text-text-muted">11:15 AM</p>
+</div>
+</div>
+<button class="text-text-muted hover:text-primary transition-colors p-2">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</main>
+<!-- BottomNavBar (From JSON) -->
+<nav class="fixed bottom-0 w-full max-w-[375px] z-50 bg-surface border-t border-outline-variant flex justify-around items-center h-16 px-4">
+<!-- Home (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-lowest transition-colors p-2 rounded-lg w-16" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<!-- Appointments (Active - Matches Intent) -->
+<a class="flex flex-col items-center justify-center text-primary font-semibold hover:bg-surface-container-lowest transition-colors p-2 rounded-lg w-16 scale-95 opacity-80 duration-150" href="#">
+<span class="material-symbols-outlined fill mb-1">calendar_month</span>
+<span class="font-label-sm text-label-sm">Appointments</span>
+</a>
+<!-- Health Hub (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-lowest transition-colors p-2 rounded-lg w-16" href="#">
+<span class="material-symbols-outlined mb-1">monitor_heart</span>
+<span class="font-label-sm text-label-sm">Health Hub</span>
+</a>
+<!-- Profile (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-lowest transition-colors p-2 rounded-lg w-16" href="#">
+<span class="material-symbols-outlined mb-1">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+<!-- Background Decor (Organic feel requested in Style Guidance) -->
+<div class="fixed inset-0 pointer-events-none z-0 opacity-[0.03] overflow-hidden mix-blend-multiply">
+<svg class="absolute -top-20 -right-20 w-96 h-96 text-primary-container" fill="currentColor" viewbox="0 0 100 100">
+<path d="M50 0 C70 30, 90 50, 100 80 C70 90, 30 70, 0 50 C20 30, 40 10, 50 0 Z"></path>
+</svg>
+</div>
+</div>
+</body></html>

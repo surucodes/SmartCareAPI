@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Doctor Dashboard - My Schedule</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffd9e0",
+                        "tertiary-container": "#3b1d25",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#2f312f",
+                        "on-primary-container": "#A8D5B8",
+                        "text-primary": "#111111",
+                        "on-primary": "#ffffff",
+                        "surface": "#faf9f6",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#b1ceb4",
+                        "surface-bright": "#faf9f6",
+                        "surface-tint": "#4b6450",
+                        "surface-container-low": "#F8F9FA",
+                        "primary-container": "#132b1a",
+                        "surface-variant": "#e3e2df",
+                        "on-tertiary-container": "#ad828b",
+                        "on-surface": "#1b1c1a",
+                        "secondary-fixed": "#ffe08e",
+                        "on-surface-variant": "#424842",
+                        "error": "#ba1a1a",
+                        "primary": "#001607",
+                        "secondary-container": "#fed255",
+                        "surface-container-highest": "#e3e2df",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#dbdad7",
+                        "text-light": "#A0AEC0",
+                        "surface-container-high": "#e9e8e5",
+                        "secondary-fixed-dim": "#ecc246",
+                        "text-muted": "#888888",
+                        "tertiary": "#220910",
+                        "outline": "#E5E7EB",
+                        "outline-variant": "#c2c8c0",
+                        "secondary": "#755b00",
+                        "background": "#faf9f6",
+                        "on-primary-fixed": "#082010",
+                        "on-secondary-fixed": "#241a00",
+                        "primary-fixed": "#cdead0",
+                        "text-secondary": "#555555",
+                        "on-primary-fixed-variant": "#344c39",
+                        "primary-fixed-dim": "#b1ceb4",
+                        "accent-light": "#F5E9C0",
+                        "surface-inverse": "#132B1A",
+                        "on-secondary-fixed-variant": "#584400",
+                        "on-secondary-container": "#735a00",
+                        "surface-container": "#efeeea",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#ebbac4",
+                        "on-background": "#1b1c1a",
+                        "on-tertiary-fixed-variant": "#603d45",
+                        "on-tertiary-fixed": "#2f131b",
+                        "on-tertiary": "#ffffff",
+                        "inverse-on-surface": "#f2f1ed"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-padding-y": "80px",
+                        "card-padding": "24px",
+                        "base": "8px",
+                        "margin-desktop": "48px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "container-max": "1200px"
+                    },
+                    "fontFamily": {
+                        "title-lg": ["Playfair Display"],
+                        "display-xl": ["Playfair Display"],
+                        "body-lg": ["Inter"],
+                        "label-section": ["Inter"],
+                        "headline-lg": ["Playfair Display"],
+                        "display-xl-mobile": ["Playfair Display"],
+                        "body-sm": ["Inter"],
+                        "nav-link": ["Inter"],
+                        "headline-sm": ["Playfair Display"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Playfair Display"],
+                        "stat-number": ["Inter"]
+                    },
+                    "fontSize": {
+                        "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "700" }],
+                        "display-xl": ["48px", { "lineHeight": "58px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-section": ["11px", { "lineHeight": "16px", "letterSpacing": "0.12em", "fontWeight": "600" }],
+                        "headline-lg": ["36px", { "lineHeight": "44px", "fontWeight": "700" }],
+                        "display-xl-mobile": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "nav-link": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "headline-sm": ["22px", { "lineHeight": "30px", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500" }],
+                        "headline-md": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "stat-number": ["32px", { "lineHeight": "40px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen pt-[64px] pb-6 antialiased">
+<!-- JSON Mandatory TopAppBar (Global Context) -->
+<header class="fixed top-0 w-full z-50 bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline-variant flex items-center justify-between px-margin-mobile md:px-margin-desktop h-16 max-w-container-max mx-auto">
+<button aria-label="Go back" class="hover:bg-surface-container-low transition-colors rounded-full p-2">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed">arrow_back</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary dark:text-primary-fixed">Spandana Hospital</h1>
+<button aria-label="More options" class="hover:bg-surface-container-low transition-colors rounded-full p-2">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed">more_vert</span>
+</button>
+</header>
+<main class="w-full max-w-[480px] mx-auto relative">
+<!-- User Requested Secondary Header (Doctor Specific Context) -->
+<div class="flex items-center justify-between px-margin-mobile py-4 border-b border-outline-variant bg-surface-container-lowest relative z-40">
+<div class="relative group">
+<button class="p-1 rounded hover:bg-surface-container-low transition-colors text-on-surface peer">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="hidden peer-hover:block hover:block absolute top-full left-0 mt-1 w-48 bg-surface-container-lowest rounded-lg shadow-lg border border-outline-variant z-50 overflow-hidden">
+<a class="block px-4 py-3 text-body-md text-on-surface hover:bg-surface-container-low" href="#">My Schedule</a>
+<a class="block px-4 py-3 text-body-md text-on-surface hover:bg-surface-container-low" href="#">Today</a>
+<a class="block px-4 py-3 text-body-md text-on-surface hover:bg-surface-container-low" href="#">Settings</a>
+<a class="block px-4 py-3 text-body-md text-error hover:bg-error-container" href="#">Logout</a>
+</div>
+</div>
+<span class="font-label-md text-label-md text-primary font-semibold">Dr. Prasanna N.M</span>
+<button class="border border-primary-fixed text-primary-fixed-dim px-3 py-1 rounded-full font-label-sm text-label-sm hover:bg-primary-fixed/10 transition-colors">
+                Today
+            </button>
+</div>
+<!-- Horizontal Scrollable Week Strip -->
+<div class="px-margin-mobile py-4 overflow-x-auto no-scrollbar border-b border-surface-variant flex items-center gap-4 relative z-30 bg-surface">
+<div class="flex flex-col items-center justify-center min-w-[48px] py-2 rounded-lg text-on-surface-variant cursor-pointer">
+<span class="font-label-sm text-label-sm mb-1 uppercase">Tue</span>
+<span class="font-body-md text-body-md">21</span>
+</div>
+<div class="flex flex-col items-center justify-center min-w-[48px] py-2 rounded-lg text-on-surface-variant cursor-pointer">
+<span class="font-label-sm text-label-sm mb-1 uppercase">Wed</span>
+<span class="font-body-md text-body-md">22</span>
+</div>
+<div class="flex flex-col items-center justify-center min-w-[48px] py-2 rounded-lg text-on-surface-variant cursor-pointer">
+<span class="font-label-sm text-label-sm mb-1 uppercase">Thu</span>
+<span class="font-body-md text-body-md">23</span>
+</div>
+<!-- Active Day -->
+<div class="flex flex-col items-center justify-center min-w-[48px] py-2 rounded-lg bg-secondary-container text-on-secondary-container shadow-sm cursor-pointer border border-secondary-fixed">
+<span class="font-label-sm text-label-sm mb-1 uppercase font-bold">Fri</span>
+<span class="font-body-md text-body-md font-bold">24</span>
+</div>
+<div class="flex flex-col items-center justify-center min-w-[48px] py-2 rounded-lg text-on-surface-variant cursor-pointer">
+<span class="font-label-sm text-label-sm mb-1 uppercase">Sat</span>
+<span class="font-body-md text-body-md">25</span>
+</div>
+<div class="flex flex-col items-center justify-center min-w-[48px] py-2 rounded-lg text-on-surface-variant cursor-pointer">
+<span class="font-label-sm text-label-sm mb-1 uppercase">Sun</span>
+<span class="font-body-md text-body-md">26</span>
+</div>
+</div>
+<!-- Schedule Content Area -->
+<div class="px-margin-mobile py-6">
+<!-- Heading & Filter Row -->
+<div class="flex items-center justify-between mb-6">
+<h2 class="font-headline-sm text-headline-sm text-primary">Friday, 24 May 2026</h2>
+<div class="flex gap-2">
+<button class="bg-primary-container text-on-primary-container px-4 py-1.5 rounded-full font-label-md text-label-md">
+                        Upcoming
+                    </button>
+<!-- Inactive filter example for context -->
+<button class="border border-outline-variant text-on-surface-variant px-4 py-1.5 rounded-full font-label-md text-label-md hidden sm:block">
+                        Completed
+                    </button>
+</div>
+</div>
+<!-- Appointment Cards Stack -->
+<div class="flex flex-col gap-6">
+<!-- Card 1: Rajesh Kumar -->
+<article class="bg-surface-container-lowest rounded-lg border border-outline-variant p-card-padding shadow-[0_4px_12px_rgba(19,43,26,0.06)] relative overflow-hidden">
+<!-- Subtle top accent line -->
+<div class="absolute top-0 left-0 w-full h-1 bg-secondary-container"></div>
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+<span class="font-label-md text-label-md font-semibold">09:30 AM</span>
+</div>
+<span class="bg-primary-fixed border border-primary-fixed-dim text-on-primary-fixed px-3 py-1 rounded-full font-label-sm text-label-sm">
+                            Confirmed
+                        </span>
+</div>
+<div class="flex items-center gap-4 mb-6">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant font-title-lg text-title-lg">
+                            RK
+                        </div>
+<div>
+<h3 class="font-title-lg text-title-lg text-primary mb-1">Rajesh Kumar</h3>
+<p class="font-body-sm text-body-sm text-text-secondary">Follow-up • Gen. Medicine</p>
+</div>
+</div>
+<!-- Vertical Button Stack -->
+<div class="flex flex-col gap-3">
+<button class="w-full bg-primary-container text-on-primary-container hover:bg-surface-inverse transition-colors font-label-md text-label-md py-3 rounded-[6px] shadow-sm flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+                            Complete
+                        </button>
+<button class="w-full bg-surface-container-high text-on-surface hover:bg-surface-dim transition-colors font-label-md text-label-md py-3 rounded-[6px] shadow-sm flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">person_off</span>
+                            No Show
+                        </button>
+<button class="w-full bg-error-container text-on-error-container hover:bg-error hover:text-on-error transition-colors font-label-md text-label-md py-3 rounded-[6px] flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">cancel</span>
+                            Cancel Appointment
+                        </button>
+<button class="w-full text-text-secondary hover:text-primary transition-colors font-label-md text-label-md py-2 underline mt-1" onclick="document.getElementById('reschedule-rk').classList.toggle('hidden')">
+                            Reschedule Appointment
+                        </button>
+</div>
+<!-- Hidden Reschedule Form -->
+<div class="hidden mt-4 pt-4 border-t border-outline-variant" id="reschedule-rk">
+<h4 class="font-label-md text-label-md text-primary mb-3">Reschedule Details</h4>
+<div class="flex flex-col gap-3">
+<div>
+<label class="block font-label-sm text-text-secondary mb-1">Date</label>
+<input class="w-full rounded border-outline-variant text-body-md text-on-surface px-3 py-2 bg-surface-container focus:ring-primary focus:border-primary" type="date"/>
+</div>
+<div>
+<label class="block font-label-sm text-text-secondary mb-1">New Time (HH:MM)</label>
+<input class="w-full rounded border-outline-variant text-body-md text-on-surface px-3 py-2 bg-surface-container focus:ring-primary focus:border-primary" placeholder="e.g. 14:30" type="text"/>
+</div>
+<button class="w-full bg-primary text-on-primary py-2 rounded-[6px] font-label-md mt-2 hover:bg-surface-inverse transition-colors">
+                                Confirm Reschedule
+                            </button>
+</div>
+</div>
+</article>
+<!-- Card 2: Meera Reddy -->
+<article class="bg-surface-container-lowest rounded-lg border border-outline-variant p-card-padding shadow-[0_4px_12px_rgba(19,43,26,0.06)] relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-primary-fixed"></div>
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+<span class="font-label-md text-label-md font-semibold">10:00 AM</span>
+</div>
+<span class="bg-secondary-container text-on-secondary-container border border-secondary-fixed px-3 py-1 rounded-full font-label-sm text-label-sm">
+                            Checked In
+                        </span>
+</div>
+<div class="flex items-center gap-4 mb-6">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant font-title-lg text-title-lg">
+                            MR
+                        </div>
+<div>
+<h3 class="font-title-lg text-title-lg text-primary mb-1">Meera Reddy</h3>
+<p class="font-body-sm text-body-sm text-text-secondary">Consultation • Cardiology</p>
+</div>
+</div>
+<!-- Primary Action Only -->
+<div class="flex flex-col gap-3">
+<button class="w-full bg-primary-container text-on-primary-container hover:bg-surface-inverse transition-colors font-label-md text-label-md py-3 rounded-[6px] shadow-sm flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+                            Complete
+                        </button>
+</div>
+</article>
+</div>
+</div>
+</main>
+<!-- Simple JS to handle horizontal scroll visual state slightly -->
+<script>
+        // Minor visual enhancement to ensure horizontal scroll container stays tidy
+        const scrollContainer = document.querySelector('.overflow-x-auto');
+        if(scrollContainer) {
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            scrollContainer.addEventListener('mousedown', (e) => {
+                isDown = true;
+                startX = e.pageX - scrollContainer.offsetLeft;
+                scrollLeft = scrollContainer.scrollLeft;
+            });
+            scrollContainer.addEventListener('mouseleave', () => { isDown = false; });
+            scrollContainer.addEventListener('mouseup', () => { isDown = false; });
+            scrollContainer.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - scrollContainer.offsetLeft;
+                const walk = (x - startX) * 2; // Scroll-fast
+                scrollContainer.scrollLeft = scrollLeft - walk;
+            });
+        }
+    </script>
+</body></html>
