@@ -302,12 +302,7 @@ namespace SmartCare.API.Controllers
         [HttpPost("seed-consultation-types")]
         public async Task<ActionResult> SeedConsultationTypes()
         {
-            var existing = await _consultationTypes.CountAsync();
-            if (existing > 0)
-            {
-                LogConsultationTypesAlreadySeeded(_logger, existing);
-                return Ok(new { message = "Consultation types already seeded" });
-            }
+            await _consultationTypes.DropCollectionAsync();
 
             var doctors = await _repo.GetAllAsync();
             var varun = doctors.FirstOrDefault(d => d.Name == "Dr. Prasanna N.M");
@@ -322,11 +317,13 @@ namespace SmartCare.API.Controllers
                 new() { DoctorId = varun.Id!,  Name = "Fracture / Injury", DurationMinutes = 30, BufferMinutes = 10 },
                 new() { DoctorId = varun.Id!,  Name = "Post-Op Review",    DurationMinutes = 20, BufferMinutes = 5  },
                 new() { DoctorId = varun.Id!,  Name = "Follow-Up",         DurationMinutes = 15, BufferMinutes = 5  },
+                new() { DoctorId = varun.Id!,  Name = "Other",             DurationMinutes = 10, BufferMinutes = 5  },
 
                 new() { DoctorId = vinaya.Id!, Name = "First Visit",                DurationMinutes = 30, BufferMinutes = 10 },
                 new() { DoctorId = vinaya.Id!, Name = "Follow-Up",                  DurationMinutes = 15, BufferMinutes = 5  },
                 new() { DoctorId = vinaya.Id!, Name = "Routine Checkup",            DurationMinutes = 20, BufferMinutes = 5  },
-                new() { DoctorId = vinaya.Id!, Name = "Pre-Surgical Consultation",  DurationMinutes = 45, BufferMinutes = 15 }
+                new() { DoctorId = vinaya.Id!, Name = "Pre-Surgical Consultation",  DurationMinutes = 45, BufferMinutes = 15 },
+                new() { DoctorId = vinaya.Id!, Name = "Other",                      DurationMinutes = 10, BufferMinutes = 5  }
             };
 
             await _consultationTypes.InsertManyAsync(types);
@@ -362,8 +359,5 @@ namespace SmartCare.API.Controllers
 
         [LoggerMessage(Level = LogLevel.Information, Message = "Seeded {Count} consultation types")]
         private static partial void LogConsultationTypesSeeded(ILogger logger, int count);
-
-        [LoggerMessage(Level = LogLevel.Warning, Message = "SeedConsultationTypes called but {Count} already exist")]
-        private static partial void LogConsultationTypesAlreadySeeded(ILogger logger, long count);
     }
 }

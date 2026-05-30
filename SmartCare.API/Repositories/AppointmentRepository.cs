@@ -199,6 +199,19 @@ public class AppointmentRepository : IAppointmentRepository
     public async Task<Appointment?> GetByIdAndPhoneAsync(string id, string phone) =>
         await _appointments.Find(a => a.Id == id && a.PatientPhone == phone).FirstOrDefaultAsync();
 
+    public async Task<bool> ExistsActiveBookingAsync(string doctorId, string date, string slot, string phone)
+    {
+        var filter = Builders<Appointment>.Filter.And(
+            Builders<Appointment>.Filter.Eq(a => a.DoctorId, doctorId),
+            Builders<Appointment>.Filter.Eq(a => a.Date, date),
+            Builders<Appointment>.Filter.Eq(a => a.Slot, slot),
+            Builders<Appointment>.Filter.Eq(a => a.PatientPhone, phone),
+            Builders<Appointment>.Filter.In(a => a.Status,
+                new[] { AppointmentStatus.Pending, AppointmentStatus.Confirmed })
+        );
+        return await _appointments.Find(filter).AnyAsync();
+    }
+
     public async Task<int> MarkExpiredAsNoShowAsync()
     {
         var today = IstNow.ToString("yyyy-MM-dd");

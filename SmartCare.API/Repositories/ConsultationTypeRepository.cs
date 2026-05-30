@@ -35,4 +35,7 @@ public class ConsultationTypeRepository : IConsultationTypeRepository
 
     public async Task<long> CountAsync() =>
         await _types.CountDocumentsAsync(_ => true);
+
+    public async Task DropCollectionAsync() =>
+        await _types.Database.DropCollectionAsync("consultationTypes");
 }
