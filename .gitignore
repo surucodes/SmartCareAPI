@@ -56,3 +56,10 @@ ehthumbs.db
 # Editor
 .editorconfig
 *.sublime-workspace
+
+# Claude Code tooling
+.agents/
+.claude/settings.local.json
+
+# Memory / session files
+.claude/projects/
