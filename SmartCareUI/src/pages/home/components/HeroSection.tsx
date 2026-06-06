@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { CARD_HOVER_SPRING, CTA_HOVER_SPRING, EASE_OUT_EXPO, TAP_SCALE } from '@/utils/motion'
+// CLOUD_ASSET: hero imagery below is large (~MBs); replace with CDN URLs when available.
 import hospitalBg from '@/assets/images/BackgroundImageHero.png'
 import doctorsImg from '@/assets/images/DoctorsFinalCutout.png'
 import drPrasanna from '@/assets/images/Dr Prasanna.png'

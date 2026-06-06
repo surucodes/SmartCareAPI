@@ -1,3 +1,5 @@
+// CLOUD_ASSET: department photos below are large (~1–2 MB each); replace with
+// CDN URLs when available (values are only used as <img src>).
 import orthoImg from '@/assets/images/HospitalAssets/OrthoOPD.png'
 import gynaeImg from '@/assets/images/HospitalAssets/GynaeOPD.png'
 import physioImg from '@/assets/images/HospitalAssets/Physiotherapy.png'

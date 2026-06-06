@@ -6,6 +6,16 @@ import { AuthProvider } from '@/context/AuthContext'
 import { router } from '@/router'
 import './index.css'
 
+// Surface a clear message during development if the API base URL is missing,
+// instead of mysterious network failures against the localhost fallback.
+if (!import.meta.env.VITE_API_BASE_URL) {
+  console.error(
+    '[SmartCare] VITE_API_BASE_URL is not set. ' +
+      'Create a .env.local (or .env.development) with ' +
+      'VITE_API_BASE_URL=http://localhost:5027 — falling back to http://localhost:5000.',
+  )
+}
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

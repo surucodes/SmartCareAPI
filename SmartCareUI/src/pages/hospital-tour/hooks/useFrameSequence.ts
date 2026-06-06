@@ -16,6 +16,9 @@ export interface FrameSequenceResult {
  * original ezgif export id — the filenames are zero-padded so an alphabetical
  * sort equals numerical order (001 → 120).
  */
+// CLOUD_ASSET: when a CDN is available, replace this glob with fetching frame
+// URLs from a JSON manifest at a CDN endpoint. Current: loads all 120 frames
+// from local assets at build time.
 const frameUrlMap = import.meta.glob<string>(
   '../../../assets/images/HospitalAssets/ezgif-1538aed688ee4782-jpg/ezgif-frame-*.jpg',
   { eager: true, query: '?url', import: 'default' }

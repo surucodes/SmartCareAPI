@@ -2,6 +2,7 @@ import { type RefObject } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useReducedMotion } from 'motion/react'
 import type { OtherDoctor } from '../doctorProfiles'
+// CLOUD_ASSET: large (~2.4 MB) image; replace with a CDN URL when available.
 import grandparentsImg from '@/assets/images/DoctorPortfolioImages/Dr.PrasannaRelatedImages/grandparents.png'
 
 interface RootsActProps {

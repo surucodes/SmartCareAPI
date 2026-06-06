@@ -8,6 +8,7 @@ import {
   STAGGER_PARENT,
   TAP_SCALE,
 } from '@/utils/motion'
+// CLOUD_ASSET: doctor portraits below are large; replace with CDN URLs when available.
 import drPrasanna from '@/assets/images/Dr Prasanna.png'
 import drLakshmi from '@/assets/images/Dr.Lakshmi.png'
 

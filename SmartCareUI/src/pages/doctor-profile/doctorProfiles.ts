@@ -1,5 +1,9 @@
 import type { EducationColumnData } from './components/EducationColumn'
 
+// CLOUD_ASSET: every portrait/education image below is large (~2–3 MB) and is a
+// candidate for CDN replacement. When a CDN is available, swap these local
+// imports for CDN URLs (the values are only ever used as <img src>).
+
 // ── Prasanna assets ──────────────────────────────────────────────────
 import prasannaHero from '@/assets/images/DoctorPortfolioImages/Dr.PrasannaRelatedImages/DoctorHeroBeforeSplitFirstSection.png'
 import villageImg from '@/assets/images/DoctorPortfolioImages/Dr.PrasannaRelatedImages/AfterSplitImage.jpeg'
