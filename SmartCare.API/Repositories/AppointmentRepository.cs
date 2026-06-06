@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using SmartCare.API.Interfaces;
 using SmartCare.API.Models;
@@ -210,6 +212,35 @@ public class AppointmentRepository : IAppointmentRepository
                 new[] { AppointmentStatus.Pending, AppointmentStatus.Confirmed })
         );
         return await _appointments.Find(filter).AnyAsync();
+    }
+
+    public async Task<List<Appointment>> SearchAsync(string query, bool includePast = false)
+    {
+        var escaped = Regex.Escape(query);
+        var searchFilter = Builders<Appointment>.Filter.Or(
+            Builders<Appointment>.Filter.Regex(
+                a => a.PatientName, new BsonRegularExpression(escaped, "i")),
+            Builders<Appointment>.Filter.Regex(
+                a => a.PatientPhone, new BsonRegularExpression(escaped, "i"))
+        );
+
+        FilterDefinition<Appointment> finalFilter;
+        if (!includePast)
+        {
+            var today = IstNow.ToString("yyyy-MM-dd");
+            finalFilter = Builders<Appointment>.Filter.And(
+                Builders<Appointment>.Filter.Gte(a => a.Date, today),
+                searchFilter);
+        }
+        else
+        {
+            finalFilter = searchFilter;
+        }
+
+        return await _appointments.Find(finalFilter)
+            .SortByDescending(a => a.Date)
+            .ThenBy(a => a.Slot)
+            .ToListAsync();
     }
 
     public async Task<int> MarkExpiredAsNoShowAsync()

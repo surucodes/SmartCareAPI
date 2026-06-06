@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json.Serialization;
+using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -13,28 +14,64 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// --- Load .env file (local development only) ---
+// Env.Load() reads variables from .env into Environment.GetEnvironmentVariable()
+// Automatically skipped if .env doesn't exist
+Env.Load();
+
+// --- Secrets from environment (with appsettings fallback for local dev) ---
+// Production supplies secrets via environment variables; local development
+// falls back to appsettings.Development.json. We write the resolved value back
+// into configuration so the existing repositories / services (which read these
+// keys from IConfiguration) pick it up with no service-layer code change.
+builder.Configuration["MongoDbSettings:ConnectionString"] =
+    Environment.GetEnvironmentVariable("MONGODB_CONNECTION_STRING")
+    ?? builder.Configuration["MongoDbSettings:ConnectionString"];
+
+builder.Configuration["JwtSettings:Secret"] =
+    Environment.GetEnvironmentVariable("JWT_SECRET")
+    ?? builder.Configuration["JwtSettings:Secret"];
+
+builder.Configuration["EmailSettings:SenderEmail"] =
+    Environment.GetEnvironmentVariable("GMAIL_USER")
+    ?? builder.Configuration["EmailSettings:SenderEmail"];
+
+builder.Configuration["EmailSettings:SenderPassword"] =
+    Environment.GetEnvironmentVariable("GMAIL_APP_PASSWORD")
+    ?? builder.Configuration["EmailSettings:SenderPassword"];
+
 // --- CORS ---
-// AllowedOrigins is read from config so it can be overridden per environment
-// without a code change. The frontend dev server and production domain both
-// need to be listed; credentials (cookies) are not used — JWT in header only.
-var allowedOrigins = builder.Configuration
-    .GetSection("CorsSettings:AllowedOrigins")
-    .Get<string[]>() ?? [];
+// Production locks to the single FRONTEND_URL origin. When it is absent (local
+// development) we fall back to the common Vite / dev-server ports so local work
+// is unaffected. Specific origins are required because AllowCredentials is on.
+var frontendUrl = Environment.GetEnvironmentVariable("FRONTEND_URL");
+var corsOrigins = !string.IsNullOrWhiteSpace(frontendUrl)
+    ? new[] { frontendUrl }
+    : new[]
+    {
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "http://localhost:5175",
+        "http://localhost:3000"
+    };
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("Frontend", policy =>
+    options.AddPolicy("ProductionPolicy", policy =>
     {
-        if (allowedOrigins.Length > 0)
-            policy.WithOrigins(allowedOrigins)
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
-        else
-            // Development fallback when config is absent — dev server defaults
-            policy.WithOrigins("http://localhost:3000", "http://localhost:5173")
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
+        policy.WithOrigins(corsOrigins)
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
+});
+
+// --- HSTS (transport security; only emitted outside Development) ---
+builder.Services.AddHsts(options =>
+{
+    options.Preload = true;
+    options.IncludeSubDomains = true;
+    options.MaxAge = TimeSpan.FromDays(365);
 });
 
 // --- Repositories (Singletons: one instance shared for the app's lifetime) ---
@@ -114,13 +151,21 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 
 // --- Middleware pipeline ---
-// GlobalExceptionMiddleware must be first — it wraps everything else so no
+// GlobalExceptionMiddleware stays outermost — it wraps everything else so no
 // unhandled exception can escape and return an ASP.NET HTML error page.
 app.UseMiddleware<GlobalExceptionMiddleware>();
+
+// HTTPS first: redirect HTTP → HTTPS before any routing/CORS/auth, and emit
+// HSTS headers outside Development.
+app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();
+}
+
 app.UseSwagger();
 app.UseSwaggerUI();
-app.UseHttpsRedirection();
-app.UseCors("Frontend");
+app.UseCors("ProductionPolicy");
 app.UseAuthentication();  // validates the token on each request
 app.UseAuthorization();   // checks [Authorize] policies against the validated token
 app.MapControllers();

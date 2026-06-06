@@ -64,6 +64,20 @@ namespace SmartCare.API.Controllers
             return Ok(appointment);
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpGet("search")]
+        public async Task<ActionResult<List<Appointment>>> Search(
+            [FromQuery] string? q,
+            [FromQuery] bool includePast = false)
+        {
+            if (string.IsNullOrWhiteSpace(q) || q.Trim().Length < 2)
+                return BadRequest(new { error = "Search query must be at least 2 characters" });
+
+            var results = await _appointments.SearchAsync(q.Trim(), includePast);
+            LogAppointmentSearch(_logger, q.Trim(), results.Count);
+            return Ok(results);
+        }
+
         [Authorize(Roles = "Admin,Doctor")]
         [HttpGet("{id}")]
         public async Task<ActionResult<Appointment>> GetById(string id)
@@ -516,6 +530,9 @@ namespace SmartCare.API.Controllers
 
         [LoggerMessage(Level = LogLevel.Information, Message = "Appointment lookup: id={Id}, found={Found}")]
         private static partial void LogLookup(ILogger logger, string id, bool found);
+
+        [LoggerMessage(Level = LogLevel.Information, Message = "Appointment search: query={Query}, results={Count}")]
+        private static partial void LogAppointmentSearch(ILogger logger, string query, int count);
 
         [LoggerMessage(Level = LogLevel.Information, Message = "Fetching appointments for doctor {DoctorId}, includePast={IncludePast}")]
         private static partial void LogGetByDoctorAppointments(ILogger logger, string doctorId, bool includePast);

@@ -15,6 +15,7 @@ public interface IAppointmentRepository
     Task CancelAsync(string id, string reason, string cancelledBy, DateTime cancelledAt);
     Task<Appointment?> GetByIdAndPhoneAsync(string id, string phone);
     Task<bool> ExistsActiveBookingAsync(string doctorId, string date, string slot, string phone);
+    Task<List<Appointment>> SearchAsync(string query, bool includePast = false);
     Task<int> MarkExpiredAsNoShowAsync();
     Task CheckInAsync(string id, DateTime checkedInAt);
 }

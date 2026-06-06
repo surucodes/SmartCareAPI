@@ -30,11 +30,23 @@ namespace SmartCare.API.Controllers
         [HttpPost("bootstrap")]
         public async Task<ActionResult> Bootstrap(RegisterDto dto)
         {
+            // One-time only. The first account ever created is the Admin made here,
+            // so a non-empty collection means bootstrap has already run — close it
+            // permanently with 403, regardless of the supplied secret.
             var count = await _users.CountAsync();
             if (count > 0)
             {
                 LogBootstrapBlocked(_logger);
-                return Conflict(new { error = "System already has users. Use /api/auth/register with an Admin token." });
+                return StatusCode(403, new { error = "Bootstrap is closed — an account already exists." });
+            }
+
+            // Gate behind a shared secret supplied via the BOOTSTRAP_SECRET environment
+            // variable. Without it set, or on mismatch, bootstrap is refused.
+            var requiredSecret = Environment.GetEnvironmentVariable("BOOTSTRAP_SECRET");
+            if (string.IsNullOrEmpty(requiredSecret) || dto.BootstrapSecret != requiredSecret)
+            {
+                LogBootstrapUnauthorized(_logger);
+                return Unauthorized(new { error = "Invalid bootstrap secret." });
             }
 
             if (dto.Role != "Admin")
@@ -135,6 +147,9 @@ namespace SmartCare.API.Controllers
 
         [LoggerMessage(Level = LogLevel.Warning, Message = "Bootstrap blocked — users already exist")]
         private static partial void LogBootstrapBlocked(ILogger logger);
+
+        [LoggerMessage(Level = LogLevel.Warning, Message = "Bootstrap rejected — missing or invalid secret")]
+        private static partial void LogBootstrapUnauthorized(ILogger logger);
 
         [LoggerMessage(Level = LogLevel.Warning, Message = "Registration attempted with existing email {Email}")]
         private static partial void LogDuplicateRegistration(ILogger logger, string email);

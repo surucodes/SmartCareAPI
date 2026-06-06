@@ -18,5 +18,9 @@ namespace SmartCare.API.DTOs
 
         // Only required if Role == "Doctor"
         public string? DoctorId { get; set; }
+
+        // Only used by /api/auth/bootstrap — must match the BOOTSTRAP_SECRET
+        // environment variable. Ignored by /api/auth/register.
+        public string? BootstrapSecret { get; set; }
     }
 }
