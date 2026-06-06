@@ -11,7 +11,7 @@ import {
   TAP_SCALE,
 } from '@/utils/motion'
 import { useAuth } from '@/context/AuthContext'
-import { useDoctorSchedule } from '@/hooks/useDoctorSchedule'
+import { useDoctorSchedule, type TimeWindow } from '@/hooks/useDoctorSchedule'
 import { useDoctorAppointmentActions } from '@/hooks/useDoctorAppointmentActions'
 import { doctorsService } from '@/services/doctors.service'
 import {
@@ -393,12 +393,23 @@ function ScheduleView({ doctor }: ScheduleViewProps): ReactElement {
           </span>
         </div>
 
-        {/* Filter pills */}
-        <div className="mb-6">
+        {/* Filters: status pills + time-of-day window */}
+        <div className="mb-6 flex flex-wrap items-center gap-3">
           <StatusFilterPills
             value={schedule.selectedFilter}
             onChange={schedule.setSelectedFilter}
           />
+          <select
+            value={schedule.selectedTimeWindow}
+            onChange={(e) => schedule.setSelectedTimeWindow(e.target.value as TimeWindow)}
+            aria-label="Filter by time of day"
+            className="rounded-lg border border-gray-200 bg-white text-sm font-semibold text-gray-600 px-3 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-teal-500"
+          >
+            <option value="all">All times</option>
+            <option value="morning">Morning (before 12pm)</option>
+            <option value="afternoon">Afternoon (12–5pm)</option>
+            <option value="evening">Evening (5pm+)</option>
+          </select>
         </div>
 
         {/* Cards */}

@@ -15,6 +15,8 @@ interface AdminTopBarProps {
   processedCount: number | null
   onDismissBanner: () => void
   markExpiredPending: boolean
+  /** Hidden on the All Appointments tab, which has its own search + filters. */
+  showSearch?: boolean
 }
 
 function SearchIcon() {
@@ -71,6 +73,7 @@ export function AdminTopBar({
   processedCount,
   onDismissBanner,
   markExpiredPending,
+  showSearch = true,
 }: AdminTopBarProps) {
   const dateLabel = `${getDayName(selectedDate)}, ${formatDisplayDate(selectedDate)}`
   const isToday = selectedDate === getTodayIST()
@@ -154,20 +157,24 @@ export function AdminTopBar({
           )}
         </div>
 
-        {/* Search (center) */}
-        <div className="flex-1 max-w-xl mx-auto relative">
-          <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-            <SearchIcon />
-          </span>
-          <input
-            type="text"
-            readOnly
-            placeholder="Search by patient name or phone..."
-            onFocus={onSearchFocus}
-            onClick={onSearchFocus}
-            className="w-full pl-10 pr-4 py-2 bg-warm-100 border border-gray-100 rounded-full text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 cursor-pointer placeholder:text-gray-400"
-          />
-        </div>
+        {/* Search (center) — hidden on tabs that provide their own search */}
+        {showSearch ? (
+          <div className="flex-1 max-w-xl mx-auto relative">
+            <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+              <SearchIcon />
+            </span>
+            <input
+              type="text"
+              readOnly
+              placeholder="Search by patient name or phone..."
+              onFocus={onSearchFocus}
+              onClick={onSearchFocus}
+              className="w-full pl-10 pr-4 py-2 bg-warm-100 border border-gray-100 rounded-full text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 cursor-pointer placeholder:text-gray-400"
+            />
+          </div>
+        ) : (
+          <div className="flex-1" />
+        )}
 
         {/* Mark expired (right) */}
         <button

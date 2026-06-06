@@ -85,6 +85,44 @@ const STATUS_BADGE: Record<string, string> = {
   NoShow:    'bg-red-50 text-red-600',
 }
 
+const STATUS_OPTIONS = ['Pending', 'Confirmed', 'Completed', 'Cancelled', 'NoShow'] as const
+
+type SortKey = 'date' | 'time' | 'patient' | 'doctor' | 'status'
+
+function SortableHeader({
+  label,
+  sortKey,
+  activeKey,
+  direction,
+  onSort,
+}: {
+  label: string
+  sortKey: SortKey
+  activeKey: SortKey
+  direction: 'asc' | 'desc'
+  onSort: (key: SortKey) => void
+}) {
+  const isActive = activeKey === sortKey
+  return (
+    <th className="px-4 py-3 text-left">
+      <button
+        type="button"
+        onClick={() => onSort(sortKey)}
+        className={cn(
+          'inline-flex items-center gap-1 uppercase tracking-wider text-xs font-semibold transition-colors',
+          isActive ? 'text-teal-700' : 'text-gray-500 hover:text-brand-dark',
+        )}
+        aria-label={`Sort by ${label}${isActive ? (direction === 'asc' ? ', ascending' : ', descending') : ''}`}
+      >
+        {label}
+        <span className={cn('text-[9px] leading-none', isActive ? 'opacity-100' : 'opacity-30')}>
+          {isActive ? (direction === 'asc' ? '▲' : '▼') : '▲'}
+        </span>
+      </button>
+    </th>
+  )
+}
+
 function AllAppointmentsView({
   doctors,
   data,
@@ -97,19 +135,84 @@ function AllAppointmentsView({
   isError: boolean
 }) {
   const [searchQuery, setSearchQuery] = useState('')
+  const [doctorFilter, setDoctorFilter] = useState('')
+  const [statusFilter, setStatusFilter] = useState('')
+  const [dateFilter, setDateFilter] = useState('')
+  const [sortKey, setSortKey] = useState<SortKey>('date')
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
+
+  const doctorById = useMemo(() => {
+    const m = new Map<string, Doctor>()
+    doctors.forEach((d) => m.set(d.id, d))
+    return m
+  }, [doctors])
+
+  const toggleSort = (key: SortKey) => {
+    if (sortKey === key) {
+      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
+    } else {
+      setSortKey(key)
+      setSortDir('asc')
+    }
+  }
+
+  const hasActiveFilters =
+    searchQuery.trim() !== '' || doctorFilter !== '' || statusFilter !== '' || dateFilter !== ''
+
+  const clearFilters = () => {
+    setSearchQuery('')
+    setDoctorFilter('')
+    setStatusFilter('')
+    setDateFilter('')
+  }
 
   const filtered = useMemo(() => {
     const q = searchQuery.trim().toLowerCase()
-    if (!q) return data
     const numeric = q.replace(/\D/g, '')
-    return data.filter((a) => {
-      if (a.patientName.toLowerCase().includes(q)) return true
-      if (numeric.length > 0 && a.patientPhone.replace(/\s/g, '').includes(numeric)) return true
-      const doctor = doctors.find((d) => d.id === a.doctorId)
-      if (doctor?.name.toLowerCase().includes(q)) return true
-      return false
+
+    const rows = data.filter((a) => {
+      if (q) {
+        const doctor = doctorById.get(a.doctorId)
+        const matchesText =
+          a.patientName.toLowerCase().includes(q) ||
+          (numeric.length > 0 && a.patientPhone.replace(/\s/g, '').includes(numeric)) ||
+          (doctor?.name.toLowerCase().includes(q) ?? false)
+        if (!matchesText) return false
+      }
+      if (doctorFilter && a.doctorId !== doctorFilter) return false
+      if (statusFilter && a.status !== statusFilter) return false
+      if (dateFilter && a.date !== dateFilter) return false
+      return true
     })
-  }, [data, searchQuery, doctors])
+
+    const dir = sortDir === 'asc' ? 1 : -1
+    return [...rows].sort((a, b) => {
+      let res = 0
+      switch (sortKey) {
+        case 'time':
+          res = a.slot.localeCompare(b.slot)
+          break
+        case 'patient':
+          res = a.patientName.localeCompare(b.patientName)
+          break
+        case 'doctor':
+          res = (doctorById.get(a.doctorId)?.name ?? '').localeCompare(
+            doctorById.get(b.doctorId)?.name ?? '',
+          )
+          break
+        case 'status':
+          res = a.status.localeCompare(b.status)
+          break
+        case 'date':
+        default:
+          res = a.date.localeCompare(b.date)
+          break
+      }
+      // Chronological tiebreak keeps same-key rows in a stable, sensible order.
+      if (res === 0) return a.date.localeCompare(b.date) || a.slot.localeCompare(b.slot)
+      return res * dir
+    })
+  }, [data, searchQuery, doctorFilter, statusFilter, dateFilter, sortKey, sortDir, doctorById])
 
   if (isLoading) {
     return (
@@ -159,27 +262,67 @@ function AllAppointmentsView({
           )}
         </div>
       </div>
-      {searchQuery.trim() && (
-        <p className="text-xs text-gray-400 mb-3">
-          {filtered.length === 0
-            ? `No appointments matching "${searchQuery.trim()}"`
-            : `Showing ${filtered.length} of ${data.length} appointment${data.length !== 1 ? 's' : ''}`}
-        </p>
-      )}
+
+      {/* Filters — doctor, status, date. Sorting is handled via column headers. */}
+      <div className="flex flex-wrap items-center gap-2 mb-3">
+        <select
+          value={doctorFilter}
+          onChange={(e) => setDoctorFilter(e.target.value)}
+          aria-label="Filter by doctor"
+          className="rounded-lg border border-gray-200 bg-white text-sm text-brand-dark px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+        >
+          <option value="">All doctors</option>
+          {doctors.map((d) => (
+            <option key={d.id} value={d.id}>{d.name}</option>
+          ))}
+        </select>
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          aria-label="Filter by status"
+          className="rounded-lg border border-gray-200 bg-white text-sm text-brand-dark px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+        >
+          <option value="">All statuses</option>
+          {STATUS_OPTIONS.map((s) => (
+            <option key={s} value={s}>{s === 'NoShow' ? 'No Show' : s}</option>
+          ))}
+        </select>
+        <input
+          type="date"
+          value={dateFilter}
+          onChange={(e) => setDateFilter(e.target.value)}
+          aria-label="Filter by date"
+          className="rounded-lg border border-gray-200 bg-white text-sm text-brand-dark px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+        />
+        {hasActiveFilters && (
+          <button
+            type="button"
+            onClick={clearFilters}
+            className="text-xs font-medium text-teal-700 hover:text-teal-900 px-2 py-2"
+          >
+            Clear filters
+          </button>
+        )}
+        <span className="text-xs text-gray-400 sm:ml-auto">
+          {hasActiveFilters
+            ? `Showing ${filtered.length} of ${data.length}`
+            : `${data.length} appointment${data.length !== 1 ? 's' : ''}`}
+        </span>
+      </div>
       <div className="bg-white border border-gray-100 rounded-xl overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="bg-warm-100 text-xs uppercase tracking-wider text-gray-500">
+          <thead className="bg-warm-100">
             <tr>
-              <th className="px-4 py-3 text-left">Date</th>
-              <th className="px-4 py-3 text-left">Time</th>
-              <th className="px-4 py-3 text-left">Patient</th>
-              <th className="px-4 py-3 text-left">Doctor</th>
-              <th className="px-4 py-3 text-left">Status</th>
+              <SortableHeader label="Date" sortKey="date" activeKey={sortKey} direction={sortDir} onSort={toggleSort} />
+              <SortableHeader label="Time" sortKey="time" activeKey={sortKey} direction={sortDir} onSort={toggleSort} />
+              <SortableHeader label="Patient" sortKey="patient" activeKey={sortKey} direction={sortDir} onSort={toggleSort} />
+              <SortableHeader label="Doctor" sortKey="doctor" activeKey={sortKey} direction={sortDir} onSort={toggleSort} />
+              <SortableHeader label="Status" sortKey="status" activeKey={sortKey} direction={sortDir} onSort={toggleSort} />
             </tr>
           </thead>
           <tbody>
             {filtered.map((a) => {
-              const doctor = doctors.find((d) => d.id === a.doctorId)
+              const doctor = doctorById.get(a.doctorId)
               const badgeClass = STATUS_BADGE[a.status] ?? 'bg-gray-100 text-gray-500'
               return (
                 <tr key={a.id} className="border-t border-gray-50 hover:bg-gray-50/50">
@@ -201,10 +344,10 @@ function AllAppointmentsView({
                 </tr>
               )
             })}
-            {filtered.length === 0 && !searchQuery.trim() && (
+            {filtered.length === 0 && (
               <tr>
                 <td colSpan={5} className="px-4 py-8 text-center text-gray-400 text-sm">
-                  No appointments.
+                  {hasActiveFilters ? 'No appointments match the current filters.' : 'No appointments.'}
                 </td>
               </tr>
             )}
@@ -611,6 +754,7 @@ export default function AdminDashboardPage() {
           processedCount={processedCount}
           onDismissBanner={() => setProcessedCount(null)}
           markExpiredPending={markExpiredMutation.isPending}
+          showSearch={selectedNav !== 'all'}
         />
 
         {/* Walk-in success banner */}
@@ -727,8 +871,8 @@ export default function AdminDashboardPage() {
         )}
       </AnimatePresence>
 
-      {/* Mobile FAB (search) */}
-      {!selectedAppointment && !showSearch && !showWalkInModal && (
+      {/* Mobile FAB (search) — hidden on All Appointments, which has inline search */}
+      {selectedNav !== 'all' && !selectedAppointment && !showSearch && !showWalkInModal && (
         <motion.button
           type="button"
           onClick={() => setShowSearch(true)}

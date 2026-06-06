@@ -7,6 +7,25 @@ import type { Appointment } from '@/types/appointment.types'
 
 export type DoctorFilter = 'all' | 'confirmed' | 'pending' | 'cancelled'
 
+export type TimeWindow = 'all' | 'morning' | 'afternoon' | 'evening'
+
+/** Bucket a "HH:MM" slot into a part-of-day window. */
+function inTimeWindow(slot: string, window: TimeWindow): boolean {
+  if (window === 'all') return true
+  const hour = Number(slot.split(':')[0])
+  if (Number.isNaN(hour)) return true
+  switch (window) {
+    case 'morning':
+      return hour < 12
+    case 'afternoon':
+      return hour >= 12 && hour < 17
+    case 'evening':
+      return hour >= 17
+    default:
+      return true
+  }
+}
+
 export interface UseDoctorSchedule {
   /** Active appointments (Pending + Confirmed) when filter === 'all', else the single filtered group. */
   activeAppointments: Appointment[]
@@ -22,6 +41,8 @@ export interface UseDoctorSchedule {
   setSelectedDate: (date: string) => void
   selectedFilter: DoctorFilter
   setSelectedFilter: (filter: DoctorFilter) => void
+  selectedTimeWindow: TimeWindow
+  setSelectedTimeWindow: (window: TimeWindow) => void
   currentWeekStart: Date
   setCurrentWeekStart: (date: Date) => void
   refetch: () => void
@@ -40,6 +61,7 @@ function bySlot(a: Appointment, b: Appointment): number {
 export function useDoctorSchedule(doctorId: string | null): UseDoctorSchedule {
   const [selectedDate, setSelectedDate] = useState<string>(() => getTodayIST())
   const [selectedFilter, setSelectedFilter] = useState<DoctorFilter>('all')
+  const [selectedTimeWindow, setSelectedTimeWindow] = useState<TimeWindow>('all')
   const [currentWeekStart, setCurrentWeekStart] = useState<Date>(() =>
     mondayOf(getTodayIST()),
   )
@@ -82,7 +104,9 @@ export function useDoctorSchedule(doctorId: string | null): UseDoctorSchedule {
 
   const { activeAppointments, pastAppointments, totalCount } = useMemo(() => {
     const all = dayQuery.data ?? []
-    const today = all.filter((a) => a.date === selectedDate)
+    const today = all
+      .filter((a) => a.date === selectedDate)
+      .filter((a) => inTimeWindow(a.slot, selectedTimeWindow))
 
     const active = today
       .filter((a) => a.status === 'Pending' || a.status === 'Confirmed')
@@ -119,7 +143,7 @@ export function useDoctorSchedule(doctorId: string | null): UseDoctorSchedule {
           totalCount: today.length,
         }
     }
-  }, [dayQuery.data, selectedDate, selectedFilter])
+  }, [dayQuery.data, selectedDate, selectedFilter, selectedTimeWindow])
 
   return {
     activeAppointments,
@@ -132,6 +156,8 @@ export function useDoctorSchedule(doctorId: string | null): UseDoctorSchedule {
     setSelectedDate,
     selectedFilter,
     setSelectedFilter,
+    selectedTimeWindow,
+    setSelectedTimeWindow,
     currentWeekStart,
     setCurrentWeekStart,
     refetch: () => {
