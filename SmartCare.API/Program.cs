@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -28,6 +29,12 @@ builder.Configuration["MongoDbSettings:ConnectionString"] =
     Environment.GetEnvironmentVariable("MONGODB_CONNECTION_STRING")
     ?? builder.Configuration["MongoDbSettings:ConnectionString"];
 
+// Optional: select the database (e.g. SmartCareDev vs SmartCare) per environment
+// without editing committed config — handy when both live in the same cluster.
+builder.Configuration["MongoDbSettings:DatabaseName"] =
+    Environment.GetEnvironmentVariable("MONGODB_DATABASE")
+    ?? builder.Configuration["MongoDbSettings:DatabaseName"];
+
 builder.Configuration["JwtSettings:Secret"] =
     Environment.GetEnvironmentVariable("JWT_SECRET")
     ?? builder.Configuration["JwtSettings:Secret"];
@@ -40,20 +47,52 @@ builder.Configuration["EmailSettings:SenderPassword"] =
     Environment.GetEnvironmentVariable("GMAIL_APP_PASSWORD")
     ?? builder.Configuration["EmailSettings:SenderPassword"];
 
-// --- CORS ---
-// Production locks to the single FRONTEND_URL origin. When it is absent (local
-// development) we fall back to the common Vite / dev-server ports so local work
-// is unaffected. Specific origins are required because AllowCredentials is on.
-var frontendUrl = Environment.GetEnvironmentVariable("FRONTEND_URL");
-var corsOrigins = !string.IsNullOrWhiteSpace(frontendUrl)
-    ? new[] { frontendUrl }
-    : new[]
+// --- Fail fast in production when required secrets are missing ---
+// Locally these come from appsettings.Development.json; in production they MUST be
+// supplied as environment variables. A clear startup error beats a cryptic crash
+// (or, worse, a JWT signed with an empty key) later on.
+if (!builder.Environment.IsDevelopment())
+{
+    static void RequireSecret(string? value, string envVarName, int minLength = 1)
     {
+        if (string.IsNullOrWhiteSpace(value) || value.Length < minLength)
+            throw new InvalidOperationException(
+                $"{envVarName} environment variable is required in production " +
+                $"(minimum {minLength} characters). Set it in your host's environment variables.");
+    }
+
+    RequireSecret(builder.Configuration["MongoDbSettings:ConnectionString"], "MONGODB_CONNECTION_STRING");
+    // HMAC-SHA256 signing keys must be at least 256 bits (32 bytes / chars).
+    RequireSecret(builder.Configuration["JwtSettings:Secret"], "JWT_SECRET", 32);
+}
+
+// --- CORS ---
+// Allowed origins come from two sources, merged: the CorsSettings:AllowedOrigins
+// config section (appsettings.Production.json) and the FRONTEND_URL environment
+// variable. When neither yields anything (local development) we fall back to the
+// common Vite / dev-server ports. Specific origins are required because
+// AllowCredentials is on (wildcards are not permitted with credentials).
+var configuredOrigins = builder.Configuration
+    .GetSection("CorsSettings:AllowedOrigins")
+    .Get<string[]>() ?? [];
+var frontendUrl = Environment.GetEnvironmentVariable("FRONTEND_URL");
+
+var corsOrigins = configuredOrigins
+    .Concat(string.IsNullOrWhiteSpace(frontendUrl) ? [] : new[] { frontendUrl })
+    .Where(o => !string.IsNullOrWhiteSpace(o))
+    .Distinct(StringComparer.OrdinalIgnoreCase)
+    .ToArray();
+
+if (corsOrigins.Length == 0)
+{
+    corsOrigins =
+    [
         "http://localhost:5173",
         "http://localhost:5174",
         "http://localhost:5175",
         "http://localhost:3000"
-    };
+    ];
+}
 
 builder.Services.AddCors(options =>
 {
@@ -155,16 +194,34 @@ var app = builder.Build();
 // unhandled exception can escape and return an ASP.NET HTML error page.
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
-// HTTPS first: redirect HTTP → HTTPS before any routing/CORS/auth, and emit
-// HSTS headers outside Development.
-app.UseHttpsRedirection();
+// Behind Railway/Vercel's TLS-terminating proxy the container receives plain
+// HTTP; honour X-Forwarded-Proto/For so the app sees the original https scheme
+// (correct redirects, HSTS, secure cookies, and real client IPs). KnownProxies
+// and KnownNetworks are cleared because the proxy address is not fixed on PaaS.
 if (!app.Environment.IsDevelopment())
 {
+    var forwardedOptions = new ForwardedHeadersOptions
+    {
+        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+    };
+    forwardedOptions.KnownIPNetworks.Clear();
+    forwardedOptions.KnownProxies.Clear();
+    app.UseForwardedHeaders(forwardedOptions);
+
+    // With the forwarded scheme known, redirect stray HTTP requests to HTTPS and
+    // emit HSTS. Skipped in Development to avoid dev-certificate friction.
+    app.UseHttpsRedirection();
     app.UseHsts();
 }
 
-app.UseSwagger();
-app.UseSwaggerUI();
+// Swagger / OpenAPI is a development convenience and must NOT be exposed in
+// production (it leaks the full API surface and schemas).
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 app.UseCors("ProductionPolicy");
 app.UseAuthentication();  // validates the token on each request
 app.UseAuthorization();   // checks [Authorize] policies against the validated token

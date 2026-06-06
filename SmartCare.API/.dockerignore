@@ -1,0 +1,22 @@
+# Build outputs — never needed in the image
+bin/
+obj/
+
+# Secrets — never bake into the image
+.env
+*.env
+!.env.example
+appsettings.Development.json
+
+# Git
+.git/
+.gitignore
+
+# Docs
+*.md
+README*
+
+# Local tooling
+.claude/
+.vs/
+*.user
