@@ -2,7 +2,14 @@ import { useEffect, useMemo, useState, type ReactElement } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { addDays, format } from 'date-fns'
+import { AnimatePresence, motion } from 'motion/react'
 import { cn } from '@/utils/cn'
+import {
+  BACKDROP_FADE,
+  CARD_HOVER_SPRING,
+  SHEET_SLIDE_UP,
+  TAP_SCALE,
+} from '@/utils/motion'
 import { useAuth } from '@/context/AuthContext'
 import { useDoctorSchedule } from '@/hooks/useDoctorSchedule'
 import { useDoctorAppointmentActions } from '@/hooks/useDoctorAppointmentActions'
@@ -104,11 +111,15 @@ function DoctorSelector({ doctors, onSelect }: DoctorSelectorProps) {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {doctors.map((d) => (
-            <button
+            <motion.button
               key={d.id}
               type="button"
               onClick={() => onSelect(d.id)}
-              className="text-left bg-white border border-gray-100 rounded-xl p-6 hover:border-teal-600 hover:shadow-md transition-colors min-h-[120px] cursor-pointer flex items-center gap-4"
+              whileHover={{ y: -4 }}
+              whileTap={TAP_SCALE}
+              transition={CARD_HOVER_SPRING}
+              style={{ transition: 'box-shadow 220ms cubic-bezier(0.32, 0.72, 0, 1), border-color 180ms ease' }}
+              className="text-left bg-white border border-gray-100 rounded-xl p-6 hover:border-teal-600 hover:shadow-[0_14px_30px_rgba(19,43,26,0.12)] min-h-[120px] cursor-pointer flex items-center gap-4"
             >
               {d.photoUrl ? (
                 <img
@@ -131,7 +142,7 @@ function DoctorSelector({ doctors, onSelect }: DoctorSelectorProps) {
                   {d.specialty}
                 </p>
               </div>
-            </button>
+            </motion.button>
           ))}
         </div>
       </div>
@@ -170,8 +181,23 @@ function DoctorMobileNav({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end">
-      <div role="presentation" onClick={onClose} className="absolute inset-0 bg-black/40" />
-      <div className="relative bg-white rounded-t-2xl w-full max-h-[80vh] flex flex-col p-4 shadow-2xl">
+      <motion.div
+        role="presentation"
+        onClick={onClose}
+        variants={BACKDROP_FADE}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        className="absolute inset-0 bg-black/40"
+      />
+      <motion.div
+        variants={SHEET_SLIDE_UP}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        className="relative bg-white rounded-t-2xl w-full max-h-[80vh] flex flex-col p-4 shadow-2xl"
+        style={{ transformOrigin: 'bottom' }}
+      >
         <div className="flex justify-center mb-2">
           <div className="w-10 h-1 rounded-full bg-gray-200" />
         </div>
@@ -230,7 +256,7 @@ function DoctorMobileNav({
             Logout
           </button>
         </div>
-      </div>
+      </motion.div>
     </div>
   )
 }
@@ -517,14 +543,17 @@ function ScheduleView({ doctor }: ScheduleViewProps): ReactElement {
       </main>
 
       {/* Mobile nav bottom sheet */}
-      {showMobileNav && (
-        <DoctorMobileNav
-          doctor={doctor}
-          selectedNav={selectedNav}
-          onNavChange={handleNavChange}
-          onClose={() => setShowMobileNav(false)}
-        />
-      )}
+      <AnimatePresence>
+        {showMobileNav && (
+          <DoctorMobileNav
+            key="doctor-mobile-nav"
+            doctor={doctor}
+            selectedNav={selectedNav}
+            onNavChange={handleNavChange}
+            onClose={() => setShowMobileNav(false)}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Appointment detail panel */}
       {selectedAppointment && (
@@ -536,30 +565,41 @@ function ScheduleView({ doctor }: ScheduleViewProps): ReactElement {
       )}
 
       {/* Mobile calendar — branded bottom sheet (md:hidden) */}
-      {showMobileCalendar && (
-        <div className="fixed inset-0 z-50 flex items-end md:hidden">
-          <div
-            role="presentation"
-            onClick={() => setShowMobileCalendar(false)}
-            className="absolute inset-0 bg-black/40"
-          />
-          <div
-            className="relative w-full"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <BrandedCalendar
-              selectedDate={schedule.selectedDate}
-              daysWithAppointments={schedule.daysWithAppointments}
-              onSelect={(d) => {
-                handleSelectDateFromCalendar(d)
-                setShowMobileCalendar(false)
-              }}
-              onClose={() => setShowMobileCalendar(false)}
-              mobile
+      <AnimatePresence>
+        {showMobileCalendar && (
+          <div className="fixed inset-0 z-50 flex items-end md:hidden">
+            <motion.div
+              role="presentation"
+              onClick={() => setShowMobileCalendar(false)}
+              variants={BACKDROP_FADE}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="absolute inset-0 bg-black/40"
             />
+            <motion.div
+              variants={SHEET_SLIDE_UP}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="relative w-full"
+              style={{ transformOrigin: 'bottom' }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <BrandedCalendar
+                selectedDate={schedule.selectedDate}
+                daysWithAppointments={schedule.daysWithAppointments}
+                onSelect={(d) => {
+                  handleSelectDateFromCalendar(d)
+                  setShowMobileCalendar(false)
+                }}
+                onClose={() => setShowMobileCalendar(false)}
+                mobile
+              />
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   )
 }

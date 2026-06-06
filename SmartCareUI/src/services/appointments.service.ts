@@ -67,6 +67,13 @@ export const appointmentsService = {
       }>(`/api/appointments/${id}/reschedule`, dto)
       .then((r) => r.data),
 
+  search: (query: string, includePast = false) =>
+    api
+      .get<Appointment[]>('/api/appointments/search', {
+        params: { q: query, includePast },
+      })
+      .then((r) => r.data),
+
   processExpired: () =>
     api
       .post<{ message: string; processed: number }>(

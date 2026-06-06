@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { AnimatePresence, motion } from 'motion/react'
 import { cn } from '@/utils/cn'
 import logoImg from '@/assets/images/Logo.png'
 
@@ -99,7 +100,12 @@ export function Header() {
         <div className="hidden md:flex items-center gap-4 shrink-0">
           <Link
             to="/login"
-            className="text-sm text-gray-500 hover:text-[#0F6E56] transition-colors min-h-[44px] flex items-center"
+            className={cn(
+              'text-[15px] font-semibold px-5 py-2 rounded-full min-h-[44px] flex items-center border transition-colors',
+              scrolled
+                ? 'border-teal-600 text-teal-600 hover:bg-teal-50'
+                : 'border-white/70 text-white hover:bg-white/10',
+            )}
           >
             Staff Login
           </Link>
@@ -143,56 +149,71 @@ export function Header() {
       </div>
 
       {/* ── Mobile drawer ─────────────────────────────────────── */}
-      {mobileOpen && (
-        <div id="mobile-nav" className="md:hidden bg-white border-t border-gray-100 shadow-lg">
-          <nav
-            role="navigation"
-            aria-label="Mobile navigation"
-            className="px-4 py-2"
+      <AnimatePresence initial={false}>
+        {mobileOpen && (
+          <motion.div
+            key="mobile-drawer"
+            id="mobile-nav"
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{
+              type: 'tween',
+              ease: [0.32, 0.72, 0, 1],
+              duration: 0.22,
+            }}
+            style={{ transformOrigin: 'top center' }}
+            className="md:hidden bg-white border-t border-gray-100 shadow-lg overflow-hidden"
           >
-            {NAV_LINKS.map(({ label, href }) => {
-              const isInternalRoute = href.startsWith('/')
-              const drawerLinkClass =
-                'flex items-center min-h-[44px] text-[15px] font-medium text-[#333333] hover:text-[#0F6E56] border-b border-gray-50 last:border-0'
-              const closeDrawer = () => setMobileOpen(false)
-              return isInternalRoute ? (
-                <Link key={label} to={href} className={drawerLinkClass} onClick={closeDrawer}>
-                  {label}
-                </Link>
-              ) : (
-                <a key={label} href={href} className={drawerLinkClass} onClick={closeDrawer}>
-                  {label}
-                </a>
-              )
-            })}
-            <div className="border-t border-gray-100 my-2" />
-            <Link
-              to="/login"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center min-h-[44px] text-[15px] font-medium text-gray-500 hover:text-[#0F6E56]"
+            <nav
+              role="navigation"
+              aria-label="Mobile navigation"
+              className="px-4 py-2"
             >
-              Staff Login
-            </Link>
-            <Link
-              to="/book"
-              className="flex items-center justify-center gap-1.5 bg-brand-dark text-white text-[15px] font-semibold px-5 rounded-full my-3 min-h-[44px] hover:bg-teal-600 transition-colors"
-              onClick={() => setMobileOpen(false)}
-              aria-label="Book an appointment"
-            >
-              Book Now
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                <path
-                  d="M2 7h10M8 3l4 4-4 4"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </Link>
-          </nav>
-        </div>
-      )}
+              {NAV_LINKS.map(({ label, href }) => {
+                const isInternalRoute = href.startsWith('/')
+                const drawerLinkClass =
+                  'flex items-center min-h-[44px] text-[15px] font-medium text-[#333333] hover:text-[#0F6E56] border-b border-gray-50 last:border-0'
+                const closeDrawer = () => setMobileOpen(false)
+                return isInternalRoute ? (
+                  <Link key={label} to={href} className={drawerLinkClass} onClick={closeDrawer}>
+                    {label}
+                  </Link>
+                ) : (
+                  <a key={label} href={href} className={drawerLinkClass} onClick={closeDrawer}>
+                    {label}
+                  </a>
+                )
+              })}
+              <div className="border-t border-gray-100 my-2" />
+              <Link
+                to="/login"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center min-h-[44px] text-[15px] font-medium text-gray-500 hover:text-[#0F6E56]"
+              >
+                Staff Login
+              </Link>
+              <Link
+                to="/book"
+                className="flex items-center justify-center gap-1.5 bg-brand-dark text-white text-[15px] font-semibold px-5 rounded-full my-3 min-h-[44px] hover:bg-teal-600 transition-colors"
+                onClick={() => setMobileOpen(false)}
+                aria-label="Book an appointment"
+              >
+                Book Now
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path
+                    d="M2 7h10M8 3l4 4-4 4"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </Link>
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   )
 }

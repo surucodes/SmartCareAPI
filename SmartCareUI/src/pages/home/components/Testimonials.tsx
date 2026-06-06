@@ -1,3 +1,6 @@
+import { motion } from 'motion/react'
+import { CARD_HOVER_SPRING, EASE_OUT_EXPO, SECTION_ENTER, STAGGER_CHILD, STAGGER_PARENT } from '@/utils/motion'
+
 const TESTIMONIALS = [
   {
     quote:
@@ -28,21 +31,50 @@ const TESTIMONIALS = [
   },
 ]
 
+const STAR_PARENT = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.06, delayChildren: 0.15 } },
+}
+
+const STAR_CHILD = {
+  hidden: { opacity: 0, scale: 0.7 },
+  show: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.32, ease: EASE_OUT_EXPO },
+  },
+}
+
 function StarRating() {
   return (
-    <div className="flex items-center gap-0.5" aria-label="5 out of 5 stars">
+    <motion.div
+      variants={STAR_PARENT}
+      className="flex items-center gap-0.5"
+      aria-label="5 out of 5 stars"
+    >
       {Array.from({ length: 5 }).map((_, i) => (
-        <svg key={i} width="14" height="14" viewBox="0 0 14 14" fill="#C9A227" aria-hidden="true">
+        <motion.svg
+          key={i}
+          variants={STAR_CHILD}
+          width="14"
+          height="14"
+          viewBox="0 0 14 14"
+          fill="#C9A227"
+          aria-hidden="true"
+        >
           <path d="M7 1l1.6 3.3 3.6.5-2.6 2.5.6 3.6L7 9.3l-3.2 1.7.6-3.6L1.8 4.8l3.6-.5z" />
-        </svg>
+        </motion.svg>
       ))}
-    </div>
+    </motion.div>
   )
 }
 
 export function Testimonials() {
   return (
-    <section className="w-full bg-[#faf9f6] py-16 px-4 md:px-12 overflow-hidden relative">
+    <motion.section
+      {...SECTION_ENTER}
+      className="w-full bg-[#faf9f6] py-16 px-4 md:px-12 overflow-hidden relative"
+    >
 
       {/* Decorative background shape */}
       <div
@@ -91,11 +123,21 @@ export function Testimonials() {
         </div>
 
         {/* ── Testimonial cards ───────────────────────────────── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+        <motion.div
+          variants={STAGGER_PARENT}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: '-80px' }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10"
+        >
           {TESTIMONIALS.map(({ quote, name, role, initials, avatarBg, avatarColor }) => (
-            <div
+            <motion.div
               key={name}
-              className="bg-white rounded-lg border border-gray-200 p-6 shadow-[0_4px_20px_rgba(19,43,26,0.04)] hover:shadow-[0_12px_30px_rgba(19,43,26,0.08)] hover:-translate-y-1 transition-all duration-300 flex flex-col h-full"
+              variants={STAGGER_CHILD}
+              whileHover={{ y: -4 }}
+              transition={CARD_HOVER_SPRING}
+              style={{ transition: 'box-shadow 280ms cubic-bezier(0.32, 0.72, 0, 1)' }}
+              className="bg-white rounded-lg border border-gray-200 p-6 shadow-[0_4px_20px_rgba(19,43,26,0.04)] hover:shadow-[0_18px_36px_rgba(19,43,26,0.10)] flex flex-col h-full"
             >
               {/* Top row: quote mark + stars */}
               <div className="flex justify-between items-start mb-4">
@@ -143,9 +185,9 @@ export function Testimonials() {
                   </p>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* ── Pagination dots ─────────────────────────────────── */}
         <div className="flex justify-center items-center gap-2">
@@ -155,6 +197,6 @@ export function Testimonials() {
         </div>
 
       </div>
-    </section>
+    </motion.section>
   )
 }

@@ -1,4 +1,6 @@
+import { AnimatePresence, motion } from 'motion/react'
 import { cn } from '@/utils/cn'
+import { EASE_OUT_EXPO } from '@/utils/motion'
 import type { BookingStep } from '@/hooks/useBookingFlow'
 
 interface StepIndicatorProps {
@@ -48,7 +50,6 @@ export function StepIndicator({ currentStep, onStepClick }: StepIndicatorProps) 
           const isLast = idx === STEPS.length - 1
           const isClickable = status === 'completed' && onStepClick
 
-          // The connector colors based on completion of the current step
           const connectorActive = status === 'completed'
 
           return (
@@ -60,8 +61,8 @@ export function StepIndicator({ currentStep, onStepClick }: StepIndicatorProps) 
                   onClick={() => isClickable && onStepClick(step.num)}
                   disabled={!isClickable}
                   className={cn(
-                    'w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-[14px] font-semibold transition-all duration-300',
-                    isClickable && 'cursor-pointer hover:scale-110 hover:shadow-lg',
+                    'relative w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-[14px] font-semibold transition-shadow duration-150',
+                    isClickable && 'cursor-pointer hover:ring-4 hover:ring-teal-100',
                     !isClickable && 'cursor-default',
                     status === 'completed' && 'bg-teal-600 text-white shadow-md',
                     status === 'active' && 'bg-teal-600 text-white shadow-md ring-4 ring-teal-100',
@@ -70,7 +71,53 @@ export function StepIndicator({ currentStep, onStepClick }: StepIndicatorProps) 
                   aria-current={status === 'active' ? 'step' : undefined}
                   aria-label={`Step ${step.num}: ${step.label}${status === 'completed' ? ' completed' : ''}`}
                 >
-                  {status === 'completed' ? <CheckIcon /> : step.num}
+                  <AnimatePresence mode="wait" initial={false}>
+                    {status === 'completed' ? (
+                      <motion.span
+                        key="check"
+                        initial={{ scale: 0.5, opacity: 0, rotate: 15, filter: 'blur(4px)' }}
+                        animate={{
+                          scale: 1,
+                          opacity: 1,
+                          rotate: 0,
+                          filter: 'blur(0px)',
+                          transition: { duration: 0.22, ease: EASE_OUT_EXPO },
+                        }}
+                        exit={{
+                          scale: 0.6,
+                          opacity: 0,
+                          rotate: -15,
+                          filter: 'blur(3px)',
+                          transition: { duration: 0.12, ease: EASE_OUT_EXPO },
+                        }}
+                        className="absolute inset-0 flex items-center justify-center"
+                      >
+                        <CheckIcon />
+                      </motion.span>
+                    ) : (
+                      <motion.span
+                        key={`num-${step.num}`}
+                        initial={{ scale: 0.5, opacity: 0, rotate: -15, filter: 'blur(4px)' }}
+                        animate={{
+                          scale: 1,
+                          opacity: 1,
+                          rotate: 0,
+                          filter: 'blur(0px)',
+                          transition: { duration: 0.22, ease: EASE_OUT_EXPO },
+                        }}
+                        exit={{
+                          scale: 0.6,
+                          opacity: 0,
+                          rotate: 15,
+                          filter: 'blur(3px)',
+                          transition: { duration: 0.12, ease: EASE_OUT_EXPO },
+                        }}
+                        className="absolute inset-0 flex items-center justify-center"
+                      >
+                        {step.num}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
                 </button>
               </div>
 

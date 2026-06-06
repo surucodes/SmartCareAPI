@@ -1,7 +1,9 @@
 import { useState, useMemo } from 'react'
 import { useQuery, useQueries } from '@tanstack/react-query'
+import { AnimatePresence, motion } from 'motion/react'
 import { cn } from '@/utils/cn'
 import { doctorsService } from '@/services/doctors.service'
+import { CARD_HOVER_SPRING, EASE_OUT_EXPO, TAP_SCALE } from '@/utils/motion'
 import type { Doctor, ConsultationType } from '@/types/doctor.types'
 import type { UseBookingFlow } from '@/hooks/useBookingFlow'
 import drPrasannaLocal from '@/assets/images/Dr Prasanna.png'
@@ -129,26 +131,43 @@ function DoctorCard({
   const buttonEnabled = isCommitted || hasLocalPill
 
   return (
-    <div
+    <motion.div
+      whileHover={!isDisabled && !isCommitted ? { y: -3 } : undefined}
+      transition={CARD_HOVER_SPRING}
+      style={{ transition: 'box-shadow 220ms cubic-bezier(0.32, 0.72, 0, 1), border-color 180ms ease, opacity 200ms ease' }}
       className={cn(
-        'relative bg-white rounded-2xl border-2 p-5 md:p-6 flex flex-col transition-all duration-200',
+        'relative bg-white rounded-2xl border-2 p-5 md:p-6 flex flex-col',
         // Disabled card: 40% opacity, pointer-events none — no border change
         isDisabled && 'opacity-40 pointer-events-none border-gray-200',
         // Committed card: teal border + shadow
         !isDisabled && isCommitted && 'border-[#0F6E56] shadow-[0_10px_30px_rgba(15,110,86,0.15)]',
-        // Default card: gray border + hover lift
-        !isDisabled && !isCommitted && 'border-gray-200 shadow-[0_4px_20px_rgba(19,43,26,0.04)] hover:shadow-[0_8px_28px_rgba(19,43,26,0.08)] hover:-translate-y-0.5',
+        // Default card: gray border + hover shadow growth
+        !isDisabled && !isCommitted && 'border-gray-200 shadow-[0_4px_20px_rgba(19,43,26,0.04)] hover:shadow-[0_14px_32px_rgba(19,43,26,0.10)]',
       )}
     >
-      {/* Committed checkmark — absolute top-right, 28px, only when committed */}
-      {isCommitted && (
-        <div
-          className="absolute top-4 right-4 w-7 h-7 rounded-full bg-[#0F6E56] flex items-center justify-center shadow-sm"
-          aria-label="Doctor selected"
-        >
-          <CheckIcon />
-        </div>
-      )}
+      {/* Committed checkmark — absolute top-right, 28px, spring scale-in when committed */}
+      <AnimatePresence>
+        {isCommitted && (
+          <motion.div
+            key="committed-badge"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{
+              scale: 1,
+              opacity: 1,
+              transition: { type: 'spring', stiffness: 420, damping: 22 },
+            }}
+            exit={{
+              scale: 0,
+              opacity: 0,
+              transition: { duration: 0.14, ease: EASE_OUT_EXPO },
+            }}
+            className="absolute top-4 right-4 w-7 h-7 rounded-full bg-[#0F6E56] flex items-center justify-center shadow-sm"
+            aria-label="Doctor selected"
+          >
+            <CheckIcon />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Header: avatar + name + specialty */}
       <div className="flex items-center gap-4 mb-5">
@@ -207,12 +226,13 @@ function DoctorCard({
       </div>
 
       {/* "Select this Doctor" button — three visual states */}
-      <button
+      <motion.button
         type="button"
         tabIndex={isDisabled ? -1 : undefined}
         disabled={!buttonEnabled}
         aria-disabled={!buttonEnabled}
         onClick={() => onSelectCard(doctor)}
+        whileTap={buttonEnabled ? TAP_SCALE : undefined}
         className={cn(
           'w-full mt-auto min-h-[48px] rounded-lg text-[15px] font-semibold',
           // COMMITTED: teal, no hover change (this is now a deselect trigger)
@@ -224,8 +244,8 @@ function DoctorCard({
         )}
       >
         {isCommitted ? 'Doctor Selected' : 'Select this Doctor'}
-      </button>
-    </div>
+      </motion.button>
+    </motion.div>
   )
 }
 

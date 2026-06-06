@@ -106,7 +106,7 @@ export function AppointmentCard({
         }
       }}
       className={cn(
-        'relative bg-white rounded-xl border border-gray-100 border-l-4 p-4 cursor-pointer hover:shadow-md focus:outline-none focus:ring-2 focus:ring-teal-600 transition-all',
+        'relative bg-white rounded-xl border border-gray-100 border-l-4 p-4 cursor-pointer hover:shadow-md focus:outline-none focus:ring-2 focus:ring-teal-600 transition-shadow duration-150',
         statusBorderClass(appointment),
         isDimmed && 'opacity-70',
         selected && 'ring-2 ring-teal-600 bg-teal-50',

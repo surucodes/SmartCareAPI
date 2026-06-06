@@ -2,8 +2,10 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { AnimatePresence, motion } from 'motion/react'
 import { cn } from '@/utils/cn'
 import { hoursUntilAppointmentIst } from '@/utils/date.utils'
+import { EASE_OUT_EXPO, TAP_SCALE, VAUL_EASE } from '@/utils/motion'
 import type { Appointment } from '@/types/appointment.types'
 
 const REASON_MIN = 10
@@ -189,16 +191,41 @@ export function CancellationSection({
         </p>
       </div>
 
-      {!expanded ? (
-        <button
-          type="button"
-          onClick={() => setExpanded(true)}
-          className="w-full min-h-[48px] rounded-lg border-2 border-red-500 bg-white text-red-600 font-semibold text-[14.5px] hover:bg-red-50 hover:border-red-600 transition-colors active:scale-[0.99]"
-        >
-          Cancel Appointment
-        </button>
-      ) : (
-        <form onSubmit={submit} noValidate className="space-y-3.5">
+      <AnimatePresence mode="wait" initial={false}>
+        {!expanded ? (
+          <motion.button
+            key="cancel-trigger"
+            type="button"
+            onClick={() => setExpanded(true)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: 0.18 } }}
+            exit={{ opacity: 0, transition: { duration: 0.12 } }}
+            whileTap={TAP_SCALE}
+            className="w-full min-h-[48px] rounded-lg border-2 border-red-500 bg-white text-red-600 font-semibold text-[14.5px] hover:bg-red-50 hover:border-red-600 transition-colors"
+          >
+            Cancel Appointment
+          </motion.button>
+        ) : (
+          <motion.form
+            key="cancel-form"
+            onSubmit={submit}
+            noValidate
+            initial={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              filter: 'blur(0px)',
+              transition: { duration: 0.26, ease: VAUL_EASE },
+            }}
+            exit={{
+              opacity: 0,
+              y: -6,
+              filter: 'blur(3px)',
+              transition: { duration: 0.16, ease: VAUL_EASE },
+            }}
+            style={{ transformOrigin: 'top' }}
+            className="space-y-3.5"
+          >
           <div>
             <label
               htmlFor="cancel-reason"
@@ -244,55 +271,64 @@ export function CancellationSection({
             )}
           </div>
 
-          {/* Inline cancel error */}
-          {cancelError && (
-            <div
-              role="alert"
-              className="rounded-lg border border-red-200 bg-red-50 p-3 text-[13px] text-red-700 leading-snug"
-            >
-              {cancelError}
-            </div>
-          )}
+            {/* Inline cancel error */}
+            <AnimatePresence initial={false}>
+              {cancelError && (
+                <motion.div
+                  key="cancel-error"
+                  role="alert"
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0, transition: { duration: 0.18, ease: EASE_OUT_EXPO } }}
+                  exit={{ opacity: 0, transition: { duration: 0.12 } }}
+                  className="rounded-lg border border-red-200 bg-red-50 p-3 text-[13px] text-red-700 leading-snug"
+                >
+                  {cancelError}
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-          {/* Action buttons — stack on mobile, side-by-side on desktop */}
-          <div className="flex flex-col md:flex-row gap-3 md:justify-end">
-            <button
-              type="button"
-              onClick={handleKeep}
-              disabled={isCancelling}
-              className={cn(
-                'w-full md:w-auto md:min-w-[140px] min-h-[44px] px-5 rounded-lg',
-                'border border-gray-200 bg-white text-gray-700 font-semibold text-[14px]',
-                'hover:bg-gray-50 hover:border-gray-300 transition-colors',
-                'disabled:opacity-60 disabled:cursor-not-allowed',
-              )}
-            >
-              Keep Appointment
-            </button>
-            <button
-              type="submit"
-              disabled={!isValid || isCancelling}
-              className={cn(
-                'w-full md:w-auto md:min-w-[180px] min-h-[44px] px-5 rounded-lg',
-                'text-white font-semibold text-[14px] shadow-sm transition-all active:scale-[0.99]',
-                'inline-flex items-center justify-center gap-2',
-                !isValid || isCancelling
-                  ? 'bg-red-300 cursor-not-allowed'
-                  : 'bg-red-600 hover:bg-red-700',
-              )}
-            >
-              {isCancelling ? (
-                <>
-                  <Spinner />
-                  Cancelling...
-                </>
-              ) : (
-                'Confirm Cancellation'
-              )}
-            </button>
-          </div>
-        </form>
-      )}
+            {/* Action buttons — stack on mobile, side-by-side on desktop */}
+            <div className="flex flex-col md:flex-row gap-3 md:justify-end">
+              <motion.button
+                type="button"
+                onClick={handleKeep}
+                disabled={isCancelling}
+                whileTap={!isCancelling ? TAP_SCALE : undefined}
+                className={cn(
+                  'w-full md:w-auto md:min-w-[140px] min-h-[44px] px-5 rounded-lg',
+                  'border border-gray-200 bg-white text-gray-700 font-semibold text-[14px]',
+                  'hover:bg-gray-50 hover:border-gray-300 transition-colors',
+                  'disabled:opacity-60 disabled:cursor-not-allowed',
+                )}
+              >
+                Keep Appointment
+              </motion.button>
+              <motion.button
+                type="submit"
+                disabled={!isValid || isCancelling}
+                whileTap={isValid && !isCancelling ? TAP_SCALE : undefined}
+                className={cn(
+                  'w-full md:w-auto md:min-w-[180px] min-h-[44px] px-5 rounded-lg',
+                  'text-white font-semibold text-[14px] shadow-sm transition-colors',
+                  'inline-flex items-center justify-center gap-2',
+                  !isValid || isCancelling
+                    ? 'bg-red-300 cursor-not-allowed'
+                    : 'bg-red-600 hover:bg-red-700',
+                )}
+              >
+                {isCancelling ? (
+                  <>
+                    <Spinner />
+                    Cancelling...
+                  </>
+                ) : (
+                  'Confirm Cancellation'
+                )}
+              </motion.button>
+            </div>
+          </motion.form>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

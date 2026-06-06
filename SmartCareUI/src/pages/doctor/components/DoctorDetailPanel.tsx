@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
 import { cn } from '@/utils/cn'
+import { FORM_SWAP, NOTICE_FADE } from '@/utils/motion'
 import {
   formatDisplayDate,
   formatDisplayTime,
@@ -14,6 +16,8 @@ import {
 } from './doctor-actions'
 import { DoctorCancelForm } from './DoctorCancelForm'
 import { DoctorRescheduleForm } from './DoctorRescheduleForm'
+
+const VAUL_EASING = 'cubic-bezier(0.32, 0.72, 0, 1)'
 
 interface DoctorDetailPanelProps {
   appointment: Appointment
@@ -221,11 +225,13 @@ export function DoctorDetailPanel({
         role="dialog"
         aria-modal="true"
         aria-label="Appointment details"
-        className={cn(
-          'hidden md:flex fixed right-0 top-0 z-50 h-screen w-[420px] bg-white shadow-xl border-l border-gray-100 flex-col overflow-hidden',
-          'transition-transform duration-300 ease-in-out',
-          mounted ? 'translate-x-0' : 'translate-x-full',
-        )}
+        style={{
+          transition: `transform 270ms ${VAUL_EASING}, opacity 220ms ${VAUL_EASING}, filter 220ms ${VAUL_EASING}`,
+          transform: mounted ? 'translateX(0)' : 'translateX(100%)',
+          opacity: mounted ? 1 : 0,
+          filter: mounted ? 'blur(0px)' : 'blur(6px)',
+        }}
+        className="hidden md:flex fixed right-0 top-0 z-50 h-screen w-[420px] bg-white shadow-xl border-l border-gray-100 flex-col overflow-hidden"
       >
         <PanelContent
           appointment={appointment}
@@ -252,11 +258,14 @@ export function DoctorDetailPanel({
         role="dialog"
         aria-modal="true"
         aria-label="Appointment details"
-        className={cn(
-          'md:hidden fixed inset-x-0 bottom-0 z-50 bg-white shadow-xl rounded-t-2xl max-h-[85vh] flex flex-col overflow-hidden',
-          'transition-transform duration-300 ease-in-out',
-          mounted ? 'translate-y-0' : 'translate-y-full',
-        )}
+        style={{
+          transition: `transform 270ms ${VAUL_EASING}, opacity 220ms ${VAUL_EASING}, filter 220ms ${VAUL_EASING}`,
+          transform: mounted ? 'translateY(0)' : 'translateY(100%)',
+          opacity: mounted ? 1 : 0,
+          filter: mounted ? 'blur(0px)' : 'blur(6px)',
+          transformOrigin: 'bottom',
+        }}
+        className="md:hidden fixed inset-x-0 bottom-0 z-50 bg-white shadow-xl rounded-t-2xl max-h-[85vh] flex flex-col overflow-hidden"
       >
         {/* Drag handle */}
         <div className="pt-2 pb-1 flex justify-center shrink-0">
@@ -441,67 +450,102 @@ function PanelContent({
         <div className="p-5 border-t border-gray-100 bg-warm-50 shrink-0 max-h-[55vh] overflow-y-auto">
 
           {/* Combined error banner */}
-          {errorShown && (
-            <div
-              role="alert"
-              className="mb-3 bg-red-50 border border-red-200 text-red-700 rounded-lg px-3 py-2 text-sm flex items-start justify-between gap-2"
-            >
-              <span>{errorShown.message}</span>
-              <button
-                type="button"
-                aria-label="Dismiss"
-                onClick={() => onDismissError(errorShown.message)}
-                className="text-red-700 shrink-0"
+          <AnimatePresence initial={false}>
+            {errorShown && (
+              <motion.div
+                key={`doctor-panel-error-${errorShown.message}`}
+                role="alert"
+                variants={NOTICE_FADE}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                className="mb-3 bg-red-50 border border-red-200 text-red-700 rounded-lg px-3 py-2 text-sm flex items-start justify-between gap-2"
               >
-                <XIcon />
-              </button>
-            </div>
-          )}
+                <span>{errorShown.message}</span>
+                <button
+                  type="button"
+                  aria-label="Dismiss"
+                  onClick={() => onDismissError(errorShown.message)}
+                  className="text-red-700 shrink-0"
+                >
+                  <XIcon />
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-          {formMode === 'cancel' ? (
-            <DoctorCancelForm
-              onSubmit={handleCancelSubmit}
-              onKeep={() => setFormMode(null)}
-              isPending={actions.cancelState.isPending}
-              error={actions.cancelState.error?.message ?? null}
-            />
-          ) : formMode === 'reschedule' ? (
-            <DoctorRescheduleForm
-              onSubmit={handleRescheduleSubmit}
-              onCancel={() => setFormMode(null)}
-              isPending={actions.rescheduleState.isPending}
-              error={actions.rescheduleState.error?.message ?? null}
-              successMessage={null}
-            />
-          ) : (
-            <div className="space-y-2">
-              {primary.map((id) => (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={handlersByAction[id]}
-                  disabled={isPendingByAction[id]}
-                  className={cn(
-                    'w-full min-h-[44px] px-4 text-sm font-semibold rounded-lg transition-colors',
-                    DOCTOR_BUTTON_PALETTE[id].classes,
-                    isPendingByAction[id] && 'opacity-70 cursor-not-allowed',
-                  )}
-                >
-                  {isPendingByAction[id] ? 'Working…' : DOCTOR_BUTTON_PALETTE[id].label}
-                </button>
-              ))}
-              {hasReschedule && (
-                <button
-                  type="button"
-                  onClick={() => setFormMode('reschedule')}
-                  className="w-full mt-1 inline-flex items-center justify-center gap-1.5 min-h-[44px] text-sm text-gray-500 hover:text-brand-dark underline transition-colors"
-                >
-                  <EventRepeatIcon />
-                  Reschedule
-                </button>
-              )}
-            </div>
-          )}
+          <AnimatePresence mode="wait" initial={false}>
+            {formMode === 'cancel' ? (
+              <motion.div
+                key="cancel-form"
+                variants={FORM_SWAP}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                style={{ transformOrigin: 'top' }}
+              >
+                <DoctorCancelForm
+                  onSubmit={handleCancelSubmit}
+                  onKeep={() => setFormMode(null)}
+                  isPending={actions.cancelState.isPending}
+                  error={actions.cancelState.error?.message ?? null}
+                />
+              </motion.div>
+            ) : formMode === 'reschedule' ? (
+              <motion.div
+                key="reschedule-form"
+                variants={FORM_SWAP}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                style={{ transformOrigin: 'top' }}
+              >
+                <DoctorRescheduleForm
+                  onSubmit={handleRescheduleSubmit}
+                  onCancel={() => setFormMode(null)}
+                  isPending={actions.rescheduleState.isPending}
+                  error={actions.rescheduleState.error?.message ?? null}
+                  successMessage={null}
+                />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="actions"
+                variants={FORM_SWAP}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                style={{ transformOrigin: 'top' }}
+                className="space-y-2"
+              >
+                {primary.map((id) => (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={handlersByAction[id]}
+                    disabled={isPendingByAction[id]}
+                    className={cn(
+                      'w-full min-h-[44px] px-4 text-sm font-semibold rounded-lg transition-colors',
+                      DOCTOR_BUTTON_PALETTE[id].classes,
+                      isPendingByAction[id] && 'opacity-70 cursor-not-allowed',
+                    )}
+                  >
+                    {isPendingByAction[id] ? 'Working…' : DOCTOR_BUTTON_PALETTE[id].label}
+                  </button>
+                ))}
+                {hasReschedule && (
+                  <button
+                    type="button"
+                    onClick={() => setFormMode('reschedule')}
+                    className="w-full mt-1 inline-flex items-center justify-center gap-1.5 min-h-[44px] text-sm text-gray-500 hover:text-brand-dark underline transition-colors"
+                  >
+                    <EventRepeatIcon />
+                    Reschedule
+                  </button>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       )}
     </>

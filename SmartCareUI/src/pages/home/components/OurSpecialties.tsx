@@ -1,7 +1,11 @@
-import orthoIcon    from '@/assets/images/orthoIcon.png'
-import gynaeIcon    from '@/assets/images/GynaeIcon.png'
-import physioIcon   from '@/assets/images/physioLogo.png'
-import microIcon    from '@/assets/images/MicroscopeIcon.png'
+import { motion } from 'motion/react'
+import { CARD_HOVER_SPRING, SECTION_ENTER, STAGGER_CHILD, STAGGER_PARENT } from '@/utils/motion'
+import orthoIcon      from '@/assets/images/orthoIcon.png'
+import gynaeIcon      from '@/assets/images/GynaeIcon.png'
+import physioIcon     from '@/assets/images/physioLogo.png'
+import microIcon      from '@/assets/images/MicroscopeIcon.png'
+import radiologyIcon  from '@/assets/images/Radiology icon.jpeg'
+import pharmacyIcon   from '@/assets/images/pharmacy icon.jpeg'
 
 type Specialty = {
   label: string
@@ -16,44 +20,8 @@ const SPECIALTIES: Specialty[] = [
     href: '#',
   },
   {
-    label: 'Gynaecology',
-    icon: { type: 'img', src: gynaeIcon, alt: 'Gynaecology icon' },
-    href: '#',
-  },
-  {
-    label: 'Pediatrics',
-    icon: {
-      type: 'svg',
-      el: (
-        <svg width="48" height="48" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-          <circle cx="16" cy="9" r="4.5" stroke="#132b1a" strokeWidth="1.6" />
-          <path d="M7 28c0-5 4-9 9-9s9 4 9 9" stroke="#132b1a" strokeWidth="1.6" strokeLinecap="round" />
-          <path d="M16 18v-3M13 17l1.5 1M19 17l-1.5 1" stroke="#132b1a" strokeWidth="1.4" strokeLinecap="round" />
-          <circle cx="23" cy="13" r="2.5" stroke="#C9A227" strokeWidth="1.4" />
-          <path d="M23 11.5v3M21.5 13h3" stroke="#C9A227" strokeWidth="1.2" strokeLinecap="round" />
-        </svg>
-      ),
-    },
-    href: '#',
-  },
-  {
-    label: 'General Medicine',
-    icon: {
-      type: 'svg',
-      el: (
-        <svg width="48" height="48" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-          <path
-            d="M6 12a5 5 0 0 1 5-5h10a5 5 0 0 1 5 5v4a10 10 0 0 1-20 0v-4z"
-            stroke="#132b1a"
-            strokeWidth="1.6"
-          />
-          <path d="M16 13v6M13 16h6" stroke="#132b1a" strokeWidth="1.6" strokeLinecap="round" />
-          <path d="M11 7V5M21 7V5" stroke="#132b1a" strokeWidth="1.5" strokeLinecap="round" />
-          <path d="M16 26v2" stroke="#132b1a" strokeWidth="1.5" strokeLinecap="round" />
-          <circle cx="16" cy="29" r="1.2" fill="#C9A227" />
-        </svg>
-      ),
-    },
+    label: 'Gynaecology & Obstetrics',
+    icon: { type: 'img', src: gynaeIcon, alt: 'Gynaecology & Obstetrics icon' },
     href: '#',
   },
   {
@@ -62,15 +30,28 @@ const SPECIALTIES: Specialty[] = [
     href: '#',
   },
   {
-    label: 'Pathology',
-    icon: { type: 'img', src: microIcon, alt: 'Pathology icon' },
+    label: 'Radiology',
+    icon: { type: 'img', src: radiologyIcon, alt: 'Radiology icon' },
+    href: '#',
+  },
+  {
+    label: 'Pathology & Laboratory',
+    icon: { type: 'img', src: microIcon, alt: 'Pathology & Laboratory icon' },
+    href: '#',
+  },
+  {
+    label: 'Pharmacy',
+    icon: { type: 'img', src: pharmacyIcon, alt: 'Pharmacy icon' },
     href: '#',
   },
 ]
 
 export function OurSpecialties() {
   return (
-    <section className="w-full bg-white py-16 px-4 md:px-12 overflow-hidden">
+    <motion.section
+      {...SECTION_ENTER}
+      className="w-full bg-white py-16 px-4 md:px-12 overflow-hidden"
+    >
       <div className="w-full">
 
         {/* ── Section header ──────────────────────────────────── */}
@@ -106,18 +87,28 @@ export function OurSpecialties() {
         </div>
 
         {/* ── Specialties grid ─────────────────────────────────── */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+        <motion.div
+          variants={STAGGER_PARENT}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: '-80px' }}
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6"
+        >
           {SPECIALTIES.map(({ label, icon, href }) => (
-            <a
+            <motion.a
               key={label}
               href={href}
-              className="bg-white border border-gray-200 rounded-lg p-6 flex flex-col items-center justify-center gap-4 hover:shadow-lg transition-all duration-200 hover:-translate-y-1 group"
+              variants={STAGGER_CHILD}
+              whileHover={{ y: -4 }}
+              transition={CARD_HOVER_SPRING}
+              style={{ transition: 'box-shadow 250ms cubic-bezier(0.32, 0.72, 0, 1)' }}
+              className="group bg-white border border-gray-200 rounded-lg p-6 flex flex-col items-center justify-center gap-4 hover:shadow-[0_10px_28px_rgba(19,43,26,0.10)]"
             >
               {icon.type === 'img' ? (
                 <img
                   src={icon.src}
                   alt={icon.alt}
-                  className="w-16 h-16 rounded-full object-cover group-hover:scale-105 transition-transform shrink-0"
+                  className="w-16 h-16 rounded-full object-cover shrink-0"
                 />
               ) : (
                 <div className="w-16 h-16 rounded-full bg-gray-100 group-hover:bg-[#132b1a]/10 flex items-center justify-center transition-colors shrink-0">
@@ -130,11 +121,11 @@ export function OurSpecialties() {
               >
                 {label}
               </span>
-            </a>
+            </motion.a>
           ))}
-        </div>
+        </motion.div>
 
       </div>
-    </section>
+    </motion.section>
   )
 }

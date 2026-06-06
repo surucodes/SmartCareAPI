@@ -27,6 +27,9 @@ export default {
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         serif: ['"Playfair Display"', 'Georgia', 'serif'],
+        playfair: ['"Playfair Display"', 'Georgia', 'serif'],
+        cormorant: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+        mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
       },
       borderRadius: {
         DEFAULT: '8px',

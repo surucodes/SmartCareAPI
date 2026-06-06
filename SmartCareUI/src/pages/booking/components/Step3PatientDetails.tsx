@@ -3,7 +3,9 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import axios from 'axios'
+import { AnimatePresence, motion } from 'motion/react'
 import { cn } from '@/utils/cn'
+import { EASE_OUT_EXPO, TAP_SCALE } from '@/utils/motion'
 import { AppointmentSummaryCard } from './AppointmentSummaryCard'
 import type { UseBookingFlow, PatientDetailsPayload } from '@/hooks/useBookingFlow'
 import type { ReferralSource } from '@/types/appointment.types'
@@ -363,48 +365,59 @@ export function Step3PatientDetails({ flow }: Step3Props) {
           </div>
 
           {/* Server error */}
-          {serverError && (
-            <div
-              role="alert"
-              className={cn(
-                'rounded-lg border p-4 flex flex-col gap-3',
-                serverError.type === 'conflict' || serverError.type === 'duplicate'
-                  ? 'bg-amber-50 border-amber-200 text-amber-900'
-                  : 'bg-red-50 border-red-200 text-red-800',
-              )}
-            >
-              <p className="text-[14px] leading-snug">{serverError.message}</p>
-              {serverError.type === 'conflict' && (
-                <button
-                  type="button"
-                  onClick={() => flow.goBack()}
-                  className="self-start min-h-[40px] px-4 rounded-lg bg-amber-700 text-white text-[13px] font-semibold hover:bg-amber-800 transition-colors"
-                >
-                  Choose Different Time
-                </button>
-              )}
-              {serverError.type === 'duplicate' && (
-                <button
-                  type="button"
-                  onClick={() => flow.goBack()}
-                  className="self-start min-h-[40px] px-4 rounded-lg bg-amber-700 text-white text-[13px] font-semibold hover:bg-amber-800 transition-colors"
-                >
-                  Choose a Different Slot
-                </button>
-              )}
-            </div>
-          )}
+          <AnimatePresence initial={false}>
+            {serverError && (
+              <motion.div
+                key={`server-error-${serverError.type}`}
+                role="alert"
+                initial={{ opacity: 0, y: -6 }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  transition: { duration: 0.2, ease: EASE_OUT_EXPO },
+                }}
+                exit={{ opacity: 0, transition: { duration: 0.12 } }}
+                className={cn(
+                  'rounded-lg border p-4 flex flex-col gap-3',
+                  serverError.type === 'conflict' || serverError.type === 'duplicate'
+                    ? 'bg-amber-50 border-amber-200 text-amber-900'
+                    : 'bg-red-50 border-red-200 text-red-800',
+                )}
+              >
+                <p className="text-[14px] leading-snug">{serverError.message}</p>
+                {serverError.type === 'conflict' && (
+                  <button
+                    type="button"
+                    onClick={() => flow.goBack()}
+                    className="self-start min-h-[40px] px-4 rounded-lg bg-amber-700 text-white text-[13px] font-semibold hover:bg-amber-800 transition-colors"
+                  >
+                    Choose Different Time
+                  </button>
+                )}
+                {serverError.type === 'duplicate' && (
+                  <button
+                    type="button"
+                    onClick={() => flow.goBack()}
+                    className="self-start min-h-[40px] px-4 rounded-lg bg-amber-700 text-white text-[13px] font-semibold hover:bg-amber-800 transition-colors"
+                  >
+                    Choose a Different Slot
+                  </button>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Action area */}
           <div className="pt-2 pb-6 flex flex-col gap-3">
-            <button
+            <motion.button
               type="submit"
               disabled={!isValid || submitting}
+              whileTap={isValid && !submitting ? TAP_SCALE : undefined}
               className={cn(
-                'w-full min-h-[52px] rounded-lg text-[15px] font-semibold flex items-center justify-center gap-2 transition-all shadow-md',
+                'w-full min-h-[52px] rounded-lg text-[15px] font-semibold flex items-center justify-center gap-2 transition-colors shadow-md',
                 !isValid || submitting
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
-                  : 'bg-teal-600 text-white hover:bg-teal-700 hover:shadow-lg',
+                  : 'bg-teal-600 text-white hover:bg-teal-700',
               )}
             >
               {submitting ? (
@@ -418,7 +431,7 @@ export function Step3PatientDetails({ flow }: Step3Props) {
                   <ArrowRight />
                 </>
               )}
-            </button>
+            </motion.button>
             <p className="text-center text-[12px] text-gray-500">
               By confirming, you agree to our{' '}
               <a href="#" className="text-teal-700 underline underline-offset-2">Terms</a>

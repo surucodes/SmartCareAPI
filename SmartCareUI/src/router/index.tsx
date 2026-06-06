@@ -15,6 +15,15 @@ const DoctorSchedulePage = lazy(() =>
   import('@/pages/doctor/DoctorSchedulePage')
 )
 const SetupPage = lazy(() => import('@/pages/setup/SetupPage'))
+const DrPrasannaPage = lazy(
+  () => import('@/pages/doctor-profile/DrPrasannaPage')
+)
+const DrLakshmiPage = lazy(
+  () => import('@/pages/doctor-profile/DrLakshmiPage')
+)
+const HospitalTourPage = lazy(
+  () => import('@/pages/hospital-tour/HospitalTourPage')
+)
 const NotFoundPage = lazy(() => import('@/pages/not-found/NotFoundPage'))
 
 const Loader = () => (
@@ -81,6 +90,30 @@ export const router = createBrowserRouter([
     element: (
       <Suspense fallback={<Loader />}>
         <SetupPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: '/doctors/prasanna',
+    element: (
+      <Suspense fallback={<Loader />}>
+        <DrPrasannaPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: '/hospital-tour',
+    element: (
+      <Suspense fallback={<Loader />}>
+        <HospitalTourPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: '/doctors/lakshmi',
+    element: (
+      <Suspense fallback={<Loader />}>
+        <DrLakshmiPage />
       </Suspense>
     ),
   },

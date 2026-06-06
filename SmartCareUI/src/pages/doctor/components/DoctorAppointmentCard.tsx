@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
 import { cn } from '@/utils/cn'
+import { FORM_SWAP } from '@/utils/motion'
 import { formatDisplayTime } from '@/utils/date.utils'
 import type { Appointment } from '@/types/appointment.types'
 import type { DoctorAppointmentActions } from '@/hooks/useDoctorAppointmentActions'
@@ -268,71 +270,85 @@ export function DoctorAppointmentCard({
             </p>
           )}
 
-          {/* Action strip — only for non-read-only states */}
-          {!isReadOnly && primary.length > 0 && formMode === null && (
-            <div
-              onClick={stop}
-              className="mt-6 pt-4 border-t border-dashed border-gray-200 flex flex-wrap items-center gap-3"
-            >
-              {primary.map((id) => {
-                return (
-                  <button
-                    key={id}
-                    type="button"
-                    onClick={(e) => { stop(e); handlersByAction[id]() }}
-                    disabled={isPendingByAction[id]}
-                    className={cn(
-                      'min-h-[44px] px-5 text-sm font-semibold rounded-md transition-colors w-full sm:w-auto',
-                      DOCTOR_BUTTON_PALETTE[id].classes,
-                      isPendingByAction[id] && 'opacity-70 cursor-not-allowed',
-                    )}
-                  >
-                    {isPendingByAction[id] ? 'Working…' : DOCTOR_BUTTON_PALETTE[id].label}
-                  </button>
-                )
-              })}
-              {hasReschedule && (
-                <button
-                  type="button"
-                  onClick={(e) => { stop(e); setFormMode('reschedule') }}
-                  className="min-h-[44px] inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-brand-dark underline transition-colors w-full sm:w-auto sm:ml-2 justify-center sm:justify-start"
+          {/* Action strip + inline forms — animated swap */}
+          {!isReadOnly && (primary.length > 0 || hasReschedule) && (
+            <AnimatePresence mode="wait" initial={false}>
+              {formMode === null ? (
+                <motion.div
+                  key="actions"
+                  variants={FORM_SWAP}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  onClick={stop}
+                  style={{ transformOrigin: 'top' }}
+                  className="mt-6 pt-4 border-t border-dashed border-gray-200 flex flex-wrap items-center gap-3"
                 >
-                  <EventRepeatIcon />
-                  Reschedule
-                </button>
+                  {primary.map((id) => (
+                    <button
+                      key={id}
+                      type="button"
+                      onClick={(e) => { stop(e); handlersByAction[id]() }}
+                      disabled={isPendingByAction[id]}
+                      className={cn(
+                        'min-h-[44px] px-5 text-sm font-semibold rounded-md transition-colors w-full sm:w-auto',
+                        DOCTOR_BUTTON_PALETTE[id].classes,
+                        isPendingByAction[id] && 'opacity-70 cursor-not-allowed',
+                      )}
+                    >
+                      {isPendingByAction[id] ? 'Working…' : DOCTOR_BUTTON_PALETTE[id].label}
+                    </button>
+                  ))}
+                  {hasReschedule && (
+                    <button
+                      type="button"
+                      onClick={(e) => { stop(e); setFormMode('reschedule') }}
+                      className="min-h-[44px] inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-brand-dark underline transition-colors w-full sm:w-auto sm:ml-2 justify-center sm:justify-start"
+                    >
+                      <EventRepeatIcon />
+                      Reschedule
+                    </button>
+                  )}
+                </motion.div>
+              ) : formMode === 'cancel' ? (
+                <motion.div
+                  key="cancel-form"
+                  variants={FORM_SWAP}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  onClick={stop}
+                  style={{ transformOrigin: 'top' }}
+                  className="mt-6 pt-4 border-t border-dashed border-gray-200"
+                >
+                  <DoctorCancelForm
+                    onSubmit={handleCancelSubmit}
+                    onKeep={() => setFormMode(null)}
+                    isPending={actions.cancelState.isPending}
+                    error={actions.cancelState.error?.message ?? null}
+                  />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="reschedule-form"
+                  variants={FORM_SWAP}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  onClick={stop}
+                  style={{ transformOrigin: 'top' }}
+                  className="mt-6 pt-4 border-t border-dashed border-gray-200"
+                >
+                  <DoctorRescheduleForm
+                    onSubmit={handleRescheduleSubmit}
+                    onCancel={() => setFormMode(null)}
+                    isPending={actions.rescheduleState.isPending}
+                    error={rescheduleError}
+                    successMessage={null}
+                  />
+                </motion.div>
               )}
-            </div>
-          )}
-
-          {/* Inline cancel form */}
-          {formMode === 'cancel' && (
-            <div
-              onClick={stop}
-              className="mt-6 pt-4 border-t border-dashed border-gray-200"
-            >
-              <DoctorCancelForm
-                onSubmit={handleCancelSubmit}
-                onKeep={() => setFormMode(null)}
-                isPending={actions.cancelState.isPending}
-                error={actions.cancelState.error?.message ?? null}
-              />
-            </div>
-          )}
-
-          {/* Inline reschedule form */}
-          {formMode === 'reschedule' && (
-            <div
-              onClick={stop}
-              className="mt-6 pt-4 border-t border-dashed border-gray-200"
-            >
-              <DoctorRescheduleForm
-                onSubmit={handleRescheduleSubmit}
-                onCancel={() => setFormMode(null)}
-                isPending={actions.rescheduleState.isPending}
-                error={rescheduleError}
-                successMessage={null}
-              />
-            </div>
+            </AnimatePresence>
           )}
         </div>
       </div>

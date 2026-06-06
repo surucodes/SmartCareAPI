@@ -162,18 +162,28 @@ export function Footer() {
                   <path d="M9 1C6.2 1 4 3.2 4 6c0 3.8 5 11 5 11s5-7.2 5-11c0-2.8-2.2-5-5-5z" stroke="#0F6E56" strokeWidth="1.4" />
                   <circle cx="9" cy="6" r="1.8" stroke="#0F6E56" strokeWidth="1.3" />
                 </svg>
-                <span className="text-[13px] text-[#666666] leading-relaxed" style={{ fontFamily: 'Inter, sans-serif' }}>
-                  # 15, 9th Cross, Jayanagar 3rd Block,<br />
-                  Bengaluru, Karnataka 560011
-                </span>
+                <div className="flex-1 flex flex-col gap-1">
+                  <span className="text-[13px] text-[#666666] leading-relaxed" style={{ fontFamily: 'Inter, sans-serif' }}>
+                    Sagara, Karnataka 577401
+                  </span>
+                  <a
+                    href="https://maps.app.goo.gl/pwiHCVhxsn6aS9L3A"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[12px] text-[#0F6E56] hover:underline transition-colors duration-300 w-fit"
+                    style={{ fontFamily: 'Inter, sans-serif' }}
+                  >
+                    Get Directions →
+                  </a>
+                </div>
               </li>
 
               <li className="flex items-center gap-3">
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" className="shrink-0">
                   <path d="M3 1h3.5l1.5 4-2 1.5a10 10 0 0 0 5.5 5.5L13 10l4 1.5V15a2 2 0 0 1-2 2C6.3 17 1 11.7 1 3a2 2 0 0 1 2-2z" stroke="#0F6E56" strokeWidth="1.4" strokeLinejoin="round" />
                 </svg>
-                <a href="tel:08012345678" className="text-[13px] text-[#666666] hover:text-[#0F6E56] hover:underline transition-colors duration-300" style={{ fontFamily: 'Inter, sans-serif' }}>
-                  080 1234 5678
+                <a href="tel:+919071880718" className="flex-1 text-[13px] text-[#666666] hover:text-[#0F6E56] hover:underline transition-colors duration-300" style={{ fontFamily: 'Inter, sans-serif' }}>
+                  +91 90718 80718
                 </a>
               </li>
 
@@ -182,8 +192,8 @@ export function Footer() {
                   <rect x="1" y="3" width="16" height="12" rx="2" stroke="#0F6E56" strokeWidth="1.4" />
                   <path d="M1 5l8 6 8-6" stroke="#0F6E56" strokeWidth="1.4" strokeLinecap="round" />
                 </svg>
-                <a href="mailto:info@spandanahospital.com" className="text-[13px] text-[#666666] hover:text-[#0F6E56] hover:underline transition-colors duration-300 break-all" style={{ fontFamily: 'Inter, sans-serif' }}>
-                  info@spandanahospital.com
+                <a href="mailto:spandanahospital@gmail.com" className="flex-1 text-[13px] text-[#666666] hover:text-[#0F6E56] hover:underline transition-colors duration-300 break-all" style={{ fontFamily: 'Inter, sans-serif' }}>
+                  spandanahospital@gmail.com
                 </a>
               </li>
             </ul>

@@ -1,3 +1,4 @@
+import { motion } from 'motion/react'
 import { cn } from '@/utils/cn'
 import type { DoctorFilter } from '@/hooks/useDoctorSchedule'
 
@@ -30,13 +31,19 @@ export function StatusFilterPills({ value, onChange }: StatusFilterPillsProps) {
             aria-selected={isActive}
             onClick={() => onChange(pill.id)}
             className={cn(
-              'min-h-[44px] px-4 rounded-md text-sm font-semibold transition-colors',
-              isActive
-                ? 'bg-teal-600 text-white shadow-sm'
-                : 'text-gray-500 hover:bg-gray-50',
+              'relative min-h-[44px] px-4 rounded-md text-sm font-semibold transition-colors',
+              isActive ? 'text-white' : 'text-gray-500 hover:bg-gray-50',
             )}
           >
-            {pill.label}
+            {isActive && (
+              <motion.span
+                layoutId="status-filter-active"
+                aria-hidden="true"
+                transition={{ type: 'spring', stiffness: 520, damping: 38 }}
+                className="absolute inset-0 rounded-md bg-teal-600 shadow-sm"
+              />
+            )}
+            <span className="relative z-10">{pill.label}</span>
           </button>
         )
       })}

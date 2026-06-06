@@ -4,7 +4,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
+import { motion } from 'motion/react'
 import { cn } from '@/utils/cn'
+import { BACKDROP_FADE, MODAL_SCALE } from '@/utils/motion'
 import { getTodayIST } from '@/utils/date.utils'
 import { appointmentsService } from '@/services/appointments.service'
 import { doctorsService } from '@/services/doctors.service'
@@ -127,12 +129,22 @@ export function WalkInBookingModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div
+      <motion.div
         role="presentation"
         onClick={onClose}
+        variants={BACKDROP_FADE}
+        initial="initial"
+        animate="animate"
+        exit="exit"
         className="absolute inset-0 bg-black/40"
       />
-      <div className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden">
+      <motion.div
+        variants={MODAL_SCALE}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden"
+      >
 
         {/* Header */}
         <div className="p-6 border-b border-gray-100 flex items-start justify-between gap-3">
@@ -294,7 +306,7 @@ export function WalkInBookingModal({
             {createMutation.isPending ? 'Booking…' : 'Book Appointment'}
           </button>
         </form>
-      </div>
+      </motion.div>
     </div>
   )
 }

@@ -1,4 +1,13 @@
 import { Link } from 'react-router-dom'
+import { motion } from 'motion/react'
+import {
+  CARD_HOVER_SPRING,
+  CTA_HOVER_SPRING,
+  SECTION_ENTER,
+  STAGGER_CHILD,
+  STAGGER_PARENT,
+  TAP_SCALE,
+} from '@/utils/motion'
 import drPrasanna from '@/assets/images/Dr Prasanna.png'
 import drLakshmi from '@/assets/images/Dr.Lakshmi.png'
 
@@ -8,20 +17,23 @@ const DOCTORS = [
     name: 'Dr. Prasanna N.M',
     specialty: 'Orthopaedic Surgeon',
     quote: '"Every fracture tells a story. My job is to help write the recovery chapter."',
-    profileHref: '/book',
+    profileHref: '/doctors/prasanna',
   },
   {
     img: drLakshmi,
     name: 'Dr. Lakshmi Hegde',
     specialty: 'Gynaecologist',
     quote: '"Women\'s health deserves unhurried attention and genuine care. That is what we offer here."',
-    profileHref: '/book',
+    profileHref: '/doctors/lakshmi',
   },
 ]
 
 export function MeetTheDoctors() {
   return (
-    <section className="relative w-full bg-[#faf9f6] py-10 px-4 md:px-12 overflow-hidden">
+    <motion.section
+      {...SECTION_ENTER}
+      className="relative w-full bg-[#faf9f6] py-10 px-4 md:px-12 overflow-hidden"
+    >
 
       {/* Subtle botanical decoration */}
       <div
@@ -83,11 +95,21 @@ export function MeetTheDoctors() {
         </div>
 
         {/* ── Doctor cards grid ───────────────────────────────── */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <motion.div
+          variants={STAGGER_PARENT}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: '-80px' }}
+          className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+        >
           {DOCTORS.map(({ img, name, specialty, quote, profileHref }) => (
-            <div
+            <motion.div
               key={name}
-              className="bg-white rounded-lg border border-gray-200 p-6 flex flex-col sm:flex-row gap-6 items-center sm:items-start shadow-[0_2px_10px_rgba(19,43,26,0.04)] hover:shadow-[0_8px_20px_rgba(19,43,26,0.08)] transition-shadow duration-300"
+              variants={STAGGER_CHILD}
+              whileHover={{ y: -4 }}
+              transition={CARD_HOVER_SPRING}
+              style={{ transition: 'box-shadow 280ms cubic-bezier(0.32, 0.72, 0, 1)' }}
+              className="bg-white rounded-lg border border-gray-200 p-6 flex flex-col sm:flex-row gap-6 items-center sm:items-start shadow-[0_2px_10px_rgba(19,43,26,0.04)] hover:shadow-[0_14px_30px_rgba(19,43,26,0.10)]"
             >
               {/* Circular photo */}
               <div className="w-32 h-32 md:w-40 md:h-40 shrink-0 rounded-full overflow-hidden border border-gray-200 bg-gray-50">
@@ -118,20 +140,27 @@ export function MeetTheDoctors() {
                 >
                   {quote}
                 </blockquote>
-                <Link
-                  to={profileHref}
-                  className="inline-flex items-center gap-2 bg-[#132b1a] hover:bg-teal-700 text-white text-[13px] font-semibold px-6 py-2.5 rounded-xl transition-colors mt-auto"
-                  style={{ fontFamily: 'Inter, sans-serif' }}
+                <motion.div
+                  whileHover={{ y: -2 }}
+                  whileTap={TAP_SCALE}
+                  transition={CTA_HOVER_SPRING}
+                  className="mt-auto"
                 >
-                  View Profile
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                    <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </Link>
+                  <Link
+                    to={profileHref}
+                    className="inline-flex items-center gap-2 bg-[#132b1a] hover:bg-teal-700 text-white text-[13px] font-semibold px-6 py-2.5 rounded-xl transition-colors"
+                    style={{ fontFamily: 'Inter, sans-serif' }}
+                  >
+                    View Profile
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                      <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </Link>
+                </motion.div>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Mobile "View all" link */}
         <div className="md:hidden flex justify-center mt-8 pt-6 border-t border-gray-200">
@@ -147,6 +176,6 @@ export function MeetTheDoctors() {
         </div>
 
       </div>
-    </section>
+    </motion.section>
   )
 }

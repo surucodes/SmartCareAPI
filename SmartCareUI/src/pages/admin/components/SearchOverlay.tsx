@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { motion } from 'motion/react'
 import { cn } from '@/utils/cn'
+import { BACKDROP_FADE, MODAL_SCALE } from '@/utils/motion'
 import { formatDisplayTime } from '@/utils/date.utils'
 import type { Appointment } from '@/types/appointment.types'
 import type { Doctor } from '@/types/doctor.types'
@@ -76,12 +78,22 @@ export function SearchOverlay({
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-4 md:pt-20 p-4">
-      <div
+      <motion.div
         role="presentation"
         onClick={onClose}
+        variants={BACKDROP_FADE}
+        initial="initial"
+        animate="animate"
+        exit="exit"
         className="absolute inset-0 bg-black/40"
       />
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+      <motion.div
+        variants={MODAL_SCALE}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden"
+      >
 
         {/* Search input */}
         <div className="p-4 border-b border-gray-100 flex items-center gap-3">
@@ -154,7 +166,7 @@ export function SearchOverlay({
             </ul>
           )}
         </div>
-      </div>
+      </motion.div>
     </div>
   )
 }

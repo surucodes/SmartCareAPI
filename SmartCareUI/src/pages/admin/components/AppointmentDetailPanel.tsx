@@ -1,5 +1,13 @@
 import { useEffect, useState } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
 import { cn } from '@/utils/cn'
+import {
+  BACKDROP_FADE,
+  FORM_SWAP,
+  NOTICE_FADE,
+  PANEL_SLIDE_RIGHT,
+  SHEET_SLIDE_UP,
+} from '@/utils/motion'
 import {
   formatDisplayDate,
   formatDisplayTime,
@@ -196,12 +204,24 @@ export function AppointmentDetailPanel({
 
   return (
     <>
-      <div
+      <motion.div
         role="presentation"
         onClick={onClose}
+        variants={BACKDROP_FADE}
+        initial="initial"
+        animate="animate"
+        exit="exit"
         className="fixed inset-0 bg-black/30 z-40"
       />
-      <aside className={panelClasses} aria-modal="true" role="dialog">
+      <motion.aside
+        variants={mobile ? SHEET_SLIDE_UP : PANEL_SLIDE_RIGHT}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        className={panelClasses}
+        aria-modal="true"
+        role="dialog"
+      >
 
         {/* Mobile drag handle */}
         {mobile && (
@@ -237,26 +257,45 @@ export function AppointmentDetailPanel({
         <div className="flex-1 overflow-y-auto p-5 space-y-5">
 
           {/* Email side-effect note */}
-          {emailNote && (
-            <div className="bg-amber-50 border border-amber-200 text-amber-800 rounded-lg px-3 py-2 text-xs">
-              {emailNote}
-            </div>
-          )}
+          <AnimatePresence initial={false}>
+            {emailNote && (
+              <motion.div
+                key="email-note"
+                variants={NOTICE_FADE}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                className="bg-amber-50 border border-amber-200 text-amber-800 rounded-lg px-3 py-2 text-xs"
+              >
+                {emailNote}
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Error banner — checkIn 409 suppressed */}
-          {errorShown && visibleError && (
-            <div role="alert" className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-3 py-2 text-sm flex items-start justify-between gap-2">
-              <span>{visibleError.message}</span>
-              <button
-                type="button"
-                aria-label="Dismiss"
-                onClick={() => setDismissedErrorMsg(visibleError.message)}
-                className="text-red-700 shrink-0"
+          <AnimatePresence initial={false}>
+            {errorShown && visibleError && (
+              <motion.div
+                key={`detail-error-${visibleError.message}`}
+                role="alert"
+                variants={NOTICE_FADE}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-3 py-2 text-sm flex items-start justify-between gap-2"
               >
-                <XIcon />
-              </button>
-            </div>
-          )}
+                <span>{visibleError.message}</span>
+                <button
+                  type="button"
+                  aria-label="Dismiss"
+                  onClick={() => setDismissedErrorMsg(visibleError.message)}
+                  className="text-red-700 shrink-0"
+                >
+                  <XIcon />
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Info grid */}
           <div className="grid grid-cols-2 gap-x-4 gap-y-3">
@@ -325,66 +364,93 @@ export function AppointmentDetailPanel({
         {/* Footer actions */}
         {(buttonIds.length > 0 || isCancelling || showReschedule) && (
           <div className="p-5 border-t border-gray-100 bg-warm-50 shrink-0 max-h-[55vh] overflow-y-auto">
-            {isCancelling ? (
-              <CancelWithReasonForm
-                onSubmit={handleConfirmCancel}
-                onKeep={onAbortCancel}
-                isPending={actions.cancelState.isPending}
-                error={actions.cancelState.error?.message ?? null}
-              />
-            ) : showReschedule ? (
-              <RescheduleForm
-                onSubmit={(dto) => handleRescheduleSubmit(appointment.id, dto)}
-                onCancel={() => setShowReschedule(false)}
-                isPending={actions.rescheduleState.isPending}
-                error={actions.rescheduleState.error?.message ?? null}
-                successMessage={null}
-              />
-            ) : (
-              <>
-                {/* Primary — full width */}
-                {primary && (
-                  <button
-                    type="button"
-                    disabled={isPendingByAction[primary]}
-                    className={cn(baseBtn, 'w-full', BUTTON_PALETTE[primary].classes)}
-                    onClick={handlersByAction[primary]}
-                  >
-                    {isPendingByAction[primary] ? 'Working…' : BUTTON_PALETTE[primary].label}
-                  </button>
-                )}
-                {rest.length > 0 && (
-                  <div className="flex gap-2 mt-2">
-                    {rest.map((id) => (
-                      <button
-                        key={id}
-                        type="button"
-                        disabled={isPendingByAction[id]}
-                        className={cn(baseBtn, 'flex-1', BUTTON_PALETTE[id].classes)}
-                        onClick={handlersByAction[id]}
-                      >
-                        {BUTTON_PALETTE[id].label}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                {/* Reschedule — intentionally subtle */}
-                {appointment.status !== 'Completed' &&
-                  appointment.status !== 'Cancelled' &&
-                  appointment.status !== 'NoShow' && (
+            <AnimatePresence mode="wait" initial={false}>
+              {isCancelling ? (
+                <motion.div
+                  key="cancel-form"
+                  variants={FORM_SWAP}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  style={{ transformOrigin: 'top' }}
+                >
+                  <CancelWithReasonForm
+                    onSubmit={handleConfirmCancel}
+                    onKeep={onAbortCancel}
+                    isPending={actions.cancelState.isPending}
+                    error={actions.cancelState.error?.message ?? null}
+                  />
+                </motion.div>
+              ) : showReschedule ? (
+                <motion.div
+                  key="reschedule-form"
+                  variants={FORM_SWAP}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  style={{ transformOrigin: 'top' }}
+                >
+                  <RescheduleForm
+                    onSubmit={(dto) => handleRescheduleSubmit(appointment.id, dto)}
+                    onCancel={() => setShowReschedule(false)}
+                    isPending={actions.rescheduleState.isPending}
+                    error={actions.rescheduleState.error?.message ?? null}
+                    successMessage={null}
+                  />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="actions"
+                  variants={FORM_SWAP}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  style={{ transformOrigin: 'top' }}
+                >
+                  {/* Primary — full width */}
+                  {primary && (
                     <button
                       type="button"
-                      onClick={() => setShowReschedule(true)}
-                      className="w-full mt-3 text-xs text-gray-400 hover:text-brand-dark underline transition-colors"
+                      disabled={isPendingByAction[primary]}
+                      className={cn(baseBtn, 'w-full', BUTTON_PALETTE[primary].classes)}
+                      onClick={handlersByAction[primary]}
                     >
-                      Reschedule
+                      {isPendingByAction[primary] ? 'Working…' : BUTTON_PALETTE[primary].label}
                     </button>
                   )}
-              </>
-            )}
+                  {rest.length > 0 && (
+                    <div className="flex gap-2 mt-2">
+                      {rest.map((id) => (
+                        <button
+                          key={id}
+                          type="button"
+                          disabled={isPendingByAction[id]}
+                          className={cn(baseBtn, 'flex-1', BUTTON_PALETTE[id].classes)}
+                          onClick={handlersByAction[id]}
+                        >
+                          {BUTTON_PALETTE[id].label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {/* Reschedule — intentionally subtle */}
+                  {appointment.status !== 'Completed' &&
+                    appointment.status !== 'Cancelled' &&
+                    appointment.status !== 'NoShow' && (
+                      <button
+                        type="button"
+                        onClick={() => setShowReschedule(true)}
+                        className="w-full mt-3 text-xs text-gray-400 hover:text-brand-dark underline transition-colors"
+                      >
+                        Reschedule
+                      </button>
+                    )}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         )}
-      </aside>
+      </motion.aside>
     </>
   )
 }

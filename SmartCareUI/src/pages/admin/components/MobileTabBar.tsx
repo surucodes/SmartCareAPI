@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
 import { cn } from '@/utils/cn'
+import { BACKDROP_FADE, SHEET_SLIDE_UP } from '@/utils/motion'
 import { formatDisplayDate, getDayName, getTodayIST } from '@/utils/date.utils'
 import { BrandedCalendar } from '@/components/BrandedCalendar'
 import type { Appointment } from '@/types/appointment.types'
@@ -163,30 +165,41 @@ export function MobileTabBar({
       </div>
 
       {/* Calendar bottom sheet */}
-      {showCalendar && (
-        <div className="fixed inset-0 z-50 flex items-end">
-          <div
-            role="presentation"
-            onClick={() => setShowCalendar(false)}
-            className="absolute inset-0 bg-black/40"
-          />
-          <div
-            className="relative w-full"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <BrandedCalendar
-              selectedDate={selectedDate}
-              daysWithAppointments={daysWithAppointments}
-              onSelect={(d) => {
-                onSelectDate(d)
-                setShowCalendar(false)
-              }}
-              onClose={() => setShowCalendar(false)}
-              mobile
+      <AnimatePresence>
+        {showCalendar && (
+          <div className="fixed inset-0 z-50 flex items-end">
+            <motion.div
+              role="presentation"
+              onClick={() => setShowCalendar(false)}
+              variants={BACKDROP_FADE}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="absolute inset-0 bg-black/40"
             />
+            <motion.div
+              variants={SHEET_SLIDE_UP}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="relative w-full"
+              style={{ transformOrigin: 'bottom' }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <BrandedCalendar
+                selectedDate={selectedDate}
+                daysWithAppointments={daysWithAppointments}
+                onSelect={(d) => {
+                  onSelectDate(d)
+                  setShowCalendar(false)
+                }}
+                onClose={() => setShowCalendar(false)}
+                mobile
+              />
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   )
 }

@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import { AnimatePresence, motion } from 'motion/react'
 import { Header } from '@/components/layout/Header'
 import { useAppointmentLookup } from '@/hooks/useAppointmentLookup'
+import { EASE_OUT_EXPO, TAP_SCALE } from '@/utils/motion'
 import { AppointmentLookupForm } from './components/AppointmentLookupForm'
 import { AppointmentDetailCard } from './components/AppointmentDetailCard'
 
@@ -51,6 +53,21 @@ function FullPageLoader() {
 const AUTO_FETCH_FAILED_MESSAGE =
   "We couldn't find your appointment. Please enter your details below."
 
+const stateTransition = {
+  duration: 0.32,
+  ease: EASE_OUT_EXPO,
+}
+const exitTransition = {
+  duration: 0.18,
+  ease: EASE_OUT_EXPO,
+}
+
+const stateVariants = {
+  initial: { opacity: 0, y: 12, filter: 'blur(5px)' },
+  animate: { opacity: 1, y: 0, filter: 'blur(0px)', transition: stateTransition },
+  exit: { opacity: 0, y: -6, filter: 'blur(3px)', transition: exitTransition },
+}
+
 export default function PatientLookupPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -72,9 +89,6 @@ export default function PatientLookupPage() {
   const urlPhone = searchParams.get('phone')
   const hasUrlParams = !!urlId && !!urlPhone
 
-  // Auto-fetch on mount when both params are present. Use a ref so this fires
-  // exactly once even under StrictMode double-mount and never re-fires if the
-  // user clicks "Search Again" (which calls reset()).
   const autoFetchedRef = useRef(false)
   const [autoFetchAttempted, setAutoFetchAttempted] = useState(false)
   const [userSubmittedAfterFail, setUserSubmittedAfterFail] = useState(false)
@@ -97,10 +111,6 @@ export default function PatientLookupPage() {
     setUserSubmittedAfterFail(false)
   }
 
-  // Decide which view to render.
-  // 1. We have an appointment → detail card.
-  // 2. Loading (auto-fetch in flight or initial fetch from URL) → full-page loader.
-  // 3. Otherwise → lookup form (with appropriate prefilled error if applicable).
   const showDetailCard = !!appointment
   const showAutoLoader =
     autoFetchAttempted &&
@@ -112,62 +122,74 @@ export default function PatientLookupPage() {
   const autoFetchFailed =
     autoFetchAttempted && isError && !userSubmittedAfterFail
 
-  // After user re-submits the form post auto-fetch fail, switch to the form's
-  // own server-error stream. Otherwise show the AUTO_FETCH message.
   const formServerError = userSubmittedAfterFail
     ? errorMessage
     : autoFetchFailed
       ? AUTO_FETCH_FAILED_MESSAGE
       : null
 
+  // Compute view key for AnimatePresence wait-mode swap
+  const viewKey = showDetailCard ? 'detail' : showAutoLoader ? 'loader' : 'form'
+
   return (
     <>
       <Header />
       <main className="min-h-screen bg-warm-50 pt-20 md:pt-24 pb-12 md:pb-20">
         <div className="max-w-4xl mx-auto px-4 md:px-6">
-          {showDetailCard ? (
-            <>
-              <div className="max-w-lg md:max-w-2xl mx-auto mb-4 flex justify-end">
-                <button
-                  type="button"
-                  onClick={handleSearchAgain}
-                  className="inline-flex items-center gap-1.5 min-h-[40px] px-3 -mr-2 rounded-lg text-[13px] font-semibold text-brand-gold hover:text-teal-700 hover:bg-white transition-colors"
-                >
-                  <RefreshIcon />
-                  Search Again
-                </button>
-              </div>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={viewKey}
+              variants={stateVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              {showDetailCard ? (
+                <>
+                  <div className="max-w-lg md:max-w-2xl mx-auto mb-4 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={handleSearchAgain}
+                      className="inline-flex items-center gap-1.5 min-h-[40px] px-3 -mr-2 rounded-lg text-[13px] font-semibold text-brand-gold hover:text-teal-700 hover:bg-white transition-colors"
+                    >
+                      <RefreshIcon />
+                      Search Again
+                    </button>
+                  </div>
 
-              <AppointmentDetailCard
-                appointment={appointment!}
-                onCancel={cancelAppointment}
-                isCancelling={isCancelling}
-                cancelError={cancelError}
-                cancelSuccess={cancelSuccess}
-              />
+                  <AppointmentDetailCard
+                    appointment={appointment!}
+                    onCancel={cancelAppointment}
+                    isCancelling={isCancelling}
+                    cancelError={cancelError}
+                    cancelSuccess={cancelSuccess}
+                  />
 
-              <div className="text-center mt-10 md:mt-12">
-                <button
-                  type="button"
-                  onClick={() => navigate('/book')}
-                  className="inline-flex items-center gap-2 px-7 py-3 min-h-[48px] rounded-full border-2 border-teal-800 text-teal-800 font-semibold text-[14.5px] hover:bg-teal-50 hover:border-teal-600 transition-all active:scale-[0.99]"
-                >
-                  Book a New Appointment
-                  <ArrowRight />
-                </button>
-              </div>
-            </>
-          ) : showAutoLoader ? (
-            <FullPageLoader />
-          ) : (
-            <AppointmentLookupForm
-              onSubmit={handleFormSubmit}
-              isLoading={isLoading && userSubmittedAfterFail}
-              serverError={formServerError}
-              initialId={autoFetchFailed ? urlId ?? undefined : undefined}
-              initialPhone={autoFetchFailed ? urlPhone ?? undefined : undefined}
-            />
-          )}
+                  <div className="text-center mt-10 md:mt-12">
+                    <motion.button
+                      type="button"
+                      onClick={() => navigate('/book')}
+                      whileTap={TAP_SCALE}
+                      className="inline-flex items-center gap-2 px-7 py-3 min-h-[48px] rounded-full border-2 border-teal-800 text-teal-800 font-semibold text-[14.5px] hover:bg-teal-50 hover:border-teal-600 transition-colors"
+                    >
+                      Book a New Appointment
+                      <ArrowRight />
+                    </motion.button>
+                  </div>
+                </>
+              ) : showAutoLoader ? (
+                <FullPageLoader />
+              ) : (
+                <AppointmentLookupForm
+                  onSubmit={handleFormSubmit}
+                  isLoading={isLoading && userSubmittedAfterFail}
+                  serverError={formServerError}
+                  initialId={autoFetchFailed ? urlId ?? undefined : undefined}
+                  initialPhone={autoFetchFailed ? urlPhone ?? undefined : undefined}
+                />
+              )}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </main>
     </>

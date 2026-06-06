@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react'
+import { motion } from 'motion/react'
 import { cn } from '@/utils/cn'
+import { TAP_SCALE } from '@/utils/motion'
 import {
   formatDisplayDate,
   formatDisplayTime,
@@ -161,13 +163,16 @@ function SlotPill({ slot, isSelected, onSelect }: SlotPillProps) {
   const display = formatDisplayTime(slot.time)
 
   return (
-    <button
+    <motion.button
       type="button"
       disabled={isUnavailable}
       onClick={onSelect}
+      whileTap={!isUnavailable ? TAP_SCALE : undefined}
+      animate={{ scale: isSelected ? 1.02 : 1 }}
+      transition={{ type: 'spring', stiffness: 500, damping: 28 }}
       className={cn(
-        'relative min-h-[44px] py-2.5 px-3 text-center rounded-lg text-[14px] font-medium transition-all duration-150 border-2',
-        isSelected && 'bg-teal-600 text-white border-teal-600 shadow-md scale-[1.02]',
+        'relative min-h-[44px] py-2.5 px-3 text-center rounded-lg text-[14px] font-medium border-2 transition-colors duration-150',
+        isSelected && 'bg-teal-600 text-white border-teal-600 shadow-md',
         !isSelected && !isUnavailable && !isLimited && 'bg-white text-teal-700 border-teal-600 hover:bg-teal-50',
         !isSelected && isLimited && 'bg-white text-[#8a6200] border-[#C9A227] hover:bg-amber-50',
         isUnavailable && 'bg-gray-100 text-gray-400 border-transparent cursor-not-allowed',
@@ -181,7 +186,7 @@ function SlotPill({ slot, isSelected, onSelect }: SlotPillProps) {
           Filling
         </span>
       )}
-    </button>
+    </motion.button>
   )
 }
 
