@@ -107,8 +107,8 @@ export function Testimonials() {
             </h2>
           </div>
 
-          <a
-            href="#"
+          <button
+            type="button"
             className="self-start md:self-auto inline-flex items-center gap-1 text-[14px] font-medium text-[#555555] hover:text-[#0F6E56] transition-colors group"
             style={{ fontFamily: 'Inter, sans-serif' }}
           >
@@ -119,7 +119,7 @@ export function Testimonials() {
             >
               <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-          </a>
+          </button>
         </div>
 
         {/* ── Testimonial cards ───────────────────────────────── */}

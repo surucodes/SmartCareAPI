@@ -1,4 +1,5 @@
 import { motion } from 'motion/react'
+import { Link } from 'react-router-dom'
 import { CARD_HOVER_SPRING, SECTION_ENTER, STAGGER_CHILD, STAGGER_PARENT } from '@/utils/motion'
 import orthoIcon      from '@/assets/images/orthoIcon.png'
 import gynaeIcon      from '@/assets/images/GynaeIcon.png'
@@ -17,38 +18,41 @@ const SPECIALTIES: Specialty[] = [
   {
     label: 'Orthopaedics',
     icon: { type: 'img', src: orthoIcon, alt: 'Orthopaedics icon' },
-    href: '#',
+    href: '/hospital-tour',
   },
   {
     label: 'Gynaecology & Obstetrics',
     icon: { type: 'img', src: gynaeIcon, alt: 'Gynaecology & Obstetrics icon' },
-    href: '#',
+    href: '/hospital-tour',
   },
   {
     label: 'Physiotherapy',
     icon: { type: 'img', src: physioIcon, alt: 'Physiotherapy icon' },
-    href: '#',
+    href: '/hospital-tour',
   },
   {
     label: 'Radiology',
     icon: { type: 'img', src: radiologyIcon, alt: 'Radiology icon' },
-    href: '#',
+    href: '/hospital-tour',
   },
   {
     label: 'Pathology & Laboratory',
     icon: { type: 'img', src: microIcon, alt: 'Pathology & Laboratory icon' },
-    href: '#',
+    href: '/hospital-tour',
   },
   {
     label: 'Pharmacy',
     icon: { type: 'img', src: pharmacyIcon, alt: 'Pharmacy icon' },
-    href: '#',
+    href: '/hospital-tour',
   },
 ]
+
+const MotionLink = motion(Link)
 
 export function OurSpecialties() {
   return (
     <motion.section
+      id="specialties"
       {...SECTION_ENTER}
       className="w-full bg-white py-16 px-4 md:px-12 overflow-hidden"
     >
@@ -71,8 +75,8 @@ export function OurSpecialties() {
             </h2>
           </div>
 
-          <a
-            href="#"
+          <Link
+            to="/hospital-tour"
             className="self-start md:self-auto inline-flex items-center gap-2 text-[14px] font-semibold text-[#111111] border border-gray-300 hover:border-[#132b1a] hover:text-[#132b1a] px-5 py-2.5 rounded-lg transition-colors group"
             style={{ fontFamily: 'Inter, sans-serif' }}
           >
@@ -83,7 +87,7 @@ export function OurSpecialties() {
             >
               <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-          </a>
+          </Link>
         </div>
 
         {/* ── Specialties grid ─────────────────────────────────── */}
@@ -95,9 +99,9 @@ export function OurSpecialties() {
           className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6"
         >
           {SPECIALTIES.map(({ label, icon, href }) => (
-            <motion.a
+            <MotionLink
               key={label}
-              href={href}
+              to={href}
               variants={STAGGER_CHILD}
               whileHover={{ y: -4 }}
               transition={CARD_HOVER_SPRING}
@@ -121,7 +125,7 @@ export function OurSpecialties() {
               >
                 {label}
               </span>
-            </motion.a>
+            </MotionLink>
           ))}
         </motion.div>
 

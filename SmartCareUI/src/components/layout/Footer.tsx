@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { cn } from '@/utils/cn'
 import logoImg from '@/assets/images/Logo.png'
 
 const QUICK_LINKS = [
@@ -22,6 +23,39 @@ const RESOURCE_LINKS = [
   { label: 'Insurance & TPA', href: '#' },
 ]
 
+const FOOTER_LINK_CLASS =
+  'text-[14px] text-[#666666] hover:text-[#0F6E56] hover:underline transition-colors duration-300'
+const FOOTER_LINK_STYLE = { fontFamily: 'Inter, sans-serif' } as const
+
+/**
+ * Renders a footer link by type:
+ *  - "/route"   → in-app SPA navigation
+ *  - "#section" → in-page anchor scroll (resolves on the home page)
+ *  - "#"        → placeholder for a not-yet-built page; rendered inert so it
+ *                 never jumps the user to the top of the page.
+ */
+function FooterLink({ label, href }: { label: string; href: string }) {
+  if (href.startsWith('/')) {
+    return (
+      <Link to={href} className={FOOTER_LINK_CLASS} style={FOOTER_LINK_STYLE}>
+        {label}
+      </Link>
+    )
+  }
+  if (href === '#') {
+    return (
+      <button type="button" className={cn(FOOTER_LINK_CLASS, 'text-left cursor-default')} style={FOOTER_LINK_STYLE}>
+        {label}
+      </button>
+    )
+  }
+  return (
+    <a href={href} className={FOOTER_LINK_CLASS} style={FOOTER_LINK_STYLE}>
+      {label}
+    </a>
+  )
+}
+
 function LinkColumn({ heading, links }: { heading: string; links: { label: string; href: string }[] }) {
   return (
     <div className="flex flex-col gap-3">
@@ -34,13 +68,7 @@ function LinkColumn({ heading, links }: { heading: string; links: { label: strin
       <ul className="flex flex-col gap-3">
         {links.map(({ label, href }) => (
           <li key={label}>
-            <a
-              href={href}
-              className="text-[14px] text-[#666666] hover:text-[#0F6E56] hover:underline transition-colors duration-300"
-              style={{ fontFamily: 'Inter, sans-serif' }}
-            >
-              {label}
-            </a>
+            <FooterLink label={label} href={href} />
           </li>
         ))}
       </ul>
@@ -82,9 +110,9 @@ export function Footer() {
 
             {/* Social icons */}
             <div className="flex items-center gap-3 mt-2">
-              {/* Facebook */}
-              <a
-                href="#"
+              {/* Facebook — placeholder until an official page URL is available */}
+              <button
+                type="button"
                 aria-label="Spandana Hospital on Facebook"
                 className="w-10 h-10 rounded-full border border-gray-300 hover:border-[#0F6E56] hover:bg-[#0F6E56]/10 flex items-center justify-center transition-colors duration-300 group"
               >
@@ -98,11 +126,11 @@ export function Footer() {
                     className="text-[#666666] group-hover:text-[#0F6E56] transition-colors"
                   />
                 </svg>
-              </a>
+              </button>
 
-              {/* Instagram */}
-              <a
-                href="#"
+              {/* Instagram — placeholder until an official page URL is available */}
+              <button
+                type="button"
                 aria-label="Spandana Hospital on Instagram"
                 className="w-10 h-10 rounded-full border border-gray-300 hover:border-[#0F6E56] hover:bg-[#0F6E56]/10 flex items-center justify-center transition-colors duration-300 group"
               >
@@ -111,11 +139,13 @@ export function Footer() {
                   <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.8" className="text-[#666666] group-hover:text-[#0F6E56] transition-colors" />
                   <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" className="text-[#666666] group-hover:text-[#0F6E56] transition-colors" />
                 </svg>
-              </a>
+              </button>
 
-              {/* WhatsApp */}
+              {/* WhatsApp — links to the hospital's contact number */}
               <a
-                href="#"
+                href="https://wa.me/919071880718"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="Spandana Hospital on WhatsApp"
                 className="w-10 h-10 rounded-full border border-gray-300 hover:border-[#0F6E56] hover:bg-[#0F6E56]/10 flex items-center justify-center transition-colors duration-300 group"
               >
@@ -206,13 +236,13 @@ export function Footer() {
             © 2024 Spandana Hospital. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
-            <a href="#" className="text-[12px] text-[#888888] hover:text-[#0F6E56] hover:underline transition-colors duration-300" style={{ fontFamily: 'Inter, sans-serif' }}>
+            <button type="button" className="text-[12px] text-[#888888] hover:text-[#0F6E56] hover:underline transition-colors duration-300 cursor-default" style={{ fontFamily: 'Inter, sans-serif' }}>
               Privacy Policy
-            </a>
+            </button>
             <span className="w-px h-3 bg-gray-300" aria-hidden="true" />
-            <a href="#" className="text-[12px] text-[#888888] hover:text-[#0F6E56] hover:underline transition-colors duration-300" style={{ fontFamily: 'Inter, sans-serif' }}>
+            <button type="button" className="text-[12px] text-[#888888] hover:text-[#0F6E56] hover:underline transition-colors duration-300 cursor-default" style={{ fontFamily: 'Inter, sans-serif' }}>
               Terms &amp; Conditions
-            </a>
+            </button>
           </div>
         </div>
 
