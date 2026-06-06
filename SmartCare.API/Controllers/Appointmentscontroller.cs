@@ -392,7 +392,10 @@ namespace SmartCare.API.Controllers
             LogAppointmentRescheduled(_logger, id, dto.NewDate, dto.NewSlot, newAppointment.Id);
 
             // Same fire-and-forget pattern as Create — do not block the response on SMTP.
-            FireEmailBackground(() => _email.SendAppointmentCancelledAsync(existing, doctor, "Admin"), id);
+            // Two emails by design: a reschedule notice for the freed slot, plus a fresh
+            // booking confirmation carrying the new date/time. "Reschedule" context keeps the
+            // cancellation wording accurate (not a generic "we cancelled, please call us").
+            FireEmailBackground(() => _email.SendAppointmentCancelledAsync(existing, doctor, "Reschedule"), id);
             FireEmailBackground(() => _email.SendBookingConfirmationAsync(newAppointment, doctor), newAppointment.Id);
 
             return CreatedAtAction(nameof(GetById), new { id = newAppointment.Id }, new
