@@ -3,6 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace SmartCare.API.Models
 {
+    [BsonIgnoreExtraElements]
     public class Appointment
     {
         [BsonId]

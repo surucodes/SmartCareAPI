@@ -11,6 +11,9 @@ obj/
 .vscode/
 *.code-workspace
 launchSettings.json
+appsettings.Development.json
+# appsettings.Production.json is committed on purpose — it holds structure and
+# safe defaults only; all real secrets are supplied via environment variables.
 
 # Node.js / npm
 node_modules/
@@ -27,6 +30,8 @@ build/
 .env.development.local
 .env.test.local
 .env.production.local
+*.env
+!.env.example
 
 # IDE
 .idea/
@@ -54,3 +59,27 @@ ehthumbs.db
 # Editor
 .editorconfig
 *.sublime-workspace
+
+# Claude Code tooling
+.agents/
+.claude/settings.local.json
+
+# Memory / session files
+.claude/projects/
+
+# Stray root-level node install — real dependencies live in SmartCareUI/
+/package.json
+/package-lock.json
+
+# Design references & scaffolding — not part of the application build
+SmartCareUI/StitchComponentCode/
+motion-audits/
+
+# Large media not referenced by the build (videos, archives, unused dupes)
+*.mp4
+*.zip
+SmartCareUI/src/assets/images/HospitalAssets/design_handoff_hospital_tour/
+SmartCareUI/src/assets/images/HospitalAssets/InsideHospital.png
+SmartCareUI/src/assets/images/HospitalAssets/InsideHospital1.png
+SmartCareUI/src/assets/images/NC.png
+SmartCareUI/src/assets/images/NationalCollegeAsset.webp

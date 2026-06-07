@@ -1,0 +1,33 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "MongoDbSettings": {
+    "ConnectionString": "mongodb+srv://USER:PASSWORD@cluster.mongodb.net/",
+    "DatabaseName": "SmartCareDev"
+  },
+  "JwtSettings": {
+    "Secret": "GENERATE_WITH: openssl rand -base64 64  (min 32 chars)",
+    "Issuer": "SmartCare.API",
+    "Audience": "SmartCare.Client",
+    "ExpiryHours": 24
+  },
+  "EmailSettings": {
+    "SmtpHost": "smtp.gmail.com",
+    "SmtpPort": 587,
+    "SenderEmail": "your-gmail@gmail.com",
+    "SenderPassword": "YOUR_16_CHAR_APP_PASSWORD",
+    "SenderName": "SmartCare Dev"
+  },
+  "CorsSettings": {
+    "AllowedOrigins": [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "http://localhost:5175",
+      "http://localhost:3000"
+    ]
+  }
+}

@@ -10,4 +10,5 @@ public interface IConsultationTypeRepository
     Task InsertManyAsync(IEnumerable<ConsultationType> types);
     Task<bool> ExistsAsync(string id);
     Task<long> CountAsync();
+    Task DropCollectionAsync();
 }

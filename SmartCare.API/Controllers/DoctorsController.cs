@@ -240,9 +240,9 @@ namespace SmartCare.API.Controllers
 
             var varun = new Doctor
             {
-                Name = "Dr. Varun Prasanna",
-                Specialty = "Orthopaedics",
-                Bio = "Dr. Varun Prasanna is a senior Orthopaedic Surgeon with over 20 years of experience in joint replacement, trauma, and sports injuries.",
+                Name = "Dr. Prasanna N.M",
+                Specialty = "Orthopaedic Surgeon",
+                Bio = "Dr. Prasanna N.M is a senior Orthopaedic Surgeon with over 25 years of experience in joint replacement, trauma, fracture management, and sports injuries. He is a founding physician at Spandana Hospital and is known for his patient-first approach and precision in complex surgical cases.",
                 SchedulingPolicy = "Flexible",
                 SlotCapacity = 3,
                 IsActive = true,
@@ -271,9 +271,9 @@ namespace SmartCare.API.Controllers
 
             var vinaya = new Doctor
             {
-                Name = "Dr. Vinaya Prasanna",
-                Specialty = "Gynaecology",
-                Bio = "Dr. Vinaya Prasanna is a specialist in Gynaecology and Women's Health with over 20 years of clinical experience.",
+                Name = "Dr. Lakshmi Hegde",
+                Specialty = "Gynaecologist",
+                Bio = "Dr. Lakshmi Hegde is a specialist in Gynaecology and Women's Health with over 25 years of clinical experience. A founding physician at Spandana Hospital, she is deeply committed to personalised women's healthcare and has guided thousands of families through every stage of women's health.",
                 SchedulingPolicy = "Strict",
                 SlotCapacity = 1,
                 IsActive = true,
@@ -302,16 +302,11 @@ namespace SmartCare.API.Controllers
         [HttpPost("seed-consultation-types")]
         public async Task<ActionResult> SeedConsultationTypes()
         {
-            var existing = await _consultationTypes.CountAsync();
-            if (existing > 0)
-            {
-                LogConsultationTypesAlreadySeeded(_logger, existing);
-                return Ok(new { message = "Consultation types already seeded" });
-            }
+            await _consultationTypes.DropCollectionAsync();
 
             var doctors = await _repo.GetAllAsync();
-            var varun = doctors.FirstOrDefault(d => d.Name == "Dr. Varun Prasanna");
-            var vinaya = doctors.FirstOrDefault(d => d.Name == "Dr. Vinaya Prasanna");
+            var varun = doctors.FirstOrDefault(d => d.Name == "Dr. Prasanna N.M");
+            var vinaya = doctors.FirstOrDefault(d => d.Name == "Dr. Lakshmi Hegde");
 
             if (varun is null || vinaya is null)
                 return BadRequest(new { error = "Doctors must be seeded before consultation types" });
@@ -322,11 +317,13 @@ namespace SmartCare.API.Controllers
                 new() { DoctorId = varun.Id!,  Name = "Fracture / Injury", DurationMinutes = 30, BufferMinutes = 10 },
                 new() { DoctorId = varun.Id!,  Name = "Post-Op Review",    DurationMinutes = 20, BufferMinutes = 5  },
                 new() { DoctorId = varun.Id!,  Name = "Follow-Up",         DurationMinutes = 15, BufferMinutes = 5  },
+                new() { DoctorId = varun.Id!,  Name = "Other",             DurationMinutes = 10, BufferMinutes = 5  },
 
                 new() { DoctorId = vinaya.Id!, Name = "First Visit",                DurationMinutes = 30, BufferMinutes = 10 },
                 new() { DoctorId = vinaya.Id!, Name = "Follow-Up",                  DurationMinutes = 15, BufferMinutes = 5  },
                 new() { DoctorId = vinaya.Id!, Name = "Routine Checkup",            DurationMinutes = 20, BufferMinutes = 5  },
-                new() { DoctorId = vinaya.Id!, Name = "Pre-Surgical Consultation",  DurationMinutes = 45, BufferMinutes = 15 }
+                new() { DoctorId = vinaya.Id!, Name = "Pre-Surgical Consultation",  DurationMinutes = 45, BufferMinutes = 15 },
+                new() { DoctorId = vinaya.Id!, Name = "Other",                      DurationMinutes = 10, BufferMinutes = 5  }
             };
 
             await _consultationTypes.InsertManyAsync(types);
@@ -362,8 +359,5 @@ namespace SmartCare.API.Controllers
 
         [LoggerMessage(Level = LogLevel.Information, Message = "Seeded {Count} consultation types")]
         private static partial void LogConsultationTypesSeeded(ILogger logger, int count);
-
-        [LoggerMessage(Level = LogLevel.Warning, Message = "SeedConsultationTypes called but {Count} already exist")]
-        private static partial void LogConsultationTypesAlreadySeeded(ILogger logger, long count);
     }
 }

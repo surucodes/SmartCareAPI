@@ -21,6 +21,12 @@ public class TestimonialRepository : ITestimonialRepository
             .SortByDescending(t => t.Date)
             .ToListAsync();
 
+    public async Task<List<Testimonial>> GetPendingAsync() =>
+        await _collection
+            .Find(t => !t.IsApproved)
+            .SortByDescending(t => t.Date)
+            .ToListAsync();
+
     public async Task CreateAsync(Testimonial testimonial) =>
         await _collection.InsertOneAsync(testimonial);
 

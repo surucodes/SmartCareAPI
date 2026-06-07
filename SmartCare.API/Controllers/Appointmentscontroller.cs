@@ -64,6 +64,20 @@ namespace SmartCare.API.Controllers
             return Ok(appointment);
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpGet("search")]
+        public async Task<ActionResult<List<Appointment>>> Search(
+            [FromQuery] string? q,
+            [FromQuery] bool includePast = false)
+        {
+            if (string.IsNullOrWhiteSpace(q) || q.Trim().Length < 2)
+                return BadRequest(new { error = "Search query must be at least 2 characters" });
+
+            var results = await _appointments.SearchAsync(q.Trim(), includePast);
+            LogAppointmentSearch(_logger, q.Trim(), results.Count);
+            return Ok(results);
+        }
+
         [Authorize(Roles = "Admin,Doctor")]
         [HttpGet("{id}")]
         public async Task<ActionResult<Appointment>> GetById(string id)
@@ -154,6 +168,19 @@ namespace SmartCare.API.Controllers
                 PreviousAppointmentId = dto.PreviousAppointmentId
             };
 
+            var isDuplicate = await _appointments.ExistsActiveBookingAsync(
+                dto.DoctorId, dto.Date, dto.Slot, dto.PatientPhone);
+            if (isDuplicate)
+            {
+                LogDuplicateBookingBlocked(_logger, dto.PatientPhone, dto.DoctorId, dto.Date, dto.Slot);
+                return Conflict(new
+                {
+                    error = "You already have an appointment booked for this slot. " +
+                            "Please check your booking confirmation email.",
+                    code = "DUPLICATE_BOOKING"
+                });
+            }
+
             var (success, queuePosition, errorMessage) = await _appointments.CreateAtomicAsync(
                 appointment,
                 doctor.SchedulingPolicy,
@@ -167,14 +194,12 @@ namespace SmartCare.API.Controllers
 
             LogAppointmentCreated(_logger, appointment.Id, appointment.DoctorId, appointment.Date, appointment.Slot);
 
-            try
-            {
-                await _email.SendBookingConfirmationAsync(appointment, doctor);
-            }
-            catch (Exception ex)
-            {
-                LogEmailFailed(_logger, ex, appointment.Id);
-            }
+            // Fire email in the background — do NOT await SMTP inside the HTTP request.
+            // The appointment is already committed to MongoDB; returning 201 immediately
+            // is correct. Awaiting SMTP here blocks the response for 5–15 s on slow
+            // connections, causing the frontend's 10 s axios timeout to fire and making
+            // the patient believe their booking failed when it actually succeeded.
+            FireEmailBackground(() => _email.SendBookingConfirmationAsync(appointment, doctor), appointment.Id);
 
             // Count current Pending+Confirmed bookings at this slot AFTER the insert to
             // pick the right patient-facing message. queuePosition tells us where we
@@ -366,15 +391,12 @@ namespace SmartCare.API.Controllers
 
             LogAppointmentRescheduled(_logger, id, dto.NewDate, dto.NewSlot, newAppointment.Id);
 
-            try
-            {
-                await _email.SendAppointmentCancelledAsync(existing, doctor, "Admin");
-                await _email.SendBookingConfirmationAsync(newAppointment, doctor);
-            }
-            catch (Exception ex)
-            {
-                LogEmailFailed(_logger, ex, id);
-            }
+            // Same fire-and-forget pattern as Create — do not block the response on SMTP.
+            // Two emails by design: a reschedule notice for the freed slot, plus a fresh
+            // booking confirmation carrying the new date/time. "Reschedule" context keeps the
+            // cancellation wording accurate (not a generic "we cancelled, please call us").
+            FireEmailBackground(() => _email.SendAppointmentCancelledAsync(existing, doctor, "Reschedule"), id);
+            FireEmailBackground(() => _email.SendBookingConfirmationAsync(newAppointment, doctor), newAppointment.Id);
 
             return CreatedAtAction(nameof(GetById), new { id = newAppointment.Id }, new
             {
@@ -485,11 +507,35 @@ namespace SmartCare.API.Controllers
             });
         }
 
+        /// <summary>
+        /// Dispatches an email task onto a background thread so SMTP latency never
+        /// blocks the HTTP response. Both <see cref="IEmailService"/> and
+        /// <see cref="ILogger"/> are registered as singletons and are safe to
+        /// capture across thread boundaries.
+        /// </summary>
+        private void FireEmailBackground(Func<Task> emailTask, string? appointmentId)
+        {
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await emailTask();
+                }
+                catch (Exception ex)
+                {
+                    LogEmailFailed(_logger, ex, appointmentId);
+                }
+            });
+        }
+
         [LoggerMessage(Level = LogLevel.Information, Message = "Fetching all appointments, includePast={IncludePast}")]
         private static partial void LogGetAllAppointments(ILogger logger, bool includePast);
 
         [LoggerMessage(Level = LogLevel.Information, Message = "Appointment lookup: id={Id}, found={Found}")]
         private static partial void LogLookup(ILogger logger, string id, bool found);
+
+        [LoggerMessage(Level = LogLevel.Information, Message = "Appointment search: query={Query}, results={Count}")]
+        private static partial void LogAppointmentSearch(ILogger logger, string query, int count);
 
         [LoggerMessage(Level = LogLevel.Information, Message = "Fetching appointments for doctor {DoctorId}, includePast={IncludePast}")]
         private static partial void LogGetByDoctorAppointments(ILogger logger, string doctorId, bool includePast);
@@ -499,6 +545,9 @@ namespace SmartCare.API.Controllers
 
         [LoggerMessage(Level = LogLevel.Warning, Message = "High volume of expired appointments processed: {Count}")]
         private static partial void LogProcessExpiredHighCount(ILogger logger, int count);
+
+        [LoggerMessage(Level = LogLevel.Warning, Message = "Duplicate booking blocked: phone {Phone}, doctor {DoctorId}, date {Date}, slot {Slot}")]
+        private static partial void LogDuplicateBookingBlocked(ILogger logger, string phone, string doctorId, string date, string slot);
 
         [LoggerMessage(Level = LogLevel.Warning, Message = "Slot conflict: doctor {DoctorId}, date {Date}, slot {Slot}")]
         private static partial void LogSlotConflict(ILogger logger, string doctorId, string date, string slot);

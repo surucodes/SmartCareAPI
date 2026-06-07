@@ -20,8 +20,25 @@ public class TestimonialsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Testimonial>>> GetApproved()
+    public async Task<ActionResult<List<Testimonial>>> GetApproved([FromQuery] bool includePending = false)
     {
+        if (includePending)
+        {
+            // Pending testimonials are admin-only — public callers must not see unmoderated content.
+            // JWT middleware still populates User even without [Authorize], so role check works here
+            // without breaking the default unauthenticated path.
+            if (User.Identity?.IsAuthenticated != true)
+                return Unauthorized(new { error = "Authentication required to view pending testimonials" });
+
+            if (!User.IsInRole("Admin"))
+                return StatusCode(StatusCodes.Status403Forbidden,
+                    new { error = "Only admins can view pending testimonials" });
+
+            var pending = await _repo.GetPendingAsync();
+            _logger.LogInformation("Admin fetched {Count} pending testimonials", pending.Count);
+            return Ok(pending);
+        }
+
         var testimonials = await _repo.GetApprovedAsync();
         return Ok(testimonials);
     }

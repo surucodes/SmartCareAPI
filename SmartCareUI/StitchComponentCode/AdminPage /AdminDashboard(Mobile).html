@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Heritage Care - Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary": "#ffffff",
+                    "surface-dim": "#dbdad7",
+                    "text-primary": "#111111",
+                    "on-primary-fixed-variant": "#344c39",
+                    "tertiary-fixed-dim": "#ebbac4",
+                    "outline-variant": "#F0F0F0",
+                    "inverse-primary": "#b1ceb4",
+                    "surface-container-highest": "#e3e2df",
+                    "inverse-on-surface": "#f2f1ed",
+                    "on-secondary-fixed-variant": "#584400",
+                    "error": "#ba1a1a",
+                    "surface": "#faf9f6",
+                    "on-tertiary-fixed-variant": "#603d45",
+                    "primary-container": "#1A3C2A",
+                    "surface-container-high": "#e9e8e5",
+                    "tertiary-container": "#3b1d25",
+                    "surface-container-low": "#f4f4f0",
+                    "inverse-surface": "#2f312f",
+                    "on-primary-fixed": "#082010",
+                    "primary": "#001607",
+                    "tertiary": "#220910",
+                    "on-tertiary-fixed": "#2f131b",
+                    "surface-bright": "#faf9f6",
+                    "on-surface-variant": "#424842",
+                    "background": "#faf9f6",
+                    "error-container": "#ffdad6",
+                    "on-surface": "#1b1c1a",
+                    "surface-container-lowest": "#ffffff",
+                    "text-muted": "#888888",
+                    "text-light": "#A0AEC0",
+                    "text-secondary": "#555555",
+                    "on-tertiary-container": "#ad828b",
+                    "on-primary": "#ffffff",
+                    "secondary": "#755b00",
+                    "secondary-fixed-dim": "#ecc246",
+                    "surface-tint": "#4b6450",
+                    "surface-container": "#efeeea",
+                    "secondary-fixed": "#ffe08e",
+                    "on-secondary-container": "#735a00",
+                    "tertiary-fixed": "#ffd9e0",
+                    "outline": "#E5E7EB",
+                    "primary-fixed": "#cdead0",
+                    "surface-variant": "#e3e2df",
+                    "on-secondary-fixed": "#241a00",
+                    "on-primary-container": "#79947d",
+                    "secondary-container": "#fed255",
+                    "on-secondary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "primary-fixed-dim": "#b1ceb4",
+                    "on-error": "#ffffff",
+                    "on-background": "#1b1c1a",
+                    "accent-light": "#F5E9C0",
+                    "surface-inverse": "#132B1A"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "section-padding-y": "80px",
+                    "margin-desktop": "48px",
+                    "container-max": "1200px",
+                    "base": "8px",
+                    "gutter": "24px",
+                    "card-padding": "24px"
+            },
+            "fontFamily": {
+                    "nav-link": ["Inter"],
+                    "stat-number": ["Inter"],
+                    "label-section": ["Inter"],
+                    "headline-md": ["Playfair Display"],
+                    "display-xl-mobile": ["Playfair Display"],
+                    "title-lg": ["Playfair Display"],
+                    "label-sm": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Playfair Display"],
+                    "headline-sm": ["Playfair Display"],
+                    "display-xl": ["Playfair Display"],
+                    "body-md": ["Inter"],
+                    "label-md": ["Inter"]
+            },
+            "fontSize": {
+                    "nav-link": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "stat-number": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "label-section": ["11px", {"lineHeight": "16px", "letterSpacing": "0.12em", "fontWeight": "600"}],
+                    "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "display-xl-mobile": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                    "body-sm": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg": ["36px", {"lineHeight": "44px", "fontWeight": "700"}],
+                    "headline-sm": ["22px", {"lineHeight": "30px", "fontWeight": "700"}],
+                    "display-xl": ["48px", {"lineHeight": "58px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface antialiased">
+<!-- TopNavBar (Mobile Optimized) -->
+<header class="bg-surface sticky top-0 z-50 shadow-[0_4px_12px_rgba(19,43,26,0.04)]">
+<div class="flex items-center justify-between px-margin-mobile h-16 w-full">
+<div class="flex items-center gap-3">
+<button aria-label="Menu" class="text-primary p-1 rounded-full hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-title-lg text-title-lg text-primary">Saturday, 24 May 2026</h1>
+</div>
+<div class="flex items-center gap-2">
+<button aria-label="Search" class="text-primary p-2 rounded-full hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+</div>
+</div>
+<!-- Doctor Tabs -->
+<div class="flex px-margin-mobile border-b border-outline-variant overflow-x-auto hide-scrollbar">
+<button class="font-nav-link text-nav-link text-primary border-b-2 border-secondary pb-3 pt-2 px-4 whitespace-nowrap">
+                Dr. Prasanna (8)
+            </button>
+<button class="font-nav-link text-nav-link text-on-surface-variant hover:text-primary pb-3 pt-2 px-4 whitespace-nowrap transition-colors">
+                Dr. Lakshmi (5)
+            </button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="p-margin-mobile pb-32 flex flex-col gap-4">
+<!-- Card 1: Pending -->
+<article class="bg-surface-container-lowest rounded-lg border-l-4 border-l-secondary shadow-[0_2px_8px_rgba(19,43,26,0.06)] overflow-hidden border-y border-r border-outline-variant">
+<div class="p-4 flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div>
+<div class="font-label-sm text-label-sm text-text-secondary uppercase tracking-wider">09:30 AM</div>
+<h2 class="font-headline-sm text-headline-sm text-primary mt-1">Rajesh Kumar</h2>
+<p class="font-body-sm text-body-sm text-text-muted">Routine Checkup • New Patient</p>
+</div>
+<span class="bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm px-2 py-1 rounded-full">Pending</span>
+</div>
+<div class="grid grid-cols-3 gap-2 mt-2">
+<button class="col-span-3 sm:col-span-1 bg-primary-container text-on-primary font-label-md text-label-md py-2 px-4 rounded-md hover:bg-surface-inverse transition-colors">
+                        Confirm
+                    </button>
+<button class="col-span-3 sm:col-span-1 border border-outline-variant text-text-primary font-label-md text-label-md py-2 px-4 rounded-md hover:bg-surface-variant transition-colors">
+                        Check In
+                    </button>
+<button class="col-span-3 sm:col-span-1 border border-error text-error font-label-md text-label-md py-2 px-4 rounded-md hover:bg-error-container transition-colors">
+                        Cancel
+                    </button>
+</div>
+</div>
+</article>
+<!-- Card 2: Confirmed & Checked In -->
+<article class="bg-surface-container-lowest rounded-lg border-l-4 border-l-primary-container shadow-[0_2px_8px_rgba(19,43,26,0.06)] overflow-hidden border-y border-r border-outline-variant">
+<div class="p-4 flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div>
+<div class="font-label-sm text-label-sm text-text-secondary uppercase tracking-wider">10:00 AM</div>
+<h2 class="font-headline-sm text-headline-sm text-primary mt-1">Meera Reddy</h2>
+<p class="font-body-sm text-body-sm text-text-muted">Follow-up • Returning (Q#2)</p>
+</div>
+<span class="bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm px-2 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                        Checked In
+                    </span>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-2">
+<button class="bg-primary-container text-on-primary font-label-md text-label-md py-2 px-4 rounded-md hover:bg-surface-inverse transition-colors">
+                        Complete
+                    </button>
+<button class="border border-outline-variant text-text-primary font-label-md text-label-md py-2 px-4 rounded-md hover:bg-surface-variant transition-colors">
+                        No Show
+                    </button>
+</div>
+</div>
+</article>
+<!-- Card 3: Completed -->
+<article class="bg-surface-container-lowest rounded-lg border-l-4 border-l-surface-dim shadow-[0_2px_8px_rgba(19,43,26,0.04)] overflow-hidden border-y border-r border-outline-variant opacity-60">
+<div class="p-4 flex flex-col gap-2">
+<div class="flex justify-between items-center">
+<div>
+<div class="font-label-sm text-label-sm text-text-secondary uppercase tracking-wider">09:00 AM</div>
+<h2 class="font-title-lg text-title-lg text-primary mt-1">Suresh Menon</h2>
+</div>
+<span class="font-label-sm text-label-sm text-text-muted px-2 py-1 rounded-full border border-surface-dim">Completed</span>
+</div>
+</div>
+</article>
+</main>
+<!-- Contextual FAB (Search) -->
+<button aria-label="Search Appointments" class="fixed bottom-6 right-6 w-14 h-14 bg-primary-container text-on-primary rounded-full shadow-[0_8px_16px_rgba(26,60,42,0.3)] flex items-center justify-center hover:bg-surface-inverse transition-transform hover:scale-105 active:scale-95 z-50">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">search</span>
+</button>
+</body></html>

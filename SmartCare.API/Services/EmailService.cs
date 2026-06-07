@@ -67,10 +67,13 @@ public class EmailService : IEmailService
     public async Task SendAppointmentCancelledAsync(Appointment appointment, Doctor doctor, string cancelledBy)
     {
         var html = BuildStatusCancelledEmail(appointment, doctor, cancelledBy);
+        var subject = cancelledBy == "Reschedule"
+            ? "Your SmartCare Appointment Has Been Rescheduled"
+            : "Your SmartCare Appointment Has Been Cancelled";
         await SendEmailAsync(
             appointment.PatientEmail,
             appointment.PatientName,
-            "Your SmartCare Appointment Has Been Cancelled",
+            subject,
             html);
     }
 
@@ -174,9 +177,13 @@ public class EmailService : IEmailService
 
     private static string BuildStatusCancelledEmail(Appointment appointment, Doctor doctor, string cancelledBy)
     {
-        var bodyText = cancelledBy == "Admin"
-            ? $"Dear {appointment.PatientName}, we regret to inform you that your appointment with {doctor.Name} on {appointment.Date} at {appointment.Slot} has been cancelled by the hospital due to unforeseen circumstances. We sincerely apologise for the inconvenience. Please contact us to reschedule at your convenience."
-            : $"Dear {appointment.PatientName}, your appointment with {doctor.Name} on {appointment.Date} at {appointment.Slot} has been successfully cancelled as requested. We hope to see you again soon — you can book a new appointment at any time.";
+        var isReschedule = cancelledBy == "Reschedule";
+        var headerTitle = isReschedule ? "Appointment Rescheduled" : "Appointment Cancelled";
+        var bodyText = isReschedule
+            ? $"Dear {appointment.PatientName}, your appointment with {doctor.Name} on {appointment.Date} at {appointment.Slot} has been rescheduled. A separate email confirming your new appointment date and time has been sent to you — please refer to it for the updated details. There is nothing further you need to do."
+            : cancelledBy == "Admin"
+                ? $"Dear {appointment.PatientName}, we regret to inform you that your appointment with {doctor.Name} on {appointment.Date} at {appointment.Slot} has been cancelled by the hospital due to unforeseen circumstances. We sincerely apologise for the inconvenience. Please contact us to reschedule at your convenience."
+                : $"Dear {appointment.PatientName}, your appointment with {doctor.Name} on {appointment.Date} at {appointment.Slot} has been successfully cancelled as requested. We hope to see you again soon — you can book a new appointment at any time.";
 
         return $$"""
             <!DOCTYPE html>
@@ -201,7 +208,7 @@ public class EmailService : IEmailService
             <body>
               <div class="wrapper">
                 <div class="header">
-                  <h1>Appointment Cancelled</h1>
+                  <h1>{{headerTitle}}</h1>
                 </div>
                 <div class="body">
                   <p>{{bodyText}}</p>
