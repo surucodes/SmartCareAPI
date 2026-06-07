@@ -3,15 +3,15 @@ import { cn } from '@/utils/cn'
 import logoImg from '@/assets/images/Logo.png'
 
 const QUICK_LINKS = [
-  { label: 'Home',         href: '/'           },
+  { label: 'Home',         href: '/'            },
   { label: 'Find Doctors', href: '/book'        },
-  { label: 'Specialties',  href: '#specialties' },
-  { label: 'Services',     href: '#services'    },
+  { label: 'Specialties',  href: '/specialties' },
+  { label: 'Services',     href: '/services'    },
 ]
 
 const ABOUT_LINKS = [
-  { label: 'Our Story',      href: '#about' },
-  { label: 'Our Team',       href: '#'      },
+  { label: 'Our Story',      href: '/about' },
+  { label: 'Our Team',       href: '/about' },
   { label: 'Careers',        href: '#'      },
   { label: 'News & Updates', href: '#'      },
 ]

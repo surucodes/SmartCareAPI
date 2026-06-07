@@ -84,8 +84,8 @@ export function MeetTheDoctors() {
             </p>
           </div>
 
-          <button
-            type="button"
+          <Link
+            to="/about"
             className="hidden md:inline-flex items-center gap-1 text-[14px] font-medium text-[#111111] hover:text-[#0F6E56] underline underline-offset-4 decoration-gray-300 hover:decoration-[#0F6E56] transition-colors shrink-0"
             style={{ fontFamily: 'Inter, sans-serif' }}
           >
@@ -93,7 +93,7 @@ export function MeetTheDoctors() {
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-          </button>
+          </Link>
         </div>
 
         {/* ── Doctor cards grid ───────────────────────────────── */}
@@ -166,15 +166,15 @@ export function MeetTheDoctors() {
 
         {/* Mobile "View all" link */}
         <div className="md:hidden flex justify-center mt-8 pt-6 border-t border-gray-200">
-          <button
-            type="button"
+          <Link
+            to="/about"
             className="inline-flex items-center gap-1 text-[14px] font-medium text-[#111111] hover:text-[#0F6E56] underline underline-offset-4 decoration-gray-300 transition-colors"
           >
             View all doctors
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-          </button>
+          </Link>
         </div>
 
       </div>

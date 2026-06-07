@@ -8,9 +8,9 @@ const NAV_LINKS = [
   { label: 'Home',           href: '/'              },
   { label: 'Find Doctors',   href: '/book'          },
   { label: 'My Appointment', href: '/my-appointment' },
-  { label: 'Specialties',    href: '#specialties'   },
-  { label: 'Services',       href: '#services'      },
-  { label: 'About Us',       href: '#about'         },
+  { label: 'Specialties',    href: '/specialties'   },
+  { label: 'Services',       href: '/services'      },
+  { label: 'About Us',       href: '/about'         },
 ] as const
 
 export function Header() {

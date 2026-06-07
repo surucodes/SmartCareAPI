@@ -24,6 +24,9 @@ const DrLakshmiPage = lazy(
 const HospitalTourPage = lazy(
   () => import('@/pages/hospital-tour/HospitalTourPage')
 )
+const SpecialtiesPage = lazy(() => import('@/pages/specialties/SpecialtiesPage'))
+const ServicesPage = lazy(() => import('@/pages/services/ServicesPage'))
+const AboutPage = lazy(() => import('@/pages/about/AboutPage'))
 const NotFoundPage = lazy(() => import('@/pages/not-found/NotFoundPage'))
 
 const Loader = () => (
@@ -106,6 +109,30 @@ export const router = createBrowserRouter([
     element: (
       <Suspense fallback={<Loader />}>
         <HospitalTourPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: '/specialties',
+    element: (
+      <Suspense fallback={<Loader />}>
+        <SpecialtiesPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: '/services',
+    element: (
+      <Suspense fallback={<Loader />}>
+        <ServicesPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: '/about',
+    element: (
+      <Suspense fallback={<Loader />}>
+        <AboutPage />
       </Suspense>
     ),
   },

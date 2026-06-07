@@ -18,32 +18,32 @@ const SPECIALTIES: Specialty[] = [
   {
     label: 'Orthopaedics',
     icon: { type: 'img', src: orthoIcon, alt: 'Orthopaedics icon' },
-    href: '/hospital-tour',
+    href: '/specialties',
   },
   {
     label: 'Gynaecology & Obstetrics',
     icon: { type: 'img', src: gynaeIcon, alt: 'Gynaecology & Obstetrics icon' },
-    href: '/hospital-tour',
+    href: '/specialties',
   },
   {
     label: 'Physiotherapy',
     icon: { type: 'img', src: physioIcon, alt: 'Physiotherapy icon' },
-    href: '/hospital-tour',
+    href: '/specialties',
   },
   {
     label: 'Radiology',
     icon: { type: 'img', src: radiologyIcon, alt: 'Radiology icon' },
-    href: '/hospital-tour',
+    href: '/specialties',
   },
   {
     label: 'Pathology & Laboratory',
     icon: { type: 'img', src: microIcon, alt: 'Pathology & Laboratory icon' },
-    href: '/hospital-tour',
+    href: '/specialties',
   },
   {
     label: 'Pharmacy',
     icon: { type: 'img', src: pharmacyIcon, alt: 'Pharmacy icon' },
-    href: '/hospital-tour',
+    href: '/specialties',
   },
 ]
 
@@ -76,7 +76,7 @@ export function OurSpecialties() {
           </div>
 
           <Link
-            to="/hospital-tour"
+            to="/specialties"
             className="self-start md:self-auto inline-flex items-center gap-2 text-[14px] font-semibold text-[#111111] border border-gray-300 hover:border-[#132b1a] hover:text-[#132b1a] px-5 py-2.5 rounded-lg transition-colors group"
             style={{ fontFamily: 'Inter, sans-serif' }}
           >

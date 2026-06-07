@@ -166,8 +166,8 @@ export function HeroSection() {
               </Link>
             </motion.div>
             <motion.div whileHover={{ y: -3 }} whileTap={TAP_SCALE} transition={CTA_HOVER_SPRING}>
-              <a
-                href="#about"
+              <Link
+                to="/about"
                 className="inline-flex items-center justify-center gap-2 bg-brand-dark text-white text-[15px] font-semibold px-7 py-3.5 rounded-full hover:bg-teal-600 transition-colors min-h-[44px] w-full sm:w-auto shadow-sm"
                 aria-label="Learn about our hospital"
               >
@@ -175,7 +175,7 @@ export function HeroSection() {
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-              </a>
+              </Link>
             </motion.div>
             <motion.div whileHover={{ y: -3 }} whileTap={TAP_SCALE} transition={CTA_HOVER_SPRING}>
               <Link
