@@ -1,0 +1,39 @@
+# Render Blueprint for the SmartCare API (backend).
+# Deploy: Render Dashboard → New → Blueprint → pick this repo.
+# Secrets (sync: false) are NOT stored here — set them in the service's
+# Environment tab in the Render dashboard after the service is created.
+#
+# The UI is deployed separately on Vercel (see SmartCareUI/vercel.json), so it
+# is intentionally not defined here.
+services:
+  - type: web
+    name: smartcare-api
+    runtime: docker
+    rootDir: SmartCare.API
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      # MongoDB Atlas connection string.
+      - key: MONGODB_CONNECTION_STRING
+        sync: false
+      # Which database in the cluster to use.
+      - key: MONGODB_DATABASE
+        value: SmartCare
+      # JWT signing key — min 32 chars (openssl rand -base64 64).
+      - key: JWT_SECRET
+        sync: false
+      # Deployed Vercel UI origin, for CORS (e.g. https://spandanahospital.in).
+      - key: FRONTEND_URL
+        sync: false
+      # Gmail SMTP credentials (App Password, not the account password).
+      - key: GMAIL_USER
+        sync: false
+      - key: GMAIL_APP_PASSWORD
+        sync: false
+      # One-time admin bootstrap secret for POST /api/auth/bootstrap.
+      - key: BOOTSTRAP_SECRET
+        sync: false

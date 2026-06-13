@@ -17,17 +17,19 @@ RUN dotnet publish -c Release -o /app/publish \
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
-# Non-root user for defence in depth.
-RUN apt-get update && apt-get install -y --no-install-recommends shadow && rm -rf /var/lib/apt/lists/*
-RUN addgroup --system --gid 1001 appgroup && \
-    adduser --system --uid 1001 --ingroup appgroup appuser
-USER appuser
-
 COPY --from=build /app/publish .
 
-# Railway and most cloud providers route to port 8080.
-EXPOSE 8080
-ENV ASPNETCORE_URLS=http://+:8080
+# Run as the non-root "app" user that ships in .NET 8+ runtime images
+# (UID 1654, exposed as $APP_UID). No package install or user creation needed —
+# the earlier addgroup/adduser approach failed on Render because the package was
+# unavailable in the minimal image.
+USER $APP_UID
+
 ENV ASPNETCORE_ENVIRONMENT=Production
 
-ENTRYPOINT ["dotnet", "SmartCare.API.dll"]
+# Render (and most PaaS) terminate TLS at their edge and inject a PORT env var
+# for the container to listen on; bind to it, defaulting to 8080 for a plain
+# local `docker run`. `exec` keeps dotnet as PID 1 so SIGTERM reaches it for a
+# graceful shutdown on redeploys.
+EXPOSE 8080
+ENTRYPOINT ["sh", "-c", "exec dotnet SmartCare.API.dll --urls http://+:${PORT:-8080}"]
