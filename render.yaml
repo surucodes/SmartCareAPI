@@ -20,9 +20,11 @@ services:
       # MongoDB Atlas connection string.
       - key: MONGODB_CONNECTION_STRING
         sync: false
-      # Which database in the cluster to use.
+      # Which database in the cluster to use. Must match the database the
+      # data is actually seeded into (SmartCareDB), not a different empty
+      # database in the same Atlas cluster.
       - key: MONGODB_DATABASE
-        value: SmartCare
+        value: SmartCareDB
       # JWT signing key — min 32 chars (openssl rand -base64 64).
       - key: JWT_SECRET
         sync: false
