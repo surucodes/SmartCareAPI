@@ -60,7 +60,7 @@ export function HeroSection() {
         whileHover={{ y: -4 }}
         whileTap={TAP_SCALE}
         style={{ transition: 'box-shadow 300ms ease' }}
-        className="hidden md:flex absolute bottom-[32%] right-[43%] z-20 bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-[0_8px_30px_rgba(19,43,26,0.12)] border border-white/60 items-center gap-4 max-w-[190px] cursor-pointer hover:shadow-[0_18px_44px_rgba(19,43,26,0.20)]"
+        className="hidden lg:flex absolute bottom-[32%] right-[43%] z-20 bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-[0_8px_30px_rgba(19,43,26,0.12)] border border-white/60 items-center gap-4 max-w-[190px] cursor-pointer hover:shadow-[0_18px_44px_rgba(19,43,26,0.20)]"
       >
         <motion.div
           className="flex -space-x-3 shrink-0"
@@ -150,7 +150,7 @@ export function HeroSection() {
           {/* CTA buttons */}
           <motion.div
             variants={HERO_CHILD}
-            className="flex flex-col sm:flex-row gap-5"
+            className="flex flex-col sm:flex-row sm:flex-wrap gap-5 max-w-[460px]"
           >
             <motion.div whileHover={{ y: -3 }} whileTap={TAP_SCALE} transition={CTA_HOVER_SPRING}>
               <Link
