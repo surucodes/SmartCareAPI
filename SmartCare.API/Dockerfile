@@ -18,6 +18,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
 # Non-root user for defence in depth.
+RUN apt-get update && apt-get install -y --no-install-recommends shadow && rm -rf /var/lib/apt/lists/*
 RUN addgroup --system --gid 1001 appgroup && \
     adduser --system --uid 1001 --ingroup appgroup appuser
 USER appuser
