@@ -161,6 +161,8 @@ function ReducedMotionTour() {
             <img
               src={frameFirst}
               alt="Spandana Hospital entrance — exterior glass doors"
+              loading="lazy"
+              decoding="async"
               className="w-full rounded-xl border border-white/10"
             />
             <figcaption className="mt-2 text-center font-cormorant text-sm italic text-stone-400">
@@ -171,6 +173,8 @@ function ReducedMotionTour() {
             <img
               src={frameLast}
               alt="Spandana Hospital reception — interior"
+              loading="lazy"
+              decoding="async"
               className="w-full rounded-xl border border-white/10"
             />
             <figcaption className="mt-2 text-center font-cormorant text-sm italic text-stone-400">

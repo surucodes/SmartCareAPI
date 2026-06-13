@@ -166,6 +166,8 @@ export default function SpecialtiesPage() {
                       src={s.icon}
                       alt=""
                       aria-hidden="true"
+                      loading="lazy"
+                      decoding="async"
                       className="w-14 h-14 rounded-full object-cover shrink-0 ring-1 ring-gray-100"
                     />
                     <div>

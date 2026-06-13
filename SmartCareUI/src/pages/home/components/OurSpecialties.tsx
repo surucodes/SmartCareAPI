@@ -112,6 +112,8 @@ export function OurSpecialties() {
                 <img
                   src={icon.src}
                   alt={icon.alt}
+                  loading="lazy"
+                  decoding="async"
                   className="w-16 h-16 rounded-full object-cover shrink-0"
                 />
               ) : (

@@ -136,7 +136,7 @@ export function DoctorBiography({ data }: DoctorBiographyProps) {
             </div>
             <figure className="plate" id="originPlate">
               <div className="plate__frame">
-                <img src={origins.img} alt={origins.alt} id="originImg" />
+                <img src={origins.img} alt={origins.alt} id="originImg" loading="lazy" decoding="async" />
               </div>
               <div className="plate__edge" />
             </figure>
@@ -176,7 +176,7 @@ export function DoctorBiography({ data }: DoctorBiographyProps) {
                 >
                   <div className="reel__img">
                     <span className="reel__no">{card.no}</span>
-                    <img src={card.img} alt={card.alt} />
+                    <img src={card.img} alt={card.alt} loading="lazy" decoding="async" />
                     <div className="reel__cap">
                       <div className="reel__yr">{card.year}</div>
                       <h3 className="reel__name">{renderLines(card.nameLines)}</h3>
@@ -245,7 +245,7 @@ export function DoctorBiography({ data }: DoctorBiographyProps) {
         <section className="scene c-roots" id="chRoots" data-bg={DARK_BG}>
           <div className="roots__media" id="rootsMedia">
             <div className="roots__frame" id="rootsFrame">
-              <img src={roots.img} alt={roots.alt} />
+              <img src={roots.img} alt={roots.alt} loading="lazy" decoding="async" />
               <div className="roots__head">
                 <h2>{renderLines(roots.headLines)}</h2>
               </div>

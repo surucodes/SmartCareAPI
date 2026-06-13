@@ -232,6 +232,8 @@ export default function AboutPage() {
                     <img
                       src={f.image}
                       alt={`Portrait of ${f.name}`}
+                      loading="lazy"
+                      decoding="async"
                       className="w-24 h-24 rounded-2xl object-cover object-top shrink-0 ring-1 ring-gray-100"
                     />
                     <div>
